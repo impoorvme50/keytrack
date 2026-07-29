@@ -1,0 +1,11 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# 历史参考材料，不上传（本地保留，可随时删）
+vendor/
+patches/
