@@ -4,7 +4,7 @@
   "sources": [
     {
       "file": "data/prediction/public.ngram.tsv",
-      "sha256": "a47faf822914012f80de1bb95f2257e4ba2bea9b514f5fc83251d344d328f005"
+      "sha256": "fdc69fd1bcf996745a64d1fcf32b39663126534cc70db0fd1ca2ea0b3b8da279"
     }
   ],
   "upstream_revisions": {
@@ -13,12 +13,12 @@
     "darts": "87b71afd6cf784953e3c08f24c64203397f3b724",
     "marisa": "3e87d53b78e15f2f43783d5e376561a8c9722051"
   },
-  "preprocessed_sha256": "64dfb68aceba5fdadd2b7a645d6c4a539b7398f8a53b2e9ae741176604687e96",
-  "contexts": 9998,
-  "records": 33433,
+  "preprocessed_sha256": "b7418541c30ac08cf6a103c45c106538296c9b5a6cb0fe701c201abcbb5f907d",
+  "contexts": 3831,
+  "records": 7345,
   "max_candidates_in_data": 8,
-  "db_sha256": "bcefc0b84279c589b1ec45c2c6e9448a4ea64cc8909c9b182076db6ffd9022b9",
-  "db_bytes": 483908,
+  "db_sha256": "c181209b681ebe577ffa702ce64147c7d6684f1b8f04cccfcfd75f5b9fdba280",
+  "db_bytes": 147088,
   "build_architecture": "arm64",
   "librime_sha256": "abb06aa5b3f53de375bc401512b49a7a31b7ed5ee62b2ef7a438512abee5958f",
   "librime_version": "1.16.0",

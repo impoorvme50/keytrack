@@ -23,7 +23,7 @@ def digest(path: Path) -> str:
 
 
 def load_dataset(path: Path = DEFAULT_DATASET, manifest_path: Path | None = None) -> dict:
-    """Require the frozen 200-sample manifest before consulting any source."""
+    """Require a frozen manifest before consulting any source."""
     manifest_path = manifest_path or path.with_suffix(".manifest.json")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     actual_digest = digest(path)
@@ -35,8 +35,12 @@ def load_dataset(path: Path = DEFAULT_DATASET, manifest_path: Path | None = None
     if dataset.get("dataset_id") != manifest.get("dataset_id"):
         raise ValueError("dataset and manifest identities differ")
     examples = dataset.get("examples")
-    if not isinstance(examples, list) or len(examples) != 200 or manifest.get("samples") != 200:
-        raise ValueError("frozen evaluation must contain exactly 200 samples")
+    samples = manifest.get("samples")
+    if (type(samples) is not int or not 100 <= samples <= 10_000
+            or not isinstance(examples, list) or len(examples) != samples):
+        raise ValueError("frozen evaluation sample count differs from its manifest")
+    if dataset.get("dataset_id") == "keytrack-next-word-v1" and samples != 200:
+        raise ValueError("frozen v1 evaluation must contain exactly 200 samples")
     ids = set()
     situations = set()
     kinds = dict.fromkeys(KINDS, 0)

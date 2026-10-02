@@ -31,6 +31,15 @@ class PredictionEvaluationTests(unittest.TestCase):
         self.assertTrue(all(sum(x["situation"] == s for x in examples) == 20 for s in situations))
         self.assertEqual(len({x["commit"] for x in examples}), 200)
 
+    def test_independent_additional_holdout_is_frozen_and_keeps_v1_contract(self):
+        loaded = evaluation.load_dataset(evaluation.DATA / "evaluation-v2.json")
+        self.assertEqual(loaded["manifest"]["samples"], 100)
+        self.assertEqual(loaded["manifest"]["kind_counts"],
+                         {"word": 40, "phrase": 40, "unmatched": 10, "boundary": 10})
+        self.assertEqual(loaded["sha256"], "105e47ddcf865ef089b2b9ac4555ed8e7225612babf2ba01f91016f5a72e9ac5")
+        self.assertEqual(evaluation.load_dataset()["sha256"],
+                         "517b33578b18546c4136432f7a2065b3e81df4f7abbff597a92edaf4338e4048")
+
     def test_dataset_tampering_and_invalid_answer_contract_are_rejected(self):
         original = evaluation.load_dataset()
         with tempfile.TemporaryDirectory() as temporary:

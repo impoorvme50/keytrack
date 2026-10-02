@@ -1,0 +1,112 @@
+{
+  "date": "2026-10-03",
+  "status": "finite editorial audit after scoring; no source or rule changes",
+  "public_sha256": "a47faf822914012f80de1bb95f2257e4ba2bea9b514f5fc83251d344d328f005",
+  "sample_file": "public-review-sample.json",
+  "denominators": {
+    "old_keys": 120,
+    "old_top3_pairs": 272,
+    "original_keys": 60,
+    "original_all_pairs": 180,
+    "all_reviewed_pairs": 452
+  },
+  "method": "Inspect the final table for every sampled old-key Top 3 and every candidate of all winning original supplement keys; do not read new evaluation questions or answers.",
+  "old_sample_findings": [
+    {
+      "key": "你想你",
+      "candidate": "想",
+      "kind": "mechanical_or_order_concern",
+      "note": "完整续接再次重复已出现的词序，呈现为片段循环。"
+    },
+    {
+      "key": "你想你",
+      "candidate": "好想你",
+      "kind": "mechanical_or_order_concern",
+      "note": "完整续接“你想你好想你”缺少自然结构，疑似复制文本片段。"
+    },
+    {
+      "key": "呢我",
+      "candidate": "呢",
+      "kind": "mechanical_or_order_concern",
+      "note": "语气词起头的前键再接相同语气词，脱离上下文缺少自然结构。"
+    },
+    {
+      "key": "的和",
+      "candidate": "你",
+      "kind": "mechanical_or_order_concern",
+      "note": "助词与连词构成的前键一般是更长表达中的中间截段。"
+    },
+    {
+      "key": "的和",
+      "candidate": "我",
+      "kind": "mechanical_or_order_concern",
+      "note": "助词与连词构成的前键一般是更长表达中的中间截段。"
+    },
+    {
+      "key": "在做",
+      "candidate": "天",
+      "kind": "weak_or_context_dependent",
+      "note": "短语与候选缺少自然直接搭配，可能来自省略标点的叙述。"
+    },
+    {
+      "key": "心里没",
+      "candidate": "点",
+      "kind": "weak_or_context_dependent",
+      "note": "只补出量词片段，通常仍需继续补全“数”等内容。"
+    },
+    {
+      "key": "你家的",
+      "candidate": "抄袭",
+      "kind": "weak_or_context_dependent",
+      "note": "语义搭配强依赖特定争论语境，通用输入价值有限。"
+    },
+    {
+      "key": "大家攻击",
+      "candidate": "她",
+      "kind": "sensitive_context_concern",
+      "note": "存在攻击他人的表达；单独词对不能判断对象或语境，需人工编辑注意。"
+    }
+  ],
+  "original_supplement_findings": [
+    {
+      "key": "这批产品",
+      "candidate": "已经",
+      "kind": "weak_requires_following_content",
+      "note": "可用于自然句子，但单独副词/动词补全仍需要后续实义内容；不判作错误。"
+    },
+    {
+      "key": "这批产品",
+      "candidate": "需要",
+      "kind": "weak_requires_following_content",
+      "note": "可用于自然句子，但单独副词/动词补全仍需要后续实义内容；不判作错误。"
+    },
+    {
+      "key": "这批产品",
+      "candidate": "预计",
+      "kind": "weak_requires_following_content",
+      "note": "可用于自然句子，但单独副词/动词补全仍需要后续实义内容；不判作错误。"
+    }
+  ],
+  "original_explicit_mechanical_fragments_found": 0,
+  "previous_known_fragments": [
+    {
+      "key": "方",
+      "candidate": "二八",
+      "present_in_final": false,
+      "in_fixed_old_sample": false
+    },
+    {
+      "key": "是的是",
+      "candidate": "的",
+      "present_in_final": false,
+      "in_fixed_old_sample": false
+    },
+    {
+      "key": "吧来",
+      "candidate": "吧",
+      "present_in_final": true,
+      "in_fixed_old_sample": false
+    }
+  ],
+  "limits": "These are editorial concerns, not correctness labels or a whole-library error rate. Sample selection differs from earlier versions. Original suggestions remain generic and need later context. Prior fragment 吧来→吧 remains outside the fixed old sample; no claim that all mechanical fragments are cleared. No rules, sources, weights or frozen evaluation answers were changed after scoring."
+}

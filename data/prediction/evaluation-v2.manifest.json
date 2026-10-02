@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "dataset_id": "prediction-evaluation-v2-independent-holdout-100",
+  "sha256": "105e47ddcf865ef089b2b9ac4555ed8e7225612babf2ba01f91016f5a72e9ac5",
+  "samples": 100,
+  "situations": 10,
+  "kind_counts": {
+    "word": 40,
+    "phrase": 40,
+    "unmatched": 10,
+    "boundary": 10
+  },
+  "frozen_date": "2026-10-03",
+  "status": "frozen-before-scoring",
+  "role": "independent-additional-holdout",
+  "replaces_v1": false,
+  "scored": false,
+  "allowed_format_reads": [
+    "keytrack/prediction_eval.py",
+    "scripts/evaluate-prediction.py"
+  ],
+  "construction_constraints": [
+    "未读取现有评测逐题内容或报告",
+    "未读取 starter、public、lccc 词库或生成器输出",
+    "未读取真实输入历史",
+    "未复制青简数据",
+    "答案先于任何候选查阅与评分冻结"
+  ]
+}

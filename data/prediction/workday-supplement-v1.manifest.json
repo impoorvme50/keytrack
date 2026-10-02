@@ -1,0 +1,130 @@
+{
+  "dataset_id": "workday-supplement-v1",
+  "version": 1,
+  "created": "2026-10-03",
+  "status": "frozen",
+  "license": "MIT",
+  "source": {
+    "type": "original_independently_authored",
+    "description": "为通用中文工作沟通和日常生活独立原创的完整短语前键及直接下一词候选，不摘录外部语料、公共词表或个人记录。",
+    "authoring_method": "先按十类通用情境各写六个自然句首输入单位，再独立列出每个前键的三种合理续接方向。",
+    "external_corpus_used": false,
+    "evaluation_questions_or_answers_accessed_during_authoring": false,
+    "existing_prediction_tables_accessed_during_authoring": false,
+    "personal_history_accessed": false,
+    "specific_company_customer_or_personal_information": false
+  },
+  "format": "UTF-8 TSV，无表头；每行：前键 空格 后词 TAB 排序权重；LF 换行",
+  "weight_semantics": "100、90、80 仅表示每键三个候选的人工优先顺序，不代表出现次数、概率或语料统计权重，不与其他来源计数直接相加。",
+  "constraints": {
+    "key_script": "纯中文汉字",
+    "key_length": [
+      3,
+      12
+    ],
+    "candidate_script": "纯中文汉字",
+    "candidate_length": [
+      1,
+      4
+    ],
+    "keys_per_category": 6,
+    "candidates_per_key": 3
+  },
+  "counts": {
+    "keys": 60,
+    "pairs": 180,
+    "categories": 10
+  },
+  "file": {
+    "path": "workday-supplement-v1.ngram.tsv",
+    "sha256": "fe4afb9e5bcb263448a956fae6825c476c73b52aac7b1728e6b2a3f2e3bdaab5",
+    "bytes": 4305
+  },
+  "category_to_keys": {
+    "沟通回应": [
+      "谢谢你的",
+      "辛苦你帮忙",
+      "我刚看到",
+      "我这就",
+      "这件事我",
+      "我再跟你"
+    ],
+    "请求协助": [
+      "麻烦帮我",
+      "请你帮忙",
+      "方便的话",
+      "能否请你",
+      "这边需要",
+      "还要麻烦你"
+    ],
+    "信息确认": [
+      "我想确认",
+      "请确认一下",
+      "目前收到的",
+      "需要核对",
+      "这份资料",
+      "确认之后再"
+    ],
+    "排程安排": [
+      "我们计划",
+      "时间安排在",
+      "如果时间",
+      "会议结束后",
+      "我明天会",
+      "下周准备"
+    ],
+    "进度跟进": [
+      "目前进度",
+      "这项工作",
+      "我正在",
+      "还需要",
+      "我们先把",
+      "下一步准备"
+    ],
+    "资料与版本": [
+      "文件已经",
+      "我把资料",
+      "请查看",
+      "这个版本",
+      "资料里面",
+      "修改完成后"
+    ],
+    "讨论与决策": [
+      "我们先讨论",
+      "我个人觉得",
+      "这个想法",
+      "可以考虑",
+      "我们决定",
+      "接下来重点"
+    ],
+    "订单与交付": [
+      "这批产品",
+      "发货之前",
+      "预计今天",
+      "数量已经",
+      "包装需要",
+      "到货以后"
+    ],
+    "出行与办事": [
+      "我准备去",
+      "今天出门",
+      "路上记得",
+      "到了以后",
+      "办完事情",
+      "回去之前"
+    ],
+    "饮食与居家": [
+      "晚上想吃",
+      "今天准备做",
+      "家里需要",
+      "休息一下再",
+      "周末打算",
+      "天气比较"
+    ]
+  },
+  "evaluation": {
+    "performed": false,
+    "frozen_before_evaluation": true
+  },
+  "integration_note": "仅交付冻结原创补充；未与既有词库查重或合并。若后续偶遇已有前键/词对，由合并流程优先保留原 starter 顺序。"
+}

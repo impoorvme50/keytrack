@@ -3,7 +3,7 @@
   "license": "MIT",
   "sources": [
     {
-      "file": "data/prediction/public.ngram.tsv",
+      "file": "data/prediction/quality-v3/public.ngram.tsv",
       "sha256": "a47faf822914012f80de1bb95f2257e4ba2bea9b514f5fc83251d344d328f005"
     }
   ],

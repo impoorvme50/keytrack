@@ -1,0 +1,42 @@
+{
+  "quality_rules_version": 2,
+  "date": "2026-10-03",
+  "public_sha256": "fdc69fd1bcf996745a64d1fcf32b39663126534cc70db0fd1ca2ea0b3b8da279",
+  "sample_file": "public-review-sample.json",
+  "sample_keys": 120,
+  "final_top3_pairs": 222,
+  "starter_overridden_keys_in_sample": 9,
+  "method": "Review every final-public Top 3 candidate for the fixed 20 head + 100 uniform sampled corpus keys. This is a finite editorial audit, not correctness ground truth or a live-menu test.",
+  "previous_known_fragments_absent": [
+    {
+      "key": "方",
+      "candidate": "二八"
+    },
+    {
+      "key": "是的是",
+      "candidate": "的"
+    },
+    {
+      "key": "吧来",
+      "candidate": "吧"
+    }
+  ],
+  "known_editorial_concerns": [
+    {
+      "key": "小朋友",
+      "candidate": "们",
+      "issue": "single-character plural suffix remains as a standalone completion"
+    },
+    {
+      "key": "生",
+      "candidate": "快",
+      "issue": "colloquial abbreviated greeting remains split into single-character completion"
+    },
+    {
+      "key": "各有",
+      "candidate": "各",
+      "issue": "low-value continuation generally needs more text to complete the expression"
+    }
+  ],
+  "limits": "Samples differ from v1 after filtering, so do not compare their concern fractions as a measured whole-library improvement. Dictionary POS is imperfect; copied text and ordinary weak-context completions can remain. No post-evaluation rule or threshold changes."
+}

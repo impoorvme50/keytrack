@@ -1,0 +1,3683 @@
+{
+  "schema_version": 1,
+  "dataset_id": "prediction-evaluation-v2-independent-holdout-100",
+  "dataset_sha256": "105e47ddcf865ef089b2b9ac4555ed8e7225612babf2ba01f91016f5a72e9ac5",
+  "samples": 100,
+  "situations": 10,
+  "situation_labels": {
+    "home_daily": "家庭日常",
+    "meal_ordering": "吃饭与点餐",
+    "local_transport": "市内出行",
+    "work_coordination": "同事协作",
+    "customer_service": "客户沟通",
+    "purchase_payment": "购物与付款",
+    "travel_stay": "旅行与住宿",
+    "study_reading": "学习与阅读",
+    "family_care": "家人与关心",
+    "leisure_friends": "休闲与朋友"
+  },
+  "candidate_cap_in_data": 8,
+  "displayed_candidates_scored": 3,
+  "lookup_contract": "exact full commit; builder preprocessing; no suffix fallback",
+  "builder_sha256": "da3c67581d81c82bfab259b63a693d8229582c4eb114d629d06745a0009c5163",
+  "measurement": "offline source-table quality; not a live engine, input or latency test",
+  "baseline": {
+    "sources": [
+      {
+        "file": "data/prediction/starter.ngram.tsv",
+        "sha256": "6999b5394ebe987b2fffb75cb9339a72b213de0be396195b7f556ced0a4079b7"
+      }
+    ],
+    "preprocessed_sha256": "a34e39aede1476df4fd06e21cfa6018e98db5c1de1c3d4d5b499a142f1f93d88",
+    "contexts": 224,
+    "records": 896,
+    "overall": {
+      "samples": 100,
+      "lookup_hit": {
+        "numerator": 9,
+        "denominator": 100,
+        "percent": 9.0
+      },
+      "top1_acceptable_overall": {
+        "numerator": 2,
+        "denominator": 100,
+        "percent": 2.0
+      },
+      "top3_acceptable_overall": {
+        "numerator": 4,
+        "denominator": 100,
+        "percent": 4.0
+      },
+      "top3_acceptable_given_hit": {
+        "numerator": 4,
+        "denominator": 9,
+        "percent": 44.444444
+      },
+      "boundary_no_prediction": {
+        "numerator": 10,
+        "denominator": 10,
+        "percent": 100.0
+      }
+    },
+    "by_kind": {
+      "word": {
+        "samples": 40,
+        "lookup_hit": {
+          "numerator": 9,
+          "denominator": 40,
+          "percent": 22.5
+        },
+        "top1_acceptable_overall": {
+          "numerator": 2,
+          "denominator": 40,
+          "percent": 5.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 4,
+          "denominator": 40,
+          "percent": 10.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 4,
+          "denominator": 9,
+          "percent": 44.444444
+        },
+        "boundary_no_prediction": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        }
+      },
+      "phrase": {
+        "samples": 40,
+        "lookup_hit": {
+          "numerator": 0,
+          "denominator": 40,
+          "percent": 0.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 40,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 40,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        },
+        "boundary_no_prediction": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        }
+      },
+      "unmatched": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        },
+        "boundary_no_prediction": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        }
+      },
+      "boundary": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        },
+        "boundary_no_prediction": {
+          "numerator": 10,
+          "denominator": 10,
+          "percent": 100.0
+        }
+      }
+    },
+    "by_situation": {
+      "customer_service": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 3,
+          "denominator": 10,
+          "percent": 30.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 3,
+          "percent": 0.0
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "family_care": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 1,
+          "denominator": 10,
+          "percent": 10.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 1,
+          "denominator": 10,
+          "percent": 10.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 1,
+          "denominator": 10,
+          "percent": 10.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "home_daily": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "leisure_friends": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "local_transport": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "meal_ordering": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "purchase_payment": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 3,
+          "denominator": 10,
+          "percent": 30.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 2,
+          "denominator": 10,
+          "percent": 20.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 2,
+          "denominator": 3,
+          "percent": 66.666667
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "study_reading": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "travel_stay": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "work_coordination": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 2,
+          "denominator": 10,
+          "percent": 20.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 1,
+          "denominator": 10,
+          "percent": 10.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 1,
+          "denominator": 10,
+          "percent": 10.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 1,
+          "denominator": 2,
+          "percent": 50.0
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      }
+    },
+    "rows": [
+      {
+        "id": "v2-001",
+        "situation": "home_daily",
+        "kind": "word",
+        "commit": "门锁",
+        "acceptable_next": [
+          "松动",
+          "生锈"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-002",
+        "situation": "home_daily",
+        "kind": "word",
+        "commit": "阳台",
+        "acceptable_next": [
+          "晒",
+          "种"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-003",
+        "situation": "home_daily",
+        "kind": "word",
+        "commit": "地板",
+        "acceptable_next": [
+          "湿",
+          "滑"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-004",
+        "situation": "home_daily",
+        "kind": "word",
+        "commit": "垃圾",
+        "acceptable_next": [
+          "分类",
+          "桶"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-005",
+        "situation": "home_daily",
+        "kind": "phrase",
+        "commit": "下班回家",
+        "acceptable_next": [
+          "以后",
+          "之前"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-006",
+        "situation": "home_daily",
+        "kind": "phrase",
+        "commit": "窗户开着",
+        "acceptable_next": [
+          "呢",
+          "吗"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-007",
+        "situation": "home_daily",
+        "kind": "phrase",
+        "commit": "刚洗完澡",
+        "acceptable_next": [
+          "了",
+          "就"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-008",
+        "situation": "home_daily",
+        "kind": "phrase",
+        "commit": "我找不到",
+        "acceptable_next": [
+          "钥匙",
+          "手机",
+          "眼镜"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-009",
+        "situation": "home_daily",
+        "kind": "unmatched",
+        "commit": "储物柜最上层的毛毯",
+        "acceptable_next": [
+          "受潮",
+          "发霉"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-010",
+        "situation": "home_daily",
+        "kind": "boundary",
+        "commit": "到家了。",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-011",
+        "situation": "meal_ordering",
+        "kind": "word",
+        "commit": "早餐",
+        "acceptable_next": [
+          "吃",
+          "准备"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-012",
+        "situation": "meal_ordering",
+        "kind": "word",
+        "commit": "米饭",
+        "acceptable_next": [
+          "凉",
+          "热",
+          "软"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-013",
+        "situation": "meal_ordering",
+        "kind": "word",
+        "commit": "口味",
+        "acceptable_next": [
+          "偏",
+          "清淡",
+          "重"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-014",
+        "situation": "meal_ordering",
+        "kind": "word",
+        "commit": "外卖",
+        "acceptable_next": [
+          "订单",
+          "平台",
+          "骑手"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-015",
+        "situation": "meal_ordering",
+        "kind": "phrase",
+        "commit": "今天想吃",
+        "acceptable_next": [
+          "面条",
+          "火锅",
+          "饺子"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-016",
+        "situation": "meal_ordering",
+        "kind": "phrase",
+        "commit": "少放一点",
+        "acceptable_next": [
+          "盐",
+          "辣椒",
+          "糖"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-017",
+        "situation": "meal_ordering",
+        "kind": "phrase",
+        "commit": "这道菜",
+        "acceptable_next": [
+          "好吃",
+          "咸",
+          "辣"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-018",
+        "situation": "meal_ordering",
+        "kind": "phrase",
+        "commit": "一共多少钱",
+        "acceptable_next": [
+          "啊",
+          "呢"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-019",
+        "situation": "meal_ordering",
+        "kind": "unmatched",
+        "commit": "靠窗那桌的菌菇汤",
+        "acceptable_next": [
+          "凉",
+          "咸"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-020",
+        "situation": "meal_ordering",
+        "kind": "boundary",
+        "commit": "不加辣，谢谢！",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-021",
+        "situation": "local_transport",
+        "kind": "word",
+        "commit": "地铁",
+        "acceptable_next": [
+          "站",
+          "线路",
+          "入口"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-022",
+        "situation": "local_transport",
+        "kind": "word",
+        "commit": "公交",
+        "acceptable_next": [
+          "车",
+          "站",
+          "线路"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-023",
+        "situation": "local_transport",
+        "kind": "word",
+        "commit": "路口",
+        "acceptable_next": [
+          "右转",
+          "左转",
+          "直行"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-024",
+        "situation": "local_transport",
+        "kind": "word",
+        "commit": "停车",
+        "acceptable_next": [
+          "收费",
+          "时间",
+          "方便"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-025",
+        "situation": "local_transport",
+        "kind": "phrase",
+        "commit": "我在路上",
+        "acceptable_next": [
+          "了",
+          "呢"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-026",
+        "situation": "local_transport",
+        "kind": "phrase",
+        "commit": "下一站",
+        "acceptable_next": [
+          "下车",
+          "换乘"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-027",
+        "situation": "local_transport",
+        "kind": "phrase",
+        "commit": "快到公司",
+        "acceptable_next": [
+          "了",
+          "吗"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-028",
+        "situation": "local_transport",
+        "kind": "phrase",
+        "commit": "这里能停车",
+        "acceptable_next": [
+          "吗"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-029",
+        "situation": "local_transport",
+        "kind": "unmatched",
+        "commit": "河边那条临时便道",
+        "acceptable_next": [
+          "封闭",
+          "积水"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-030",
+        "situation": "local_transport",
+        "kind": "boundary",
+        "commit": "地铁 站",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-031",
+        "situation": "work_coordination",
+        "kind": "word",
+        "commit": "会议",
+        "acceptable_next": [
+          "时间",
+          "纪要",
+          "安排"
+        ],
+        "predictions": [
+          "时间",
+          "已经",
+          "开始",
+          "结束"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 1
+      },
+      {
+        "id": "v2-032",
+        "situation": "work_coordination",
+        "kind": "word",
+        "commit": "进度",
+        "acceptable_next": [
+          "如何",
+          "正常",
+          "缓慢"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-033",
+        "situation": "work_coordination",
+        "kind": "word",
+        "commit": "文件",
+        "acceptable_next": [
+          "版本",
+          "名称",
+          "格式"
+        ],
+        "predictions": [
+          "已经",
+          "保存",
+          "打开",
+          "位置"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-034",
+        "situation": "work_coordination",
+        "kind": "word",
+        "commit": "同事",
+        "acceptable_next": [
+          "休假",
+          "请假",
+          "出差"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-035",
+        "situation": "work_coordination",
+        "kind": "phrase",
+        "commit": "下午开会",
+        "acceptable_next": [
+          "吗",
+          "吧"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-036",
+        "situation": "work_coordination",
+        "kind": "phrase",
+        "commit": "我已经看过",
+        "acceptable_next": [
+          "了",
+          "邮件",
+          "附件"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-037",
+        "situation": "work_coordination",
+        "kind": "phrase",
+        "commit": "请大家确认",
+        "acceptable_next": [
+          "时间",
+          "名单",
+          "数量"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-038",
+        "situation": "work_coordination",
+        "kind": "phrase",
+        "commit": "这件事",
+        "acceptable_next": [
+          "需要",
+          "可以",
+          "已经"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-039",
+        "situation": "work_coordination",
+        "kind": "unmatched",
+        "commit": "临时借来的圆形转接头",
+        "acceptable_next": [
+          "坏",
+          "丢失"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-040",
+        "situation": "work_coordination",
+        "kind": "boundary",
+        "commit": "会议\n",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-041",
+        "situation": "customer_service",
+        "kind": "word",
+        "commit": "客户",
+        "acceptable_next": [
+          "反馈",
+          "要求",
+          "咨询"
+        ],
+        "predictions": [
+          "已经",
+          "需要",
+          "确认",
+          "反馈"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 4
+      },
+      {
+        "id": "v2-042",
+        "situation": "customer_service",
+        "kind": "word",
+        "commit": "样品",
+        "acceptable_next": [
+          "颜色",
+          "尺寸",
+          "数量"
+        ],
+        "predictions": [
+          "已经",
+          "寄出",
+          "确认",
+          "收到"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-043",
+        "situation": "customer_service",
+        "kind": "word",
+        "commit": "报价",
+        "acceptable_next": [
+          "有效期",
+          "包含"
+        ],
+        "predictions": [
+          "已经",
+          "发送",
+          "确认",
+          "有效"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-044",
+        "situation": "customer_service",
+        "kind": "word",
+        "commit": "售后",
+        "acceptable_next": [
+          "服务",
+          "处理",
+          "电话"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-045",
+        "situation": "customer_service",
+        "kind": "phrase",
+        "commit": "请问您需要",
+        "acceptable_next": [
+          "什么",
+          "多少",
+          "哪种"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-046",
+        "situation": "customer_service",
+        "kind": "phrase",
+        "commit": "我们可以提供",
+        "acceptable_next": [
+          "样品",
+          "发票",
+          "资料"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-047",
+        "situation": "customer_service",
+        "kind": "phrase",
+        "commit": "货已经发出",
+        "acceptable_next": [
+          "了"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-048",
+        "situation": "customer_service",
+        "kind": "phrase",
+        "commit": "方便的话",
+        "acceptable_next": [
+          "请",
+          "可以"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-049",
+        "situation": "customer_service",
+        "kind": "unmatched",
+        "commit": "盒内那张双语保养卡",
+        "acceptable_next": [
+          "缺失",
+          "破损"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-050",
+        "situation": "customer_service",
+        "kind": "boundary",
+        "commit": "客户？",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-051",
+        "situation": "purchase_payment",
+        "kind": "word",
+        "commit": "预算",
+        "acceptable_next": [
+          "有限",
+          "多少",
+          "不足"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-052",
+        "situation": "purchase_payment",
+        "kind": "word",
+        "commit": "发票",
+        "acceptable_next": [
+          "抬头",
+          "税号",
+          "开具"
+        ],
+        "predictions": [
+          "已经",
+          "开具",
+          "发送",
+          "信息"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 2
+      },
+      {
+        "id": "v2-053",
+        "situation": "purchase_payment",
+        "kind": "word",
+        "commit": "库存",
+        "acceptable_next": [
+          "不足",
+          "充足",
+          "数量"
+        ],
+        "predictions": [
+          "已经",
+          "确认",
+          "足够",
+          "不足"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 4
+      },
+      {
+        "id": "v2-054",
+        "situation": "purchase_payment",
+        "kind": "word",
+        "commit": "付款",
+        "acceptable_next": [
+          "方式",
+          "时间",
+          "完成"
+        ],
+        "predictions": [
+          "已经",
+          "安排",
+          "方式",
+          "时间"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 3
+      },
+      {
+        "id": "v2-055",
+        "situation": "purchase_payment",
+        "kind": "phrase",
+        "commit": "这个还有",
+        "acceptable_next": [
+          "货",
+          "库存",
+          "优惠"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-056",
+        "situation": "purchase_payment",
+        "kind": "phrase",
+        "commit": "价格有点",
+        "acceptable_next": [
+          "高",
+          "贵",
+          "低"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-057",
+        "situation": "purchase_payment",
+        "kind": "phrase",
+        "commit": "我先付款",
+        "acceptable_next": [
+          "了",
+          "吧"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-058",
+        "situation": "purchase_payment",
+        "kind": "phrase",
+        "commit": "能不能便宜",
+        "acceptable_next": [
+          "一点",
+          "些"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-059",
+        "situation": "purchase_payment",
+        "kind": "unmatched",
+        "commit": "快递箱侧面的白色封条",
+        "acceptable_next": [
+          "破损",
+          "脱落"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-060",
+        "situation": "purchase_payment",
+        "kind": "boundary",
+        "commit": "\t付款",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-061",
+        "situation": "travel_stay",
+        "kind": "word",
+        "commit": "酒店",
+        "acceptable_next": [
+          "地址",
+          "房间",
+          "预订"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-062",
+        "situation": "travel_stay",
+        "kind": "word",
+        "commit": "行李",
+        "acceptable_next": [
+          "托运",
+          "寄存",
+          "箱"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-063",
+        "situation": "travel_stay",
+        "kind": "word",
+        "commit": "景点",
+        "acceptable_next": [
+          "门票",
+          "开放",
+          "介绍"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-064",
+        "situation": "travel_stay",
+        "kind": "word",
+        "commit": "航班",
+        "acceptable_next": [
+          "延误",
+          "取消",
+          "时间"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-065",
+        "situation": "travel_stay",
+        "kind": "phrase",
+        "commit": "我想预订",
+        "acceptable_next": [
+          "房间",
+          "酒店",
+          "机票"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-066",
+        "situation": "travel_stay",
+        "kind": "phrase",
+        "commit": "明天出发",
+        "acceptable_next": [
+          "吗",
+          "吧",
+          "了"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-067",
+        "situation": "travel_stay",
+        "kind": "phrase",
+        "commit": "我们几点",
+        "acceptable_next": [
+          "集合",
+          "出发",
+          "到"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-068",
+        "situation": "travel_stay",
+        "kind": "phrase",
+        "commit": "附近有没有",
+        "acceptable_next": [
+          "超市",
+          "餐厅",
+          "地铁"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-069",
+        "situation": "travel_stay",
+        "kind": "unmatched",
+        "commit": "山脚那间带木窗的小客栈",
+        "acceptable_next": [
+          "停业",
+          "安静"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-070",
+        "situation": "travel_stay",
+        "kind": "boundary",
+        "commit": "。",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-071",
+        "situation": "study_reading",
+        "kind": "word",
+        "commit": "作业",
+        "acceptable_next": [
+          "完成",
+          "提交",
+          "要求"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-072",
+        "situation": "study_reading",
+        "kind": "word",
+        "commit": "词典",
+        "acceptable_next": [
+          "解释",
+          "释义",
+          "里"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-073",
+        "situation": "study_reading",
+        "kind": "word",
+        "commit": "笔记",
+        "acceptable_next": [
+          "整理",
+          "内容",
+          "本"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-074",
+        "situation": "study_reading",
+        "kind": "word",
+        "commit": "考试",
+        "acceptable_next": [
+          "时间",
+          "成绩",
+          "范围"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-075",
+        "situation": "study_reading",
+        "kind": "phrase",
+        "commit": "这道题",
+        "acceptable_next": [
+          "怎么",
+          "很",
+          "有点"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-076",
+        "situation": "study_reading",
+        "kind": "phrase",
+        "commit": "我不太明白",
+        "acceptable_next": [
+          "意思",
+          "为什么"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-077",
+        "situation": "study_reading",
+        "kind": "phrase",
+        "commit": "这本书",
+        "acceptable_next": [
+          "值得",
+          "好看",
+          "很"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-078",
+        "situation": "study_reading",
+        "kind": "phrase",
+        "commit": "请再解释",
+        "acceptable_next": [
+          "一下"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-079",
+        "situation": "study_reading",
+        "kind": "unmatched",
+        "commit": "课本边上画着星号的例题",
+        "acceptable_next": [
+          "很",
+          "比较"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-080",
+        "situation": "study_reading",
+        "kind": "boundary",
+        "commit": "考试2026",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-081",
+        "situation": "family_care",
+        "kind": "word",
+        "commit": "家人",
+        "acceptable_next": [
+          "平安",
+          "团聚",
+          "支持"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-082",
+        "situation": "family_care",
+        "kind": "word",
+        "commit": "孩子",
+        "acceptable_next": [
+          "睡",
+          "喜欢",
+          "放学"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-083",
+        "situation": "family_care",
+        "kind": "word",
+        "commit": "生日",
+        "acceptable_next": [
+          "礼物",
+          "快乐",
+          "蛋糕"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-084",
+        "situation": "family_care",
+        "kind": "word",
+        "commit": "周末",
+        "acceptable_next": [
+          "有空",
+          "休息",
+          "安排"
+        ],
+        "predictions": [
+          "有空",
+          "一起",
+          "休息",
+          "出去"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 1
+      },
+      {
+        "id": "v2-085",
+        "situation": "family_care",
+        "kind": "phrase",
+        "commit": "到家给我",
+        "acceptable_next": [
+          "打",
+          "发"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-086",
+        "situation": "family_care",
+        "kind": "phrase",
+        "commit": "别忘了带",
+        "acceptable_next": [
+          "钥匙",
+          "伞",
+          "水"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-087",
+        "situation": "family_care",
+        "kind": "phrase",
+        "commit": "早点休息",
+        "acceptable_next": [
+          "吧",
+          "啊"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-088",
+        "situation": "family_care",
+        "kind": "phrase",
+        "commit": "今天过生日",
+        "acceptable_next": [
+          "吗",
+          "呢"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-089",
+        "situation": "family_care",
+        "kind": "unmatched",
+        "commit": "玄关小篮子里的备用围巾",
+        "acceptable_next": [
+          "脏",
+          "旧",
+          "湿"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-090",
+        "situation": "family_care",
+        "kind": "boundary",
+        "commit": "家人 ",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-091",
+        "situation": "leisure_friends",
+        "kind": "word",
+        "commit": "电影",
+        "acceptable_next": [
+          "票",
+          "开场",
+          "推荐"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-092",
+        "situation": "leisure_friends",
+        "kind": "word",
+        "commit": "音乐",
+        "acceptable_next": [
+          "好听",
+          "节奏",
+          "播放"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-093",
+        "situation": "leisure_friends",
+        "kind": "word",
+        "commit": "朋友",
+        "acceptable_next": [
+          "聚会",
+          "介绍",
+          "推荐"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-094",
+        "situation": "leisure_friends",
+        "kind": "word",
+        "commit": "照片",
+        "acceptable_next": [
+          "清晰",
+          "好看",
+          "保存"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-095",
+        "situation": "leisure_friends",
+        "kind": "phrase",
+        "commit": "要不要一起",
+        "acceptable_next": [
+          "去",
+          "看",
+          "吃"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-096",
+        "situation": "leisure_friends",
+        "kind": "phrase",
+        "commit": "周末去哪儿",
+        "acceptable_next": [
+          "玩",
+          "逛"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-097",
+        "situation": "leisure_friends",
+        "kind": "phrase",
+        "commit": "这张照片",
+        "acceptable_next": [
+          "好看",
+          "模糊",
+          "清晰"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-098",
+        "situation": "leisure_friends",
+        "kind": "phrase",
+        "commit": "我先回去",
+        "acceptable_next": [
+          "了",
+          "吧"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-099",
+        "situation": "leisure_friends",
+        "kind": "unmatched",
+        "commit": "上次野餐用过的格纹垫子",
+        "acceptable_next": [
+          "清洗",
+          "收"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-100",
+        "situation": "leisure_friends",
+        "kind": "boundary",
+        "commit": "好呀！",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      }
+    ]
+  },
+  "candidate": {
+    "sources": [
+      {
+        "file": "data/prediction/quality-v2/public.ngram.tsv",
+        "sha256": "fdc69fd1bcf996745a64d1fcf32b39663126534cc70db0fd1ca2ea0b3b8da279"
+      }
+    ],
+    "preprocessed_sha256": "b7418541c30ac08cf6a103c45c106538296c9b5a6cb0fe701c201abcbb5f907d",
+    "contexts": 3831,
+    "records": 7345,
+    "overall": {
+      "samples": 100,
+      "lookup_hit": {
+        "numerator": 24,
+        "denominator": 100,
+        "percent": 24.0
+      },
+      "top1_acceptable_overall": {
+        "numerator": 3,
+        "denominator": 100,
+        "percent": 3.0
+      },
+      "top3_acceptable_overall": {
+        "numerator": 5,
+        "denominator": 100,
+        "percent": 5.0
+      },
+      "top3_acceptable_given_hit": {
+        "numerator": 5,
+        "denominator": 24,
+        "percent": 20.833333
+      },
+      "boundary_no_prediction": {
+        "numerator": 10,
+        "denominator": 10,
+        "percent": 100.0
+      }
+    },
+    "by_kind": {
+      "word": {
+        "samples": 40,
+        "lookup_hit": {
+          "numerator": 24,
+          "denominator": 40,
+          "percent": 60.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 3,
+          "denominator": 40,
+          "percent": 7.5
+        },
+        "top3_acceptable_overall": {
+          "numerator": 5,
+          "denominator": 40,
+          "percent": 12.5
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 5,
+          "denominator": 24,
+          "percent": 20.833333
+        },
+        "boundary_no_prediction": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        }
+      },
+      "phrase": {
+        "samples": 40,
+        "lookup_hit": {
+          "numerator": 0,
+          "denominator": 40,
+          "percent": 0.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 40,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 40,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        },
+        "boundary_no_prediction": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        }
+      },
+      "unmatched": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        },
+        "boundary_no_prediction": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        }
+      },
+      "boundary": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 0,
+          "percent": null
+        },
+        "boundary_no_prediction": {
+          "numerator": 10,
+          "denominator": 10,
+          "percent": 100.0
+        }
+      }
+    },
+    "by_situation": {
+      "customer_service": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 3,
+          "denominator": 10,
+          "percent": 30.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 3,
+          "percent": 0.0
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "family_care": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 4,
+          "denominator": 10,
+          "percent": 40.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 1,
+          "denominator": 10,
+          "percent": 10.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 1,
+          "denominator": 10,
+          "percent": 10.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 1,
+          "denominator": 4,
+          "percent": 25.0
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "home_daily": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 2,
+          "denominator": 10,
+          "percent": 20.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 2,
+          "percent": 0.0
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "leisure_friends": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 3,
+          "denominator": 10,
+          "percent": 30.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 3,
+          "percent": 0.0
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "local_transport": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 2,
+          "denominator": 10,
+          "percent": 20.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 2,
+          "percent": 0.0
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "meal_ordering": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 1,
+          "denominator": 10,
+          "percent": 10.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 1,
+          "denominator": 10,
+          "percent": 10.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 1,
+          "denominator": 10,
+          "percent": 10.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "purchase_payment": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 3,
+          "denominator": 10,
+          "percent": 30.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 2,
+          "denominator": 10,
+          "percent": 20.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 2,
+          "denominator": 3,
+          "percent": 66.666667
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "study_reading": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 2,
+          "denominator": 10,
+          "percent": 20.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 2,
+          "percent": 0.0
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "travel_stay": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 1,
+          "denominator": 10,
+          "percent": 10.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 0,
+          "denominator": 10,
+          "percent": 0.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 0,
+          "denominator": 1,
+          "percent": 0.0
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      },
+      "work_coordination": {
+        "samples": 10,
+        "lookup_hit": {
+          "numerator": 3,
+          "denominator": 10,
+          "percent": 30.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 1,
+          "denominator": 10,
+          "percent": 10.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 1,
+          "denominator": 10,
+          "percent": 10.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 1,
+          "denominator": 3,
+          "percent": 33.333333
+        },
+        "boundary_no_prediction": {
+          "numerator": 1,
+          "denominator": 1,
+          "percent": 100.0
+        }
+      }
+    },
+    "rows": [
+      {
+        "id": "v2-001",
+        "situation": "home_daily",
+        "kind": "word",
+        "commit": "门锁",
+        "acceptable_next": [
+          "松动",
+          "生锈"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-002",
+        "situation": "home_daily",
+        "kind": "word",
+        "commit": "阳台",
+        "acceptable_next": [
+          "晒",
+          "种"
+        ],
+        "predictions": [
+          "上"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-003",
+        "situation": "home_daily",
+        "kind": "word",
+        "commit": "地板",
+        "acceptable_next": [
+          "湿",
+          "滑"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-004",
+        "situation": "home_daily",
+        "kind": "word",
+        "commit": "垃圾",
+        "acceptable_next": [
+          "分类",
+          "桶"
+        ],
+        "predictions": [
+          "食品",
+          "人"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-005",
+        "situation": "home_daily",
+        "kind": "phrase",
+        "commit": "下班回家",
+        "acceptable_next": [
+          "以后",
+          "之前"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-006",
+        "situation": "home_daily",
+        "kind": "phrase",
+        "commit": "窗户开着",
+        "acceptable_next": [
+          "呢",
+          "吗"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-007",
+        "situation": "home_daily",
+        "kind": "phrase",
+        "commit": "刚洗完澡",
+        "acceptable_next": [
+          "了",
+          "就"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-008",
+        "situation": "home_daily",
+        "kind": "phrase",
+        "commit": "我找不到",
+        "acceptable_next": [
+          "钥匙",
+          "手机",
+          "眼镜"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-009",
+        "situation": "home_daily",
+        "kind": "unmatched",
+        "commit": "储物柜最上层的毛毯",
+        "acceptable_next": [
+          "受潮",
+          "发霉"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-010",
+        "situation": "home_daily",
+        "kind": "boundary",
+        "commit": "到家了。",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-011",
+        "situation": "meal_ordering",
+        "kind": "word",
+        "commit": "早餐",
+        "acceptable_next": [
+          "吃",
+          "准备"
+        ],
+        "predictions": [
+          "吃"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 1
+      },
+      {
+        "id": "v2-012",
+        "situation": "meal_ordering",
+        "kind": "word",
+        "commit": "米饭",
+        "acceptable_next": [
+          "凉",
+          "热",
+          "软"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-013",
+        "situation": "meal_ordering",
+        "kind": "word",
+        "commit": "口味",
+        "acceptable_next": [
+          "偏",
+          "清淡",
+          "重"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-014",
+        "situation": "meal_ordering",
+        "kind": "word",
+        "commit": "外卖",
+        "acceptable_next": [
+          "订单",
+          "平台",
+          "骑手"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-015",
+        "situation": "meal_ordering",
+        "kind": "phrase",
+        "commit": "今天想吃",
+        "acceptable_next": [
+          "面条",
+          "火锅",
+          "饺子"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-016",
+        "situation": "meal_ordering",
+        "kind": "phrase",
+        "commit": "少放一点",
+        "acceptable_next": [
+          "盐",
+          "辣椒",
+          "糖"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-017",
+        "situation": "meal_ordering",
+        "kind": "phrase",
+        "commit": "这道菜",
+        "acceptable_next": [
+          "好吃",
+          "咸",
+          "辣"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-018",
+        "situation": "meal_ordering",
+        "kind": "phrase",
+        "commit": "一共多少钱",
+        "acceptable_next": [
+          "啊",
+          "呢"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-019",
+        "situation": "meal_ordering",
+        "kind": "unmatched",
+        "commit": "靠窗那桌的菌菇汤",
+        "acceptable_next": [
+          "凉",
+          "咸"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-020",
+        "situation": "meal_ordering",
+        "kind": "boundary",
+        "commit": "不加辣，谢谢！",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-021",
+        "situation": "local_transport",
+        "kind": "word",
+        "commit": "地铁",
+        "acceptable_next": [
+          "站",
+          "线路",
+          "入口"
+        ],
+        "predictions": [
+          "上"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-022",
+        "situation": "local_transport",
+        "kind": "word",
+        "commit": "公交",
+        "acceptable_next": [
+          "车",
+          "站",
+          "线路"
+        ],
+        "predictions": [
+          "上"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-023",
+        "situation": "local_transport",
+        "kind": "word",
+        "commit": "路口",
+        "acceptable_next": [
+          "右转",
+          "左转",
+          "直行"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-024",
+        "situation": "local_transport",
+        "kind": "word",
+        "commit": "停车",
+        "acceptable_next": [
+          "收费",
+          "时间",
+          "方便"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-025",
+        "situation": "local_transport",
+        "kind": "phrase",
+        "commit": "我在路上",
+        "acceptable_next": [
+          "了",
+          "呢"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-026",
+        "situation": "local_transport",
+        "kind": "phrase",
+        "commit": "下一站",
+        "acceptable_next": [
+          "下车",
+          "换乘"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-027",
+        "situation": "local_transport",
+        "kind": "phrase",
+        "commit": "快到公司",
+        "acceptable_next": [
+          "了",
+          "吗"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-028",
+        "situation": "local_transport",
+        "kind": "phrase",
+        "commit": "这里能停车",
+        "acceptable_next": [
+          "吗"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-029",
+        "situation": "local_transport",
+        "kind": "unmatched",
+        "commit": "河边那条临时便道",
+        "acceptable_next": [
+          "封闭",
+          "积水"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-030",
+        "situation": "local_transport",
+        "kind": "boundary",
+        "commit": "地铁 站",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-031",
+        "situation": "work_coordination",
+        "kind": "word",
+        "commit": "会议",
+        "acceptable_next": [
+          "时间",
+          "纪要",
+          "安排"
+        ],
+        "predictions": [
+          "时间",
+          "已经",
+          "开始",
+          "结束"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 1
+      },
+      {
+        "id": "v2-032",
+        "situation": "work_coordination",
+        "kind": "word",
+        "commit": "进度",
+        "acceptable_next": [
+          "如何",
+          "正常",
+          "缓慢"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-033",
+        "situation": "work_coordination",
+        "kind": "word",
+        "commit": "文件",
+        "acceptable_next": [
+          "版本",
+          "名称",
+          "格式"
+        ],
+        "predictions": [
+          "已经",
+          "保存",
+          "打开",
+          "位置"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-034",
+        "situation": "work_coordination",
+        "kind": "word",
+        "commit": "同事",
+        "acceptable_next": [
+          "休假",
+          "请假",
+          "出差"
+        ],
+        "predictions": [
+          "说"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-035",
+        "situation": "work_coordination",
+        "kind": "phrase",
+        "commit": "下午开会",
+        "acceptable_next": [
+          "吗",
+          "吧"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-036",
+        "situation": "work_coordination",
+        "kind": "phrase",
+        "commit": "我已经看过",
+        "acceptable_next": [
+          "了",
+          "邮件",
+          "附件"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-037",
+        "situation": "work_coordination",
+        "kind": "phrase",
+        "commit": "请大家确认",
+        "acceptable_next": [
+          "时间",
+          "名单",
+          "数量"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-038",
+        "situation": "work_coordination",
+        "kind": "phrase",
+        "commit": "这件事",
+        "acceptable_next": [
+          "需要",
+          "可以",
+          "已经"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-039",
+        "situation": "work_coordination",
+        "kind": "unmatched",
+        "commit": "临时借来的圆形转接头",
+        "acceptable_next": [
+          "坏",
+          "丢失"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-040",
+        "situation": "work_coordination",
+        "kind": "boundary",
+        "commit": "会议\n",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-041",
+        "situation": "customer_service",
+        "kind": "word",
+        "commit": "客户",
+        "acceptable_next": [
+          "反馈",
+          "要求",
+          "咨询"
+        ],
+        "predictions": [
+          "已经",
+          "需要",
+          "确认",
+          "反馈"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 4
+      },
+      {
+        "id": "v2-042",
+        "situation": "customer_service",
+        "kind": "word",
+        "commit": "样品",
+        "acceptable_next": [
+          "颜色",
+          "尺寸",
+          "数量"
+        ],
+        "predictions": [
+          "已经",
+          "寄出",
+          "确认",
+          "收到"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-043",
+        "situation": "customer_service",
+        "kind": "word",
+        "commit": "报价",
+        "acceptable_next": [
+          "有效期",
+          "包含"
+        ],
+        "predictions": [
+          "已经",
+          "发送",
+          "确认",
+          "有效"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-044",
+        "situation": "customer_service",
+        "kind": "word",
+        "commit": "售后",
+        "acceptable_next": [
+          "服务",
+          "处理",
+          "电话"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-045",
+        "situation": "customer_service",
+        "kind": "phrase",
+        "commit": "请问您需要",
+        "acceptable_next": [
+          "什么",
+          "多少",
+          "哪种"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-046",
+        "situation": "customer_service",
+        "kind": "phrase",
+        "commit": "我们可以提供",
+        "acceptable_next": [
+          "样品",
+          "发票",
+          "资料"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-047",
+        "situation": "customer_service",
+        "kind": "phrase",
+        "commit": "货已经发出",
+        "acceptable_next": [
+          "了"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-048",
+        "situation": "customer_service",
+        "kind": "phrase",
+        "commit": "方便的话",
+        "acceptable_next": [
+          "请",
+          "可以"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-049",
+        "situation": "customer_service",
+        "kind": "unmatched",
+        "commit": "盒内那张双语保养卡",
+        "acceptable_next": [
+          "缺失",
+          "破损"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-050",
+        "situation": "customer_service",
+        "kind": "boundary",
+        "commit": "客户？",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-051",
+        "situation": "purchase_payment",
+        "kind": "word",
+        "commit": "预算",
+        "acceptable_next": [
+          "有限",
+          "多少",
+          "不足"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-052",
+        "situation": "purchase_payment",
+        "kind": "word",
+        "commit": "发票",
+        "acceptable_next": [
+          "抬头",
+          "税号",
+          "开具"
+        ],
+        "predictions": [
+          "已经",
+          "开具",
+          "发送",
+          "信息"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 2
+      },
+      {
+        "id": "v2-053",
+        "situation": "purchase_payment",
+        "kind": "word",
+        "commit": "库存",
+        "acceptable_next": [
+          "不足",
+          "充足",
+          "数量"
+        ],
+        "predictions": [
+          "已经",
+          "确认",
+          "足够",
+          "不足"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 4
+      },
+      {
+        "id": "v2-054",
+        "situation": "purchase_payment",
+        "kind": "word",
+        "commit": "付款",
+        "acceptable_next": [
+          "方式",
+          "时间",
+          "完成"
+        ],
+        "predictions": [
+          "已经",
+          "安排",
+          "方式",
+          "时间"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 3
+      },
+      {
+        "id": "v2-055",
+        "situation": "purchase_payment",
+        "kind": "phrase",
+        "commit": "这个还有",
+        "acceptable_next": [
+          "货",
+          "库存",
+          "优惠"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-056",
+        "situation": "purchase_payment",
+        "kind": "phrase",
+        "commit": "价格有点",
+        "acceptable_next": [
+          "高",
+          "贵",
+          "低"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-057",
+        "situation": "purchase_payment",
+        "kind": "phrase",
+        "commit": "我先付款",
+        "acceptable_next": [
+          "了",
+          "吧"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-058",
+        "situation": "purchase_payment",
+        "kind": "phrase",
+        "commit": "能不能便宜",
+        "acceptable_next": [
+          "一点",
+          "些"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-059",
+        "situation": "purchase_payment",
+        "kind": "unmatched",
+        "commit": "快递箱侧面的白色封条",
+        "acceptable_next": [
+          "破损",
+          "脱落"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-060",
+        "situation": "purchase_payment",
+        "kind": "boundary",
+        "commit": "\t付款",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-061",
+        "situation": "travel_stay",
+        "kind": "word",
+        "commit": "酒店",
+        "acceptable_next": [
+          "地址",
+          "房间",
+          "预订"
+        ],
+        "predictions": [
+          "住"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-062",
+        "situation": "travel_stay",
+        "kind": "word",
+        "commit": "行李",
+        "acceptable_next": [
+          "托运",
+          "寄存",
+          "箱"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-063",
+        "situation": "travel_stay",
+        "kind": "word",
+        "commit": "景点",
+        "acceptable_next": [
+          "门票",
+          "开放",
+          "介绍"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-064",
+        "situation": "travel_stay",
+        "kind": "word",
+        "commit": "航班",
+        "acceptable_next": [
+          "延误",
+          "取消",
+          "时间"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-065",
+        "situation": "travel_stay",
+        "kind": "phrase",
+        "commit": "我想预订",
+        "acceptable_next": [
+          "房间",
+          "酒店",
+          "机票"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-066",
+        "situation": "travel_stay",
+        "kind": "phrase",
+        "commit": "明天出发",
+        "acceptable_next": [
+          "吗",
+          "吧",
+          "了"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-067",
+        "situation": "travel_stay",
+        "kind": "phrase",
+        "commit": "我们几点",
+        "acceptable_next": [
+          "集合",
+          "出发",
+          "到"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-068",
+        "situation": "travel_stay",
+        "kind": "phrase",
+        "commit": "附近有没有",
+        "acceptable_next": [
+          "超市",
+          "餐厅",
+          "地铁"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-069",
+        "situation": "travel_stay",
+        "kind": "unmatched",
+        "commit": "山脚那间带木窗的小客栈",
+        "acceptable_next": [
+          "停业",
+          "安静"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-070",
+        "situation": "travel_stay",
+        "kind": "boundary",
+        "commit": "。",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-071",
+        "situation": "study_reading",
+        "kind": "word",
+        "commit": "作业",
+        "acceptable_next": [
+          "完成",
+          "提交",
+          "要求"
+        ],
+        "predictions": [
+          "写",
+          "写完",
+          "太少"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-072",
+        "situation": "study_reading",
+        "kind": "word",
+        "commit": "词典",
+        "acceptable_next": [
+          "解释",
+          "释义",
+          "里"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-073",
+        "situation": "study_reading",
+        "kind": "word",
+        "commit": "笔记",
+        "acceptable_next": [
+          "整理",
+          "内容",
+          "本"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-074",
+        "situation": "study_reading",
+        "kind": "word",
+        "commit": "考试",
+        "acceptable_next": [
+          "时间",
+          "成绩",
+          "范围"
+        ],
+        "predictions": [
+          "加油",
+          "顺利"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-075",
+        "situation": "study_reading",
+        "kind": "phrase",
+        "commit": "这道题",
+        "acceptable_next": [
+          "怎么",
+          "很",
+          "有点"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-076",
+        "situation": "study_reading",
+        "kind": "phrase",
+        "commit": "我不太明白",
+        "acceptable_next": [
+          "意思",
+          "为什么"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-077",
+        "situation": "study_reading",
+        "kind": "phrase",
+        "commit": "这本书",
+        "acceptable_next": [
+          "值得",
+          "好看",
+          "很"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-078",
+        "situation": "study_reading",
+        "kind": "phrase",
+        "commit": "请再解释",
+        "acceptable_next": [
+          "一下"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-079",
+        "situation": "study_reading",
+        "kind": "unmatched",
+        "commit": "课本边上画着星号的例题",
+        "acceptable_next": [
+          "很",
+          "比较"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-080",
+        "situation": "study_reading",
+        "kind": "boundary",
+        "commit": "考试2026",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-081",
+        "situation": "family_care",
+        "kind": "word",
+        "commit": "家人",
+        "acceptable_next": [
+          "平安",
+          "团聚",
+          "支持"
+        ],
+        "predictions": [
+          "一起"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-082",
+        "situation": "family_care",
+        "kind": "word",
+        "commit": "孩子",
+        "acceptable_next": [
+          "睡",
+          "喜欢",
+          "放学"
+        ],
+        "predictions": [
+          "们"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-083",
+        "situation": "family_care",
+        "kind": "word",
+        "commit": "生日",
+        "acceptable_next": [
+          "礼物",
+          "快乐",
+          "蛋糕"
+        ],
+        "predictions": [
+          "是"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-084",
+        "situation": "family_care",
+        "kind": "word",
+        "commit": "周末",
+        "acceptable_next": [
+          "有空",
+          "休息",
+          "安排"
+        ],
+        "predictions": [
+          "有空",
+          "一起",
+          "休息",
+          "出去"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 1
+      },
+      {
+        "id": "v2-085",
+        "situation": "family_care",
+        "kind": "phrase",
+        "commit": "到家给我",
+        "acceptable_next": [
+          "打",
+          "发"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-086",
+        "situation": "family_care",
+        "kind": "phrase",
+        "commit": "别忘了带",
+        "acceptable_next": [
+          "钥匙",
+          "伞",
+          "水"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-087",
+        "situation": "family_care",
+        "kind": "phrase",
+        "commit": "早点休息",
+        "acceptable_next": [
+          "吧",
+          "啊"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-088",
+        "situation": "family_care",
+        "kind": "phrase",
+        "commit": "今天过生日",
+        "acceptable_next": [
+          "吗",
+          "呢"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-089",
+        "situation": "family_care",
+        "kind": "unmatched",
+        "commit": "玄关小篮子里的备用围巾",
+        "acceptable_next": [
+          "脏",
+          "旧",
+          "湿"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-090",
+        "situation": "family_care",
+        "kind": "boundary",
+        "commit": "家人 ",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-091",
+        "situation": "leisure_friends",
+        "kind": "word",
+        "commit": "电影",
+        "acceptable_next": [
+          "票",
+          "开场",
+          "推荐"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-092",
+        "situation": "leisure_friends",
+        "kind": "word",
+        "commit": "音乐",
+        "acceptable_next": [
+          "好听",
+          "节奏",
+          "播放"
+        ],
+        "predictions": [
+          "人",
+          "是"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-093",
+        "situation": "leisure_friends",
+        "kind": "word",
+        "commit": "朋友",
+        "acceptable_next": [
+          "聚会",
+          "介绍",
+          "推荐"
+        ],
+        "predictions": [
+          "们",
+          "说"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-094",
+        "situation": "leisure_friends",
+        "kind": "word",
+        "commit": "照片",
+        "acceptable_next": [
+          "清晰",
+          "好看",
+          "保存"
+        ],
+        "predictions": [
+          "里",
+          "是"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-095",
+        "situation": "leisure_friends",
+        "kind": "phrase",
+        "commit": "要不要一起",
+        "acceptable_next": [
+          "去",
+          "看",
+          "吃"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-096",
+        "situation": "leisure_friends",
+        "kind": "phrase",
+        "commit": "周末去哪儿",
+        "acceptable_next": [
+          "玩",
+          "逛"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-097",
+        "situation": "leisure_friends",
+        "kind": "phrase",
+        "commit": "这张照片",
+        "acceptable_next": [
+          "好看",
+          "模糊",
+          "清晰"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-098",
+        "situation": "leisure_friends",
+        "kind": "phrase",
+        "commit": "我先回去",
+        "acceptable_next": [
+          "了",
+          "吧"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-099",
+        "situation": "leisure_friends",
+        "kind": "unmatched",
+        "commit": "上次野餐用过的格纹垫子",
+        "acceptable_next": [
+          "清洗",
+          "收"
+        ],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      },
+      {
+        "id": "v2-100",
+        "situation": "leisure_friends",
+        "kind": "boundary",
+        "commit": "好呀！",
+        "acceptable_next": [],
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
+      }
+    ]
+  },
+  "gate": {
+    "minimum_hit_improvement_pp": 10,
+    "hit_improvement_pp": 15.0,
+    "top3_change_pp": 1.0,
+    "hit_improvement_passed": true,
+    "overall_top3_not_lower": true,
+    "quality_gate_passed": true,
+    "required_separate_checks": [
+      "exact native fixture",
+      "normal input",
+      "latency",
+      "real candidate window"
+    ]
+  }
+}

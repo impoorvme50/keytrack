@@ -24,34 +24,34 @@
   "baseline": {
     "sources": [
       {
-        "file": "data/prediction/starter.ngram.tsv",
-        "sha256": "6999b5394ebe987b2fffb75cb9339a72b213de0be396195b7f556ced0a4079b7"
+        "file": "data/prediction/quality-v1/public.ngram.tsv",
+        "sha256": "b1709b748ec1824c194e430b80b80d1fcf724835f34f0c1f703a36ee4415fbcd"
       }
     ],
-    "preprocessed_sha256": "a34e39aede1476df4fd06e21cfa6018e98db5c1de1c3d4d5b499a142f1f93d88",
-    "contexts": 224,
-    "records": 896,
+    "preprocessed_sha256": "63e874151a65763a88cb76fb032dd0249a56db4587696a04f981d9a850f8c2e2",
+    "contexts": 10060,
+    "records": 35222,
     "overall": {
       "samples": 200,
       "lookup_hit": {
-        "numerator": 36,
+        "numerator": 78,
         "denominator": 200,
-        "percent": 18.0
+        "percent": 39.0
       },
       "top1_acceptable_overall": {
-        "numerator": 12,
+        "numerator": 19,
         "denominator": 200,
-        "percent": 6.0
+        "percent": 9.5
       },
       "top3_acceptable_overall": {
-        "numerator": 30,
+        "numerator": 39,
         "denominator": 200,
-        "percent": 15.0
+        "percent": 19.5
       },
       "top3_acceptable_given_hit": {
-        "numerator": 30,
-        "denominator": 36,
-        "percent": 83.333333
+        "numerator": 39,
+        "denominator": 78,
+        "percent": 50.0
       },
       "boundary_no_prediction": {
         "numerator": 20,
@@ -63,24 +63,24 @@
       "word": {
         "samples": 80,
         "lookup_hit": {
-          "numerator": 36,
+          "numerator": 67,
           "denominator": 80,
-          "percent": 45.0
+          "percent": 83.75
         },
         "top1_acceptable_overall": {
-          "numerator": 12,
+          "numerator": 16,
           "denominator": 80,
-          "percent": 15.0
+          "percent": 20.0
         },
         "top3_acceptable_overall": {
-          "numerator": 30,
+          "numerator": 35,
           "denominator": 80,
-          "percent": 37.5
+          "percent": 43.75
         },
         "top3_acceptable_given_hit": {
-          "numerator": 30,
-          "denominator": 36,
-          "percent": 83.333333
+          "numerator": 35,
+          "denominator": 67,
+          "percent": 52.238806
         },
         "boundary_no_prediction": {
           "numerator": 0,
@@ -91,24 +91,24 @@
       "phrase": {
         "samples": 80,
         "lookup_hit": {
-          "numerator": 0,
+          "numerator": 11,
           "denominator": 80,
-          "percent": 0.0
+          "percent": 13.75
         },
         "top1_acceptable_overall": {
-          "numerator": 0,
+          "numerator": 3,
           "denominator": 80,
-          "percent": 0.0
+          "percent": 3.75
         },
         "top3_acceptable_overall": {
-          "numerator": 0,
+          "numerator": 4,
           "denominator": 80,
-          "percent": 0.0
+          "percent": 5.0
         },
         "top3_acceptable_given_hit": {
-          "numerator": 0,
-          "denominator": 0,
-          "percent": null
+          "numerator": 4,
+          "denominator": 11,
+          "percent": 36.363636
         },
         "boundary_no_prediction": {
           "numerator": 0,
@@ -177,24 +177,24 @@
       "daily_chat": {
         "samples": 20,
         "lookup_hit": {
-          "numerator": 6,
+          "numerator": 13,
           "denominator": 20,
-          "percent": 30.0
+          "percent": 65.0
         },
         "top1_acceptable_overall": {
-          "numerator": 5,
+          "numerator": 7,
           "denominator": 20,
-          "percent": 25.0
+          "percent": 35.0
         },
         "top3_acceptable_overall": {
-          "numerator": 6,
+          "numerator": 9,
           "denominator": 20,
-          "percent": 30.0
+          "percent": 45.0
         },
         "top3_acceptable_given_hit": {
-          "numerator": 6,
-          "denominator": 6,
-          "percent": 100.0
+          "numerator": 9,
+          "denominator": 13,
+          "percent": 69.230769
         },
         "boundary_no_prediction": {
           "numerator": 2,
@@ -205,24 +205,24 @@
       "family_home": {
         "samples": 20,
         "lookup_hit": {
+          "numerator": 8,
+          "denominator": 20,
+          "percent": 40.0
+        },
+        "top1_acceptable_overall": {
           "numerator": 2,
           "denominator": 20,
           "percent": 10.0
         },
-        "top1_acceptable_overall": {
-          "numerator": 0,
-          "denominator": 20,
-          "percent": 0.0
-        },
         "top3_acceptable_overall": {
-          "numerator": 0,
+          "numerator": 2,
           "denominator": 20,
-          "percent": 0.0
+          "percent": 10.0
         },
         "top3_acceptable_given_hit": {
-          "numerator": 0,
-          "denominator": 2,
-          "percent": 0.0
+          "numerator": 2,
+          "denominator": 8,
+          "percent": 25.0
         },
         "boundary_no_prediction": {
           "numerator": 2,
@@ -233,9 +233,9 @@
       "food_shopping": {
         "samples": 20,
         "lookup_hit": {
-          "numerator": 1,
+          "numerator": 7,
           "denominator": 20,
-          "percent": 5.0
+          "percent": 35.0
         },
         "top1_acceptable_overall": {
           "numerator": 0,
@@ -249,7 +249,7 @@
         },
         "top3_acceptable_given_hit": {
           "numerator": 0,
-          "denominator": 1,
+          "denominator": 7,
           "percent": 0.0
         },
         "boundary_no_prediction": {
@@ -261,24 +261,24 @@
       "health_exercise": {
         "samples": 20,
         "lookup_hit": {
-          "numerator": 1,
+          "numerator": 7,
           "denominator": 20,
-          "percent": 5.0
+          "percent": 35.0
         },
         "top1_acceptable_overall": {
-          "numerator": 1,
+          "numerator": 3,
           "denominator": 20,
-          "percent": 5.0
+          "percent": 15.0
         },
         "top3_acceptable_overall": {
-          "numerator": 1,
+          "numerator": 3,
           "denominator": 20,
-          "percent": 5.0
+          "percent": 15.0
         },
         "top3_acceptable_given_hit": {
-          "numerator": 1,
-          "denominator": 1,
-          "percent": 100.0
+          "numerator": 3,
+          "denominator": 7,
+          "percent": 42.857143
         },
         "boundary_no_prediction": {
           "numerator": 2,
@@ -317,9 +317,9 @@
       "sales_customers": {
         "samples": 20,
         "lookup_hit": {
-          "numerator": 8,
+          "numerator": 9,
           "denominator": 20,
-          "percent": 40.0
+          "percent": 45.0
         },
         "top1_acceptable_overall": {
           "numerator": 0,
@@ -333,8 +333,8 @@
         },
         "top3_acceptable_given_hit": {
           "numerator": 7,
-          "denominator": 8,
-          "percent": 87.5
+          "denominator": 9,
+          "percent": 77.777778
         },
         "boundary_no_prediction": {
           "numerator": 2,
@@ -373,9 +373,9 @@
       "study_leisure": {
         "samples": 20,
         "lookup_hit": {
-          "numerator": 1,
+          "numerator": 8,
           "denominator": 20,
-          "percent": 5.0
+          "percent": 40.0
         },
         "top1_acceptable_overall": {
           "numerator": 1,
@@ -383,14 +383,14 @@
           "percent": 5.0
         },
         "top3_acceptable_overall": {
-          "numerator": 1,
+          "numerator": 2,
           "denominator": 20,
-          "percent": 5.0
+          "percent": 10.0
         },
         "top3_acceptable_given_hit": {
-          "numerator": 1,
-          "denominator": 1,
-          "percent": 100.0
+          "numerator": 2,
+          "denominator": 8,
+          "percent": 25.0
         },
         "boundary_no_prediction": {
           "numerator": 2,
@@ -401,9 +401,9 @@
       "travel_commute": {
         "samples": 20,
         "lookup_hit": {
-          "numerator": 0,
+          "numerator": 7,
           "denominator": 20,
-          "percent": 0.0
+          "percent": 35.0
         },
         "top1_acceptable_overall": {
           "numerator": 0,
@@ -417,8 +417,8 @@
         },
         "top3_acceptable_given_hit": {
           "numerator": 0,
-          "denominator": 0,
-          "percent": null
+          "denominator": 7,
+          "percent": 0.0
         },
         "boundary_no_prediction": {
           "numerator": 2,
@@ -429,24 +429,24 @@
       "work_meetings": {
         "samples": 20,
         "lookup_hit": {
-          "numerator": 6,
+          "numerator": 8,
           "denominator": 20,
-          "percent": 30.0
+          "percent": 40.0
         },
         "top1_acceptable_overall": {
-          "numerator": 3,
+          "numerator": 4,
           "denominator": 20,
-          "percent": 15.0
+          "percent": 20.0
         },
         "top3_acceptable_overall": {
-          "numerator": 6,
+          "numerator": 7,
           "denominator": 20,
-          "percent": 30.0
+          "percent": 35.0
         },
         "top3_acceptable_given_hit": {
-          "numerator": 6,
-          "denominator": 6,
-          "percent": 100.0
+          "numerator": 7,
+          "denominator": 8,
+          "percent": 87.5
         },
         "boundary_no_prediction": {
           "numerator": 2,
@@ -580,9 +580,18 @@
           "再聊",
           "一起"
         ],
-        "predictions": [],
-        "lookup_hit": false,
-        "first_acceptable_rank": null
+        "predictions": [
+          "去",
+          "我",
+          "来",
+          "再",
+          "一起",
+          "你",
+          "一定",
+          "有"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 5
       },
       {
         "id": "daily_chat-08",
@@ -594,8 +603,17 @@
           "聚会",
           "生日"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "的",
+          "都",
+          "们",
+          "吧",
+          "说",
+          "了",
+          "也",
+          "吗"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -608,8 +626,17 @@
           "忙吗",
           "休息"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "去",
+          "晚上",
+          "怎么",
+          "是",
+          "不",
+          "又",
+          "在",
+          "没"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -636,9 +663,18 @@
           "回来",
           "消息"
         ],
-        "predictions": [],
-        "lookup_hit": false,
-        "first_acceptable_rank": null
+        "predictions": [
+          "回去",
+          "回来",
+          "去",
+          "时间",
+          "的",
+          "回家",
+          "有",
+          "来"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 2
       },
       {
         "id": "daily_chat-12",
@@ -650,9 +686,18 @@
           "出门",
           "去"
         ],
-        "predictions": [],
-        "lookup_hit": false,
-        "first_acceptable_rank": null
+        "predictions": [
+          "去",
+          "加油",
+          "走",
+          "努力",
+          "看",
+          "吃",
+          "减肥",
+          "喝"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 1
       },
       {
         "id": "daily_chat-13",
@@ -692,9 +737,18 @@
           "忙吗",
           "还好吗"
         ],
-        "predictions": [],
-        "lookup_hit": false,
-        "first_acceptable_rank": null
+        "predictions": [
+          "怎么样",
+          "怎么",
+          "很",
+          "在",
+          "都",
+          "是",
+          "的",
+          "咋样"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 1
       },
       {
         "id": "daily_chat-16",
@@ -706,8 +760,12 @@
           "再商量",
           "先等等"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "上",
+          "就",
+          "我"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -768,8 +826,14 @@
           "时间",
           "吃了吗"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "了",
+          "吃",
+          "没",
+          "就",
+          "的"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -801,8 +865,14 @@
           "买点",
           "价格"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "的",
+          "都",
+          "吃",
+          "啊",
+          "好"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -815,8 +885,16 @@
           "门口",
           "购物"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "买",
+          "偶遇",
+          "里",
+          "的",
+          "都",
+          "啊",
+          "有"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -829,8 +907,13 @@
           "喝完了",
           "买一盒"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "也",
+          "和",
+          "喝",
+          "的"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -843,8 +926,17 @@
           "订单",
           "配送"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "的",
+          "小哥",
+          "了",
+          "啊",
+          "到",
+          "不",
+          "就",
+          "都"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -857,8 +949,17 @@
           "吃了吗",
           "准备好了"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "了",
+          "吃",
+          "的",
+          "好",
+          "就",
+          "都",
+          "我",
+          "是"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -1045,8 +1146,15 @@
           "到了",
           "线路"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "上",
+          "的",
+          "了",
+          "里",
+          "去",
+          "安检"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -1059,8 +1167,12 @@
           "站",
           "路线"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "上",
+          "的",
+          "都"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -1087,9 +1199,18 @@
           "师傅",
           "电话"
         ],
-        "predictions": [],
-        "lookup_hit": false,
-        "first_acceptable_rank": null
+        "predictions": [
+          "带",
+          "的",
+          "都",
+          "了",
+          "师傅",
+          "结伴",
+          "不",
+          "啊"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 5
       },
       {
         "id": "travel_commute-05",
@@ -1101,8 +1222,17 @@
           "出发",
           "附近"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "的",
+          "了",
+          "呢",
+          "等",
+          "有",
+          "大巴",
+          "接",
+          "里"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -1129,8 +1259,16 @@
           "房间",
           "地址"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "的",
+          "了",
+          "住",
+          "都",
+          "吗",
+          "是",
+          "里"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -1143,8 +1281,12 @@
           "发给我",
           "确认"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "了",
+          "的",
+          "啊"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -1157,8 +1299,17 @@
           "车站",
           "公司"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "看",
+          "你家",
+          "找",
+          "买",
+          "吃",
+          "的",
+          "上海",
+          "北京"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -1317,8 +1468,17 @@
           "睡觉了",
           "作业"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "的",
+          "都",
+          "了",
+          "们",
+          "你",
+          "是",
+          "也",
+          "啊"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -1331,9 +1491,18 @@
           "说",
           "生日"
         ],
-        "predictions": [],
-        "lookup_hit": false,
-        "first_acceptable_rank": null
+        "predictions": [
+          "说",
+          "了",
+          "好",
+          "做",
+          "都",
+          "也",
+          "在",
+          "是"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 1
       },
       {
         "id": "family_home-03",
@@ -1397,8 +1566,13 @@
           "整理",
           "灯"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "里",
+          "的",
+          "号",
+          "看"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -1411,8 +1585,17 @@
           "晾起来",
           "收起来"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "的",
+          "都",
+          "了",
+          "穿",
+          "是",
+          "好看",
+          "啊",
+          "我"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -1425,8 +1608,17 @@
           "柜",
           "取件"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "了",
+          "的",
+          "过来",
+          "小哥",
+          "公司",
+          "到",
+          "都",
+          "也"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -1453,9 +1645,17 @@
           "再做",
           "再说"
         ],
-        "predictions": [],
-        "lookup_hit": false,
-        "first_acceptable_rank": null
+        "predictions": [
+          "了",
+          "的",
+          "找",
+          "再",
+          "就",
+          "也",
+          "给"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 1
       },
       {
         "id": "family_home-11",
@@ -1599,9 +1799,18 @@
           "计划",
           "一下"
         ],
-        "predictions": [],
-        "lookup_hit": false,
-        "first_acceptable_rank": null
+        "predictions": [
+          "了",
+          "的",
+          "啊",
+          "完",
+          "减肥",
+          "前",
+          "运动",
+          "一下"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 8
       },
       {
         "id": "health_exercise-02",
@@ -1613,8 +1822,17 @@
           "开始",
           "结束"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "了",
+          "的",
+          "去",
+          "啊",
+          "是",
+          "吗",
+          "减肥",
+          "吧"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -1646,9 +1864,15 @@
           "不足",
           "时间"
         ],
-        "predictions": [],
-        "lookup_hit": false,
-        "first_acceptable_rank": null
+        "predictions": [
+          "质量",
+          "不好",
+          "好",
+          "很",
+          "的"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 1
       },
       {
         "id": "health_exercise-05",
@@ -1660,9 +1884,18 @@
           "说",
           "预约"
         ],
-        "predictions": [],
-        "lookup_hit": false,
-        "first_acceptable_rank": null
+        "predictions": [
+          "说",
+          "的",
+          "了",
+          "也",
+          "都",
+          "吧",
+          "啊",
+          "你好"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 1
       },
       {
         "id": "health_exercise-06",
@@ -1702,8 +1935,17 @@
           "健康",
           "状况"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "啊",
+          "好",
+          "不好",
+          "的",
+          "不",
+          "是",
+          "最",
+          "重要"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -1800,8 +2042,17 @@
           "有点累",
           "不舒服"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "都",
+          "在",
+          "忙",
+          "去",
+          "也",
+          "我",
+          "好",
+          "还"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -1928,9 +2179,18 @@
           "帮忙",
           "确认"
         ],
-        "predictions": [],
-        "lookup_hit": false,
-        "first_acceptable_rank": null
+        "predictions": [
+          "说",
+          "的",
+          "都",
+          "们",
+          "一起",
+          "也",
+          "了",
+          "去"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 1
       },
       {
         "id": "work_meetings-05",
@@ -2046,8 +2306,13 @@
           "解决了",
           "需要确认"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "我",
+          "的",
+          "了",
+          "很"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -2400,8 +2665,11 @@
           "提供",
           "讨论"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "一起",
+          "约"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -3089,8 +3357,17 @@
           "方法",
           "一下"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "的",
+          "啊",
+          "了",
+          "呢",
+          "去",
+          "好",
+          "学习",
+          "就"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -3117,8 +3394,17 @@
           "提交",
           "要求"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "的",
+          "写",
+          "太",
+          "了",
+          "还",
+          "都",
+          "也",
+          "做"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -3131,9 +3417,18 @@
           "讲解",
           "回复"
         ],
-        "predictions": [],
-        "lookup_hit": false,
-        "first_acceptable_rank": null
+        "predictions": [
+          "的",
+          "你",
+          "说",
+          "了",
+          "好",
+          "也",
+          "都",
+          "是"
+        ],
+        "lookup_hit": true,
+        "first_acceptable_rank": 3
       },
       {
         "id": "study_leisure-05",
@@ -3164,8 +3459,17 @@
           "好看",
           "开始"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "的",
+          "了",
+          "啊",
+          "都",
+          "吗",
+          "里",
+          "看",
+          "不"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -3178,8 +3482,13 @@
           "好听",
           "节奏"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "的",
+          "人",
+          "了",
+          "是"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -3192,8 +3501,17 @@
           "整理",
           "保存"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "了",
+          "都",
+          "里",
+          "的",
+          "是",
+          "就",
+          "我",
+          "给"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -3276,8 +3594,13 @@
           "看电影",
           "散步"
         ],
-        "predictions": [],
-        "lookup_hit": false,
+        "predictions": [
+          "吃",
+          "的",
+          "看",
+          "爬山"
+        ],
+        "lookup_hit": true,
         "first_acceptable_rank": null
       },
       {
@@ -3361,7 +3684,7 @@
   "candidate": {
     "sources": [
       {
-        "file": "data/prediction/public.ngram.tsv",
+        "file": "data/prediction/quality-v3/public.ngram.tsv",
         "sha256": "a47faf822914012f80de1bb95f2257e4ba2bea9b514f5fc83251d344d328f005"
       }
     ],
@@ -7021,11 +7344,11 @@
   },
   "gate": {
     "minimum_hit_improvement_pp": 10,
-    "hit_improvement_pp": 23.5,
-    "top3_change_pp": 6.5,
-    "hit_improvement_passed": true,
+    "hit_improvement_pp": 2.5,
+    "top3_change_pp": 2.0,
+    "hit_improvement_passed": false,
     "overall_top3_not_lower": true,
-    "quality_gate_passed": true,
+    "quality_gate_passed": false,
     "required_separate_checks": [
       "exact native fixture",
       "normal input",

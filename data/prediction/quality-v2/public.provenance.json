@@ -1,0 +1,70 @@
+{
+  "format_version": 2,
+  "quality_rules_version": 2,
+  "status": "candidate; evaluate and review before promotion",
+  "source": {
+    "url": "https://huggingface.co/datasets/silver/lccc/resolve/5bd582fa28cd7143f2f9c852e08e23089d677c44/lccc_base_train.jsonl.gz",
+    "revision": "5bd582fa28cd7143f2f9c852e08e23089d677c44",
+    "file": "lccc_base_train.jsonl.gz",
+    "sha256": "2162e0ed923fba62329cabf7e1493fbe59248afc94a62508e4abdea61e624627",
+    "bytes": 369854377,
+    "license": "MIT"
+  },
+  "tokenizer": {
+    "name": "jieba",
+    "version": "0.42.1",
+    "license": "MIT",
+    "hmm": false,
+    "module_sha256": "b47cefcfd0bf683b0c708c1de0328df83be2c35264637c442106e79d739fb7f3",
+    "dictionary_sha256": "7197c3211ddd98962b036cdf40324d1ea2bfaa12bd028e68faa70111a88e12a8"
+  },
+  "generator_sha256": "18e9a1b04b575f0c3d53b27b64c478da0e6ca45e7e486f195a3ac40ec99bce00",
+  "parameters": {
+    "seed": 20261002,
+    "sample_every": 32,
+    "min_count": 8,
+    "max_contexts": 10000,
+    "min_dialogues": 5,
+    "single_token_dictionary_min_frequency": 10000,
+    "multi_token_dictionary_min_frequency": 100,
+    "min_distinct_utterances": 3,
+    "min_share_percent": 3,
+    "max_candidates": 8,
+    "prefix_words": 3,
+    "prefix_characters": 12,
+    "candidate_words": 3,
+    "candidate_characters": 8,
+    "complete_word_frequency_override": 10000,
+    "name_tag_min_frequency": 1000,
+    "nested_completion_retained_percent": 70
+  },
+  "sampling": {
+    "distinct_usable_utterances": 550720,
+    "duplicate_dialogues": 1,
+    "excluded_utterances": 2070,
+    "nested_candidates_removed": 163,
+    "repeated_utterances": 75750,
+    "sampled_dialogues": 213540,
+    "source_dialogues": 6820506,
+    "utterances": 628540
+  },
+  "weighting": "count / full-key observation count in integer millionths; overlapping completions are not probabilities; starter replaces its entire keys; no weight summing",
+  "structural_rules": [
+    "pure Chinese numerals are hard boundaries",
+    "no particle-initial or mechanical repeated-token prefixes; grammatical A-not-A retained",
+    "constructed phrase keys begin at a hard-boundary-separated segment start",
+    "distinct utterance support prevents copied text in different dialogues inflating coverage",
+    "completions end with content words or frequent dictionary lexical units",
+    "standalone negative particles and dictionary morpheme tags are not completions",
+    "utterances containing standalone violent-action tokens are excluded",
+    "dominant longer token spans replace nested short spans"
+  ],
+  "starter_sha256": "6999b5394ebe987b2fffb75cb9339a72b213de0be396195b7f556ced0a4079b7",
+  "review_sampling": "20 keys with highest retained count total; 100 uniform keys from the remainder; same seed",
+  "corpus_contexts": 3741,
+  "corpus_records": 6771,
+  "public_contexts": 3831,
+  "public_records": 7345,
+  "corpus_sha256": "6fd3079039d62746aa8e3c7f16af8685df3278d1136eacc8541cd13ba63e0d53",
+  "public_sha256": "fdc69fd1bcf996745a64d1fcf32b39663126534cc70db0fd1ca2ea0b3b8da279"
+}

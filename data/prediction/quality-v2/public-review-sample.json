@@ -1,0 +1,4574 @@
+[
+  {
+    "group": "head",
+    "key": "也",
+    "candidates": [
+      [
+        "是",
+        218527,
+        7827
+      ],
+      [
+        "要",
+        45118,
+        1616
+      ],
+      [
+        "想",
+        44894,
+        1608
+      ],
+      [
+        "有",
+        31214,
+        1118
+      ]
+    ],
+    "supporting_dialogues": {
+      "是": 7432,
+      "要": 1590,
+      "想": 1587,
+      "有": 1086
+    },
+    "key_observations": 35817,
+    "distinct_utterances": {
+      "是": 6525,
+      "要": 1546,
+      "想": 1412,
+      "有": 1070
+    },
+    "candidate_tokenizations": {
+      "是": [
+        [
+          "是"
+        ]
+      ],
+      "要": [
+        [
+          "要"
+        ]
+      ],
+      "想": [
+        [
+          "想"
+        ]
+      ],
+      "有": [
+        [
+          "有"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "都",
+    "candidates": [
+      [
+        "是",
+        174604,
+        6284
+      ],
+      [
+        "有",
+        38927,
+        1401
+      ],
+      [
+        "要",
+        32786,
+        1180
+      ]
+    ],
+    "supporting_dialogues": {
+      "是": 5925,
+      "有": 1349,
+      "要": 1155
+    },
+    "key_observations": 35990,
+    "distinct_utterances": {
+      "是": 6046,
+      "有": 1318,
+      "要": 1143
+    },
+    "candidate_tokenizations": {
+      "是": [
+        [
+          "是"
+        ]
+      ],
+      "有": [
+        [
+          "有"
+        ]
+      ],
+      "要": [
+        [
+          "要"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "给",
+    "candidates": [
+      [
+        "你",
+        359195,
+        4574
+      ],
+      [
+        "我",
+        302183,
+        3848
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 4288,
+      "我": 3597
+    },
+    "key_observations": 12734,
+    "distinct_utterances": {
+      "你": 4325,
+      "我": 3655
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "是",
+    "candidates": [
+      [
+        "我",
+        51671,
+        3284
+      ],
+      [
+        "你",
+        39052,
+        2482
+      ],
+      [
+        "什么",
+        34332,
+        2182
+      ]
+    ],
+    "supporting_dialogues": {
+      "我": 3075,
+      "你": 2337,
+      "什么": 2124
+    },
+    "key_observations": 63555,
+    "distinct_utterances": {
+      "我": 2976,
+      "你": 2296,
+      "什么": 2027
+    },
+    "candidate_tokenizations": {
+      "我": [
+        [
+          "我"
+        ]
+      ],
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "什么": [
+        [
+          "什么"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "那",
+    "candidates": [
+      [
+        "你",
+        173650,
+        2992
+      ],
+      [
+        "是",
+        107603,
+        1854
+      ],
+      [
+        "我",
+        103598,
+        1785
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 2898,
+      "是": 1808,
+      "我": 1759
+    },
+    "key_observations": 17230,
+    "distinct_utterances": {
+      "你": 2905,
+      "是": 1582,
+      "我": 1743
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "是": [
+        [
+          "是"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "想",
+    "candidates": [
+      [
+        "吃",
+        78293,
+        1283
+      ],
+      [
+        "去",
+        65600,
+        1075
+      ],
+      [
+        "你",
+        65112,
+        1067
+      ],
+      [
+        "知道",
+        44181,
+        724
+      ],
+      [
+        "看",
+        39665,
+        650
+      ],
+      [
+        "说",
+        38933,
+        638
+      ],
+      [
+        "问",
+        36187,
+        593
+      ],
+      [
+        "我",
+        33258,
+        545
+      ]
+    ],
+    "supporting_dialogues": {
+      "吃": 1157,
+      "去": 1001,
+      "你": 891,
+      "知道": 698,
+      "看": 603,
+      "说": 623,
+      "问": 587,
+      "我": 515
+    },
+    "key_observations": 16387,
+    "distinct_utterances": {
+      "吃": 1184,
+      "去": 1027,
+      "你": 857,
+      "知道": 665,
+      "看": 587,
+      "说": 607,
+      "问": 570,
+      "我": 502
+    },
+    "candidate_tokenizations": {
+      "吃": [
+        [
+          "吃"
+        ]
+      ],
+      "去": [
+        [
+          "去"
+        ]
+      ],
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "知道": [
+        [
+          "知道"
+        ]
+      ],
+      "看": [
+        [
+          "看"
+        ]
+      ],
+      "说": [
+        [
+          "说"
+        ]
+      ],
+      "问": [
+        [
+          "问"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "你",
+    "candidates": [
+      [
+        "是",
+        47210,
+        5634
+      ]
+    ],
+    "supporting_dialogues": {
+      "是": 5365
+    },
+    "key_observations": 119337,
+    "distinct_utterances": {
+      "是": 5181
+    },
+    "candidate_tokenizations": {
+      "是": [
+        [
+          "是"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "我也",
+    "candidates": [
+      [
+        "是",
+        277338,
+        2668
+      ],
+      [
+        "想",
+        125363,
+        1206
+      ],
+      [
+        "觉得",
+        66216,
+        637
+      ],
+      [
+        "要",
+        45634,
+        439
+      ],
+      [
+        "不知道",
+        33367,
+        321
+      ],
+      [
+        "喜欢",
+        31912,
+        307
+      ]
+    ],
+    "supporting_dialogues": {
+      "是": 2615,
+      "想": 1197,
+      "觉得": 635,
+      "要": 432,
+      "不知道": 319,
+      "喜欢": 303
+    },
+    "key_observations": 9620,
+    "distinct_utterances": {
+      "是": 1935,
+      "想": 1018,
+      "觉得": 460,
+      "要": 392,
+      "不知道": 275,
+      "喜欢": 217
+    },
+    "candidate_tokenizations": {
+      "是": [
+        [
+          "是"
+        ]
+      ],
+      "想": [
+        [
+          "想"
+        ]
+      ],
+      "觉得": [
+        [
+          "觉得"
+        ]
+      ],
+      "要": [
+        [
+          "要"
+        ]
+      ],
+      "不知道": [
+        [
+          "不",
+          "知道"
+        ]
+      ],
+      "喜欢": [
+        [
+          "喜欢"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "不",
+    "candidates": [
+      [
+        "知道",
+        122219,
+        5417
+      ]
+    ],
+    "supporting_dialogues": {
+      "知道": 5105
+    },
+    "key_observations": 44322,
+    "distinct_utterances": {
+      "知道": 4889
+    },
+    "candidate_tokenizations": {
+      "知道": [
+        [
+          "知道"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "我",
+    "candidates": [
+      [
+        "是",
+        35482,
+        5374
+      ]
+    ],
+    "supporting_dialogues": {
+      "是": 5107
+    },
+    "key_observations": 151456,
+    "distinct_utterances": {
+      "是": 5103
+    },
+    "candidate_tokenizations": {
+      "是": [
+        [
+          "是"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "在",
+    "candidates": [
+      [
+        "一起",
+        44468,
+        1144
+      ],
+      [
+        "哪",
+        42719,
+        1099
+      ],
+      [
+        "哪里",
+        42175,
+        1085
+      ],
+      [
+        "我",
+        30008,
+        772
+      ]
+    ],
+    "supporting_dialogues": {
+      "一起": 987,
+      "哪": 1052,
+      "哪里": 1023,
+      "我": 751
+    },
+    "key_observations": 25726,
+    "distinct_utterances": {
+      "一起": 997,
+      "哪": 962,
+      "哪里": 918,
+      "我": 750
+    },
+    "candidate_tokenizations": {
+      "一起": [
+        [
+          "一起"
+        ]
+      ],
+      "哪": [
+        [
+          "哪"
+        ]
+      ],
+      "哪里": [
+        [
+          "哪里"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "让",
+    "candidates": [
+      [
+        "我",
+        321622,
+        1776
+      ],
+      [
+        "你",
+        211879,
+        1170
+      ],
+      [
+        "人",
+        81492,
+        450
+      ],
+      [
+        "他",
+        47989,
+        265
+      ],
+      [
+        "我们",
+        40927,
+        226
+      ],
+      [
+        "自己",
+        37486,
+        207
+      ]
+    ],
+    "supporting_dialogues": {
+      "我": 1721,
+      "你": 1123,
+      "人": 431,
+      "他": 243,
+      "我们": 224,
+      "自己": 196
+    },
+    "key_observations": 5522,
+    "distinct_utterances": {
+      "我": 1704,
+      "你": 1107,
+      "人": 435,
+      "他": 250,
+      "我们": 217,
+      "自己": 203
+    },
+    "candidate_tokenizations": {
+      "我": [
+        [
+          "我"
+        ]
+      ],
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "人": [
+        [
+          "人"
+        ]
+      ],
+      "他": [
+        [
+          "他"
+        ]
+      ],
+      "我们": [
+        [
+          "我们"
+        ]
+      ],
+      "自己": [
+        [
+          "自己"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "跟",
+    "candidates": [
+      [
+        "你",
+        294528,
+        1728
+      ],
+      [
+        "我",
+        251747,
+        1477
+      ],
+      [
+        "我说",
+        56587,
+        332
+      ],
+      [
+        "你说",
+        52156,
+        306
+      ],
+      [
+        "他",
+        37838,
+        222
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 1670,
+      "我": 1435,
+      "我说": 327,
+      "你说": 299,
+      "他": 213
+    },
+    "key_observations": 5867,
+    "distinct_utterances": {
+      "你": 1683,
+      "我": 1379,
+      "我说": 290,
+      "你说": 296,
+      "他": 214
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ],
+      "我说": [
+        [
+          "我",
+          "说"
+        ]
+      ],
+      "你说": [
+        [
+          "你",
+          "说"
+        ]
+      ],
+      "他": [
+        [
+          "他"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "说",
+    "candidates": [
+      [
+        "我",
+        95412,
+        1776
+      ],
+      [
+        "你",
+        78596,
+        1463
+      ],
+      [
+        "什么",
+        30944,
+        576
+      ]
+    ],
+    "supporting_dialogues": {
+      "我": 1698,
+      "你": 1410,
+      "什么": 561
+    },
+    "key_observations": 18614,
+    "distinct_utterances": {
+      "我": 1684,
+      "你": 1413,
+      "什么": 499
+    },
+    "candidate_tokenizations": {
+      "我": [
+        [
+          "我"
+        ]
+      ],
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "什么": [
+        [
+          "什么"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "这",
+    "candidates": [
+      [
+        "是",
+        226680,
+        3672
+      ]
+    ],
+    "supporting_dialogues": {
+      "是": 3553
+    },
+    "key_observations": 16199,
+    "distinct_utterances": {
+      "是": 3580
+    },
+    "candidate_tokenizations": {
+      "是": [
+        [
+          "是"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "爱",
+    "candidates": [
+      [
+        "你",
+        292111,
+        1996
+      ],
+      [
+        "我",
+        96297,
+        658
+      ],
+      [
+        "吃",
+        57368,
+        392
+      ],
+      [
+        "上",
+        42441,
+        290
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 1689,
+      "我": 601,
+      "吃": 342,
+      "上": 272
+    },
+    "key_observations": 6833,
+    "distinct_utterances": {
+      "你": 1400,
+      "我": 569,
+      "吃": 367,
+      "上": 272
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ],
+      "吃": [
+        [
+          "吃"
+        ]
+      ],
+      "上": [
+        [
+          "上"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "看",
+    "candidates": [
+      [
+        "你",
+        119481,
+        1686
+      ],
+      [
+        "完",
+        55630,
+        785
+      ],
+      [
+        "我",
+        49039,
+        692
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 1646,
+      "完": 717,
+      "我": 662
+    },
+    "key_observations": 14111,
+    "distinct_utterances": {
+      "你": 1642,
+      "完": 750,
+      "我": 653
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "完": [
+        [
+          "完"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "很",
+    "candidates": [
+      [
+        "好",
+        86065,
+        1310
+      ],
+      [
+        "喜欢",
+        41587,
+        633
+      ],
+      [
+        "有",
+        37645,
+        573
+      ],
+      [
+        "好看",
+        30287,
+        461
+      ]
+    ],
+    "supporting_dialogues": {
+      "好": 1237,
+      "喜欢": 605,
+      "有": 561,
+      "好看": 442
+    },
+    "key_observations": 15221,
+    "distinct_utterances": {
+      "好": 1179,
+      "喜欢": 602,
+      "有": 554,
+      "好看": 419
+    },
+    "candidate_tokenizations": {
+      "好": [
+        [
+          "好"
+        ]
+      ],
+      "喜欢": [
+        [
+          "喜欢"
+        ]
+      ],
+      "有": [
+        [
+          "有"
+        ]
+      ],
+      "好看": [
+        [
+          "好看"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "和",
+    "candidates": [
+      [
+        "你",
+        181572,
+        1480
+      ],
+      [
+        "我",
+        149552,
+        1219
+      ],
+      [
+        "他",
+        30671,
+        250
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 1418,
+      "我": 1188,
+      "他": 237
+    },
+    "key_observations": 8151,
+    "distinct_utterances": {
+      "你": 1420,
+      "我": 1153,
+      "他": 233
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ],
+      "他": [
+        [
+          "他"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "head",
+    "key": "喜欢",
+    "candidates": [
+      [
+        "你",
+        148355,
+        1245
+      ],
+      [
+        "我",
+        53741,
+        451
+      ],
+      [
+        "吃",
+        44804,
+        376
+      ],
+      [
+        "的人",
+        42063,
+        353
+      ],
+      [
+        "他",
+        35986,
+        302
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 1126,
+      "我": 425,
+      "吃": 335,
+      "的人": 311,
+      "他": 274
+    },
+    "key_observations": 8392,
+    "distinct_utterances": {
+      "你": 1060,
+      "我": 365,
+      "吃": 351,
+      "的人": 299,
+      "他": 277
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ],
+      "吃": [
+        [
+          "吃"
+        ]
+      ],
+      "的人": [
+        [
+          "的",
+          "人"
+        ]
+      ],
+      "他": [
+        [
+          "他"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "一定会",
+    "candidates": [
+      [
+        "有",
+        94890,
+        13
+      ],
+      [
+        "好",
+        65693,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "有": 13,
+      "好": 9
+    },
+    "key_observations": 137,
+    "distinct_utterances": {
+      "有": 12,
+      "好": 9
+    },
+    "candidate_tokenizations": {
+      "有": [
+        [
+          "有"
+        ]
+      ],
+      "好": [
+        [
+          "好"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "一直都",
+    "candidates": [
+      [
+        "是",
+        262222,
+        59
+      ],
+      [
+        "有",
+        48888,
+        11
+      ]
+    ],
+    "supporting_dialogues": {
+      "是": 58,
+      "有": 11
+    },
+    "key_observations": 225,
+    "distinct_utterances": {
+      "是": 49,
+      "有": 11
+    },
+    "candidate_tokenizations": {
+      "是": [
+        [
+          "是"
+        ]
+      ],
+      "有": [
+        [
+          "有"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "一起",
+    "candidates": [
+      [
+        "去",
+        115938,
+        459
+      ],
+      [
+        "加油",
+        74261,
+        294
+      ],
+      [
+        "吃",
+        43192,
+        171
+      ],
+      [
+        "看",
+        30310,
+        120
+      ]
+    ],
+    "supporting_dialogues": {
+      "去": 446,
+      "加油": 278,
+      "吃": 162,
+      "看": 115
+    },
+    "key_observations": 3959,
+    "distinct_utterances": {
+      "去": 446,
+      "加油": 212,
+      "吃": 170,
+      "看": 118
+    },
+    "candidate_tokenizations": {
+      "去": [
+        [
+          "去"
+        ]
+      ],
+      "加油": [
+        [
+          "加油"
+        ]
+      ],
+      "吃": [
+        [
+          "吃"
+        ]
+      ],
+      "看": [
+        [
+          "看"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "不叫",
+    "candidates": [
+      [
+        "我",
+        511627,
+        22
+      ]
+    ],
+    "supporting_dialogues": {
+      "我": 22
+    },
+    "key_observations": 43,
+    "distinct_utterances": {
+      "我": 18
+    },
+    "candidate_tokenizations": {
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "不爱",
+    "candidates": [
+      [
+        "你",
+        222222,
+        30
+      ],
+      [
+        "吃",
+        148148,
+        20
+      ],
+      [
+        "我",
+        133333,
+        18
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 30,
+      "吃": 20,
+      "我": 18
+    },
+    "key_observations": 135,
+    "distinct_utterances": {
+      "你": 23,
+      "吃": 20,
+      "我": 16
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "吃": [
+        [
+          "吃"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "不给",
+    "candidates": [
+      [
+        "你",
+        250000,
+        34
+      ],
+      [
+        "我",
+        235294,
+        32
+      ],
+      [
+        "力",
+        102941,
+        14
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 33,
+      "我": 32,
+      "力": 13
+    },
+    "key_observations": 136,
+    "distinct_utterances": {
+      "你": 34,
+      "我": 31,
+      "力": 14
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ],
+      "力": [
+        [
+          "力"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "不能吃",
+    "candidates": [
+      [
+        "辣椒",
+        310344,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "辣椒": 9
+    },
+    "key_observations": 29,
+    "distinct_utterances": {
+      "辣椒": 3
+    },
+    "candidate_tokenizations": {
+      "辣椒": [
+        [
+          "辣椒"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "也希望",
+    "candidates": [
+      [
+        "你",
+        380952,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 8
+    },
+    "key_observations": 21,
+    "distinct_utterances": {
+      "你": 8
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "五年",
+    "candidates": [
+      [
+        "前",
+        131578,
+        10
+      ]
+    ],
+    "supporting_dialogues": {
+      "前": 9
+    },
+    "key_observations": 76,
+    "distinct_utterances": {
+      "前": 10
+    },
+    "candidate_tokenizations": {
+      "前": [
+        [
+          "前"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "今天我",
+    "candidates": [
+      [
+        "生日",
+        165644,
+        27
+      ]
+    ],
+    "supporting_dialogues": {
+      "生日": 27
+    },
+    "key_observations": 163,
+    "distinct_utterances": {
+      "生日": 21
+    },
+    "candidate_tokenizations": {
+      "生日": [
+        [
+          "生日"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "传播",
+    "candidates": [
+      [
+        "正能量",
+        190476,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "正能量": 8
+    },
+    "key_observations": 42,
+    "distinct_utterances": {
+      "正能量": 8
+    },
+    "candidate_tokenizations": {
+      "正能量": [
+        [
+          "正",
+          "能量"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "低",
+    "candidates": [
+      [
+        "的人",
+        46218,
+        11
+      ]
+    ],
+    "supporting_dialogues": {
+      "的人": 11
+    },
+    "key_observations": 238,
+    "distinct_utterances": {
+      "的人": 11
+    },
+    "candidate_tokenizations": {
+      "的人": [
+        [
+          "的",
+          "人"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "你们女生",
+    "candidates": [
+      [
+        "喜欢",
+        257142,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "喜欢": 9
+    },
+    "key_observations": 35,
+    "distinct_utterances": {
+      "喜欢": 3
+    },
+    "candidate_tokenizations": {
+      "喜欢": [
+        [
+          "喜欢"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "你大概",
+    "candidates": [
+      [
+        "是",
+        360000,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "是": 9
+    },
+    "key_observations": 25,
+    "distinct_utterances": {
+      "是": 9
+    },
+    "candidate_tokenizations": {
+      "是": [
+        [
+          "是"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "你家在",
+    "candidates": [
+      [
+        "哪",
+        379310,
+        11
+      ]
+    ],
+    "supporting_dialogues": {
+      "哪": 11
+    },
+    "key_observations": 29,
+    "distinct_utterances": {
+      "哪": 7
+    },
+    "candidate_tokenizations": {
+      "哪": [
+        [
+          "哪"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "你很",
+    "candidates": [
+      [
+        "有",
+        140243,
+        23
+      ],
+      [
+        "喜欢",
+        79268,
+        13
+      ],
+      [
+        "优秀",
+        60975,
+        10
+      ],
+      [
+        "好",
+        48780,
+        8
+      ],
+      [
+        "有眼光",
+        48780,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "有": 23,
+      "喜欢": 13,
+      "优秀": 10,
+      "好": 8,
+      "有眼光": 8
+    },
+    "key_observations": 164,
+    "distinct_utterances": {
+      "有": 20,
+      "喜欢": 13,
+      "优秀": 5,
+      "好": 8,
+      "有眼光": 5
+    },
+    "candidate_tokenizations": {
+      "有": [
+        [
+          "有"
+        ]
+      ],
+      "喜欢": [
+        [
+          "喜欢"
+        ]
+      ],
+      "优秀": [
+        [
+          "优秀"
+        ]
+      ],
+      "好": [
+        [
+          "好"
+        ]
+      ],
+      "有眼光": [
+        [
+          "有",
+          "眼光"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "你的意思",
+    "candidates": [
+      [
+        "是",
+        775510,
+        38
+      ]
+    ],
+    "supporting_dialogues": {
+      "是": 38
+    },
+    "key_observations": 49,
+    "distinct_utterances": {
+      "是": 38
+    },
+    "candidate_tokenizations": {
+      "是": [
+        [
+          "是"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "偶尔",
+    "candidates": [
+      [
+        "吃",
+        56426,
+        18
+      ],
+      [
+        "会",
+        47021,
+        15
+      ],
+      [
+        "来",
+        43887,
+        14
+      ],
+      [
+        "有",
+        31347,
+        10
+      ]
+    ],
+    "supporting_dialogues": {
+      "吃": 18,
+      "会": 15,
+      "来": 14,
+      "有": 10
+    },
+    "key_observations": 319,
+    "distinct_utterances": {
+      "吃": 18,
+      "会": 15,
+      "来": 14,
+      "有": 10
+    },
+    "candidate_tokenizations": {
+      "吃": [
+        [
+          "吃"
+        ]
+      ],
+      "会": [
+        [
+          "会"
+        ]
+      ],
+      "来": [
+        [
+          "来"
+        ]
+      ],
+      "有": [
+        [
+          "有"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "八点",
+    "candidates": [
+      [
+        "到",
+        68181,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "到": 9
+    },
+    "key_observations": 132,
+    "distinct_utterances": {
+      "到": 9
+    },
+    "candidate_tokenizations": {
+      "到": [
+        [
+          "到"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "关注",
+    "candidates": [
+      [
+        "你",
+        228682,
+        236
+      ],
+      [
+        "我",
+        167635,
+        173
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 227,
+      "我": 155
+    },
+    "key_observations": 1032,
+    "distinct_utterances": {
+      "你": 227,
+      "我": 164
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "冷静",
+    "candidates": [
+      [
+        "一下",
+        211267,
+        15
+      ]
+    ],
+    "supporting_dialogues": {
+      "一下": 15
+    },
+    "key_observations": 71,
+    "distinct_utterances": {
+      "一下": 15
+    },
+    "candidate_tokenizations": {
+      "一下": [
+        [
+          "一下"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "分",
+    "candidates": [
+      [
+        "我",
+        66445,
+        60
+      ],
+      [
+        "你",
+        46511,
+        42
+      ]
+    ],
+    "supporting_dialogues": {
+      "我": 58,
+      "你": 42
+    },
+    "key_observations": 903,
+    "distinct_utterances": {
+      "我": 59,
+      "你": 38
+    },
+    "candidate_tokenizations": {
+      "我": [
+        [
+          "我"
+        ]
+      ],
+      "你": [
+        [
+          "你"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "力量",
+    "candidates": [
+      [
+        "大",
+        101265,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "大": 8
+    },
+    "key_observations": 79,
+    "distinct_utterances": {
+      "大": 8
+    },
+    "candidate_tokenizations": {
+      "大": [
+        [
+          "大"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "南方",
+    "candidates": [
+      [
+        "姑娘",
+        41666,
+        11
+      ],
+      [
+        "有",
+        41666,
+        11
+      ],
+      [
+        "冬天",
+        30303,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "姑娘": 9,
+      "有": 11,
+      "冬天": 8
+    },
+    "key_observations": 264,
+    "distinct_utterances": {
+      "姑娘": 11,
+      "有": 7,
+      "冬天": 4
+    },
+    "candidate_tokenizations": {
+      "姑娘": [
+        [
+          "姑娘"
+        ]
+      ],
+      "有": [
+        [
+          "有"
+        ]
+      ],
+      "冬天": [
+        [
+          "冬天"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "压力太",
+    "candidates": [
+      [
+        "大",
+        1000000,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "大": 8
+    },
+    "key_observations": 8,
+    "distinct_utterances": {
+      "大": 8
+    },
+    "candidate_tokenizations": {
+      "大": [
+        [
+          "大"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "取",
+    "candidates": [
+      [
+        "快递",
+        69930,
+        10
+      ]
+    ],
+    "supporting_dialogues": {
+      "快递": 10
+    },
+    "key_observations": 143,
+    "distinct_utterances": {
+      "快递": 10
+    },
+    "candidate_tokenizations": {
+      "快递": [
+        [
+          "快递"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "叫",
+    "candidates": [
+      [
+        "我",
+        203007,
+        648
+      ],
+      [
+        "你",
+        156015,
+        498
+      ],
+      [
+        "什么",
+        76441,
+        244
+      ],
+      [
+        "上",
+        30388,
+        97
+      ]
+    ],
+    "supporting_dialogues": {
+      "我": 621,
+      "你": 474,
+      "什么": 240,
+      "上": 97
+    },
+    "key_observations": 3192,
+    "distinct_utterances": {
+      "我": 620,
+      "你": 483,
+      "什么": 233,
+      "上": 90
+    },
+    "candidate_tokenizations": {
+      "我": [
+        [
+          "我"
+        ]
+      ],
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "什么": [
+        [
+          "什么"
+        ]
+      ],
+      "上": [
+        [
+          "上"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "可是我",
+    "candidates": [
+      [
+        "没有",
+        50397,
+        19
+      ],
+      [
+        "觉得",
+        50397,
+        19
+      ],
+      [
+        "现在",
+        34482,
+        13
+      ],
+      [
+        "想",
+        31830,
+        12
+      ]
+    ],
+    "supporting_dialogues": {
+      "没有": 18,
+      "觉得": 19,
+      "现在": 13,
+      "想": 12
+    },
+    "key_observations": 377,
+    "distinct_utterances": {
+      "没有": 17,
+      "觉得": 19,
+      "现在": 13,
+      "想": 12
+    },
+    "candidate_tokenizations": {
+      "没有": [
+        [
+          "没有"
+        ]
+      ],
+      "觉得": [
+        [
+          "觉得"
+        ]
+      ],
+      "现在": [
+        [
+          "现在"
+        ]
+      ],
+      "想": [
+        [
+          "想"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "可爱的",
+    "candidates": [
+      [
+        "你",
+        148514,
+        15
+      ],
+      [
+        "小",
+        148514,
+        15
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 14,
+      "小": 15
+    },
+    "key_observations": 101,
+    "distinct_utterances": {
+      "你": 11,
+      "小": 15
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "小": [
+        [
+          "小"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "各有",
+    "candidates": [
+      [
+        "各",
+        928571,
+        26
+      ]
+    ],
+    "supporting_dialogues": {
+      "各": 25
+    },
+    "key_observations": 28,
+    "distinct_utterances": {
+      "各": 24
+    },
+    "candidate_tokenizations": {
+      "各": [
+        [
+          "各"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "哈哈不",
+    "candidates": [
+      [
+        "知道",
+        239130,
+        11
+      ]
+    ],
+    "supporting_dialogues": {
+      "知道": 11
+    },
+    "key_observations": 46,
+    "distinct_utterances": {
+      "知道": 11
+    },
+    "candidate_tokenizations": {
+      "知道": [
+        [
+          "知道"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "多半",
+    "candidates": [
+      [
+        "是",
+        484848,
+        16
+      ]
+    ],
+    "supporting_dialogues": {
+      "是": 16
+    },
+    "key_observations": 33,
+    "distinct_utterances": {
+      "是": 15
+    },
+    "candidate_tokenizations": {
+      "是": [
+        [
+          "是"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "天下",
+    "candidates": [
+      [
+        "没有",
+        85106,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "没有": 8
+    },
+    "key_observations": 94,
+    "distinct_utterances": {
+      "没有": 8
+    },
+    "candidate_tokenizations": {
+      "没有": [
+        [
+          "没有"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "好人一生",
+    "candidates": [
+      [
+        "平安",
+        1000000,
+        29
+      ]
+    ],
+    "supporting_dialogues": {
+      "平安": 29
+    },
+    "key_observations": 29,
+    "distinct_utterances": {
+      "平安": 19
+    },
+    "candidate_tokenizations": {
+      "平安": [
+        [
+          "平安"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "好像是",
+    "candidates": [
+      [
+        "这样",
+        93959,
+        14
+      ],
+      [
+        "我",
+        60402,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "这样": 14,
+      "我": 9
+    },
+    "key_observations": 149,
+    "distinct_utterances": {
+      "这样": 9,
+      "我": 9
+    },
+    "candidate_tokenizations": {
+      "这样": [
+        [
+          "这样"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "如初",
+    "candidates": [
+      [
+        "见",
+        739130,
+        17
+      ]
+    ],
+    "supporting_dialogues": {
+      "见": 16
+    },
+    "key_observations": 23,
+    "distinct_utterances": {
+      "见": 15
+    },
+    "candidate_tokenizations": {
+      "见": [
+        [
+          "见"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "如果是",
+    "candidates": [
+      [
+        "我",
+        147826,
+        17
+      ]
+    ],
+    "supporting_dialogues": {
+      "我": 17
+    },
+    "key_observations": 115,
+    "distinct_utterances": {
+      "我": 17
+    },
+    "candidate_tokenizations": {
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "孤立",
+    "candidates": [
+      [
+        "你",
+        685714,
+        24
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 24
+    },
+    "key_observations": 35,
+    "distinct_utterances": {
+      "你": 17
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "小朋友",
+    "candidates": [
+      [
+        "们",
+        47368,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "们": 9
+    },
+    "key_observations": 190,
+    "distinct_utterances": {
+      "们": 9
+    },
+    "candidate_tokenizations": {
+      "们": [
+        [
+          "们"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "就是不",
+    "candidates": [
+      [
+        "知道",
+        245901,
+        30
+      ],
+      [
+        "喜欢",
+        114754,
+        14
+      ],
+      [
+        "一样",
+        98360,
+        12
+      ]
+    ],
+    "supporting_dialogues": {
+      "知道": 30,
+      "喜欢": 14,
+      "一样": 12
+    },
+    "key_observations": 122,
+    "distinct_utterances": {
+      "知道": 29,
+      "喜欢": 14,
+      "一样": 12
+    },
+    "candidate_tokenizations": {
+      "知道": [
+        [
+          "知道"
+        ]
+      ],
+      "喜欢": [
+        [
+          "喜欢"
+        ]
+      ],
+      "一样": [
+        [
+          "一样"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "尽量",
+    "candidates": [
+      [
+        "不要",
+        58394,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "不要": 8
+    },
+    "key_observations": 137,
+    "distinct_utterances": {
+      "不要": 8
+    },
+    "candidate_tokenizations": {
+      "不要": [
+        [
+          "不要"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "带不",
+    "candidates": [
+      [
+        "动",
+        520000,
+        13
+      ]
+    ],
+    "supporting_dialogues": {
+      "动": 12
+    },
+    "key_observations": 25,
+    "distinct_utterances": {
+      "动": 13
+    },
+    "candidate_tokenizations": {
+      "动": [
+        [
+          "动"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "年龄",
+    "candidates": [
+      [
+        "大",
+        96774,
+        21
+      ],
+      [
+        "不是",
+        36866,
+        8
+      ],
+      [
+        "是",
+        36866,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "大": 19,
+      "不是": 8,
+      "是": 8
+    },
+    "key_observations": 217,
+    "distinct_utterances": {
+      "大": 20,
+      "不是": 8,
+      "是": 8
+    },
+    "candidate_tokenizations": {
+      "大": [
+        [
+          "大"
+        ]
+      ],
+      "不是": [
+        [
+          "不是"
+        ]
+      ],
+      "是": [
+        [
+          "是"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "店里",
+    "candidates": [
+      [
+        "买",
+        114285,
+        16
+      ],
+      [
+        "有",
+        85714,
+        12
+      ]
+    ],
+    "supporting_dialogues": {
+      "买": 16,
+      "有": 12
+    },
+    "key_observations": 140,
+    "distinct_utterances": {
+      "买": 16,
+      "有": 12
+    },
+    "candidate_tokenizations": {
+      "买": [
+        [
+          "买"
+        ]
+      ],
+      "有": [
+        [
+          "有"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "强迫",
+    "candidates": [
+      [
+        "自己",
+        363636,
+        16
+      ]
+    ],
+    "supporting_dialogues": {
+      "自己": 16
+    },
+    "key_observations": 44,
+    "distinct_utterances": {
+      "自己": 16
+    },
+    "candidate_tokenizations": {
+      "自己": [
+        [
+          "自己"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "忽略",
+    "candidates": [
+      [
+        "我",
+        105263,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "我": 8
+    },
+    "key_observations": 76,
+    "distinct_utterances": {
+      "我": 8
+    },
+    "candidate_tokenizations": {
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "愿意",
+    "candidates": [
+      [
+        "去",
+        48458,
+        22
+      ],
+      [
+        "做",
+        33039,
+        15
+      ],
+      [
+        "听",
+        33039,
+        15
+      ],
+      [
+        "相信",
+        30837,
+        14
+      ]
+    ],
+    "supporting_dialogues": {
+      "去": 22,
+      "做": 15,
+      "听": 15,
+      "相信": 14
+    },
+    "key_observations": 454,
+    "distinct_utterances": {
+      "去": 22,
+      "做": 15,
+      "听": 14,
+      "相信": 14
+    },
+    "candidate_tokenizations": {
+      "去": [
+        [
+          "去"
+        ]
+      ],
+      "做": [
+        [
+          "做"
+        ]
+      ],
+      "听": [
+        [
+          "听"
+        ]
+      ],
+      "相信": [
+        [
+          "相信"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "我一直都",
+    "candidates": [
+      [
+        "是",
+        168000,
+        21
+      ]
+    ],
+    "supporting_dialogues": {
+      "是": 21
+    },
+    "key_observations": 125,
+    "distinct_utterances": {
+      "是": 21
+    },
+    "candidate_tokenizations": {
+      "是": [
+        [
+          "是"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "我会告诉你",
+    "candidates": [
+      [
+        "我",
+        473684,
+        18
+      ]
+    ],
+    "supporting_dialogues": {
+      "我": 18
+    },
+    "key_observations": 38,
+    "distinct_utterances": {
+      "我": 18
+    },
+    "candidate_tokenizations": {
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "我再",
+    "candidates": [
+      [
+        "去",
+        121951,
+        10
+      ]
+    ],
+    "supporting_dialogues": {
+      "去": 10
+    },
+    "key_observations": 82,
+    "distinct_utterances": {
+      "去": 10
+    },
+    "candidate_tokenizations": {
+      "去": [
+        [
+          "去"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "我可以说",
+    "candidates": [
+      [
+        "我",
+        409090,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "我": 9
+    },
+    "key_observations": 22,
+    "distinct_utterances": {
+      "我": 9
+    },
+    "candidate_tokenizations": {
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "我对",
+    "candidates": [
+      [
+        "你",
+        341040,
+        59
+      ],
+      [
+        "我",
+        52023,
+        9
+      ],
+      [
+        "自己",
+        52023,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 56,
+      "我": 9,
+      "自己": 9
+    },
+    "key_observations": 173,
+    "distinct_utterances": {
+      "你": 58,
+      "我": 9,
+      "自己": 8
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ],
+      "自己": [
+        [
+          "自己"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "我怎么觉得",
+    "candidates": [
+      [
+        "你",
+        215686,
+        11
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 11
+    },
+    "key_observations": 51,
+    "distinct_utterances": {
+      "你": 11
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "我来找",
+    "candidates": [
+      [
+        "你",
+        562500,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 9
+    },
+    "key_observations": 16,
+    "distinct_utterances": {
+      "你": 8
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "我现在",
+    "candidates": [
+      [
+        "已经",
+        34538,
+        43
+      ],
+      [
+        "是",
+        31325,
+        39
+      ]
+    ],
+    "supporting_dialogues": {
+      "已经": 43,
+      "是": 39
+    },
+    "key_observations": 1245,
+    "distinct_utterances": {
+      "已经": 43,
+      "是": 39
+    },
+    "candidate_tokenizations": {
+      "已经": [
+        [
+          "已经"
+        ]
+      ],
+      "是": [
+        [
+          "是"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "我都不",
+    "candidates": [
+      [
+        "知道",
+        610465,
+        105
+      ],
+      [
+        "认识",
+        52325,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "知道": 105,
+      "认识": 9
+    },
+    "key_observations": 172,
+    "distinct_utterances": {
+      "知道": 105,
+      "认识": 9
+    },
+    "candidate_tokenizations": {
+      "知道": [
+        [
+          "知道"
+        ]
+      ],
+      "认识": [
+        [
+          "认识"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "我问",
+    "candidates": [
+      [
+        "你",
+        264957,
+        31
+      ],
+      [
+        "下",
+        102564,
+        12
+      ],
+      [
+        "一下",
+        85470,
+        10
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 31,
+      "下": 12,
+      "一下": 10
+    },
+    "key_observations": 117,
+    "distinct_utterances": {
+      "你": 31,
+      "下": 12,
+      "一下": 10
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "下": [
+        [
+          "下"
+        ]
+      ],
+      "一下": [
+        [
+          "一下"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "拿",
+    "candidates": [
+      [
+        "出来",
+        74834,
+        124
+      ],
+      [
+        "去",
+        69402,
+        115
+      ]
+    ],
+    "supporting_dialogues": {
+      "出来": 120,
+      "去": 107
+    },
+    "key_observations": 1657,
+    "distinct_utterances": {
+      "出来": 122,
+      "去": 101
+    },
+    "candidate_tokenizations": {
+      "出来": [
+        [
+          "出来"
+        ]
+      ],
+      "去": [
+        [
+          "去"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "文化",
+    "candidates": [
+      [
+        "人",
+        94240,
+        18
+      ],
+      [
+        "水平",
+        47120,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "人": 18,
+      "水平": 9
+    },
+    "key_observations": 191,
+    "distinct_utterances": {
+      "人": 16,
+      "水平": 9
+    },
+    "candidate_tokenizations": {
+      "人": [
+        [
+          "人"
+        ]
+      ],
+      "水平": [
+        [
+          "水平"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "时光",
+    "candidates": [
+      [
+        "匆匆",
+        64748,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "匆匆": 9
+    },
+    "key_observations": 139,
+    "distinct_utterances": {
+      "匆匆": 9
+    },
+    "candidate_tokenizations": {
+      "匆匆": [
+        [
+          "匆匆"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "明明",
+    "candidates": [
+      [
+        "是",
+        339483,
+        276
+      ],
+      [
+        "就是",
+        79950,
+        65
+      ]
+    ],
+    "supporting_dialogues": {
+      "是": 274,
+      "就是": 63
+    },
+    "key_observations": 813,
+    "distinct_utterances": {
+      "是": 271,
+      "就是": 60
+    },
+    "candidate_tokenizations": {
+      "是": [
+        [
+          "是"
+        ]
+      ],
+      "就是": [
+        [
+          "就是"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "月底",
+    "candidates": [
+      [
+        "去",
+        116564,
+        19
+      ]
+    ],
+    "supporting_dialogues": {
+      "去": 19
+    },
+    "key_observations": 163,
+    "distinct_utterances": {
+      "去": 19
+    },
+    "candidate_tokenizations": {
+      "去": [
+        [
+          "去"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "有啊",
+    "candidates": [
+      [
+        "有",
+        268292,
+        11
+      ]
+    ],
+    "supporting_dialogues": {
+      "有": 11
+    },
+    "key_observations": 41,
+    "distinct_utterances": {
+      "有": 9
+    },
+    "candidate_tokenizations": {
+      "有": [
+        [
+          "有"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "来了",
+    "candidates": [
+      [
+        "来",
+        118556,
+        23
+      ]
+    ],
+    "supporting_dialogues": {
+      "来": 23
+    },
+    "key_observations": 194,
+    "distinct_utterances": {
+      "来": 13
+    },
+    "candidate_tokenizations": {
+      "来": [
+        [
+          "来"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "欢迎你",
+    "candidates": [
+      [
+        "来",
+        285714,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "来": 8
+    },
+    "key_observations": 28,
+    "distinct_utterances": {
+      "来": 8
+    },
+    "candidate_tokenizations": {
+      "来": [
+        [
+          "来"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "每天",
+    "candidates": [
+      [
+        "都是",
+        49804,
+        89
+      ],
+      [
+        "都要",
+        33016,
+        59
+      ]
+    ],
+    "supporting_dialogues": {
+      "都是": 87,
+      "都要": 58
+    },
+    "key_observations": 1787,
+    "distinct_utterances": {
+      "都是": 88,
+      "都要": 53
+    },
+    "candidate_tokenizations": {
+      "都是": [
+        [
+          "都",
+          "是"
+        ]
+      ],
+      "都要": [
+        [
+          "都",
+          "要"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "比赛",
+    "candidates": [
+      [
+        "加油",
+        43103,
+        10
+      ],
+      [
+        "是",
+        38793,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "加油": 10,
+      "是": 9
+    },
+    "key_observations": 232,
+    "distinct_utterances": {
+      "加油": 7,
+      "是": 9
+    },
+    "candidate_tokenizations": {
+      "加油": [
+        [
+          "加油"
+        ]
+      ],
+      "是": [
+        [
+          "是"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "没有啊",
+    "candidates": [
+      [
+        "我",
+        162162,
+        12
+      ]
+    ],
+    "supporting_dialogues": {
+      "我": 12
+    },
+    "key_observations": 74,
+    "distinct_utterances": {
+      "我": 12
+    },
+    "candidate_tokenizations": {
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "火锅",
+    "candidates": [
+      [
+        "吃",
+        40723,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "吃": 8
+    },
+    "key_observations": 221,
+    "distinct_utterances": {
+      "吃": 9
+    },
+    "candidate_tokenizations": {
+      "吃": [
+        [
+          "吃"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "生",
+    "candidates": [
+      [
+        "快",
+        220224,
+        294
+      ],
+      [
+        "孩子",
+        78651,
+        105
+      ],
+      [
+        "一个",
+        35955,
+        48
+      ],
+      [
+        "完",
+        31460,
+        42
+      ]
+    ],
+    "supporting_dialogues": {
+      "快": 252,
+      "孩子": 93,
+      "一个": 43,
+      "完": 42
+    },
+    "key_observations": 1335,
+    "distinct_utterances": {
+      "快": 177,
+      "孩子": 102,
+      "一个": 42,
+      "完": 41
+    },
+    "candidate_tokenizations": {
+      "快": [
+        [
+          "快"
+        ]
+      ],
+      "孩子": [
+        [
+          "孩子"
+        ]
+      ],
+      "一个": [
+        [
+          "一个"
+        ]
+      ],
+      "完": [
+        [
+          "完"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "电视剧",
+    "candidates": [
+      [
+        "里",
+        80213,
+        15
+      ]
+    ],
+    "supporting_dialogues": {
+      "里": 15
+    },
+    "key_observations": 187,
+    "distinct_utterances": {
+      "里": 15
+    },
+    "candidate_tokenizations": {
+      "里": [
+        [
+          "里"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "皮肤",
+    "candidates": [
+      [
+        "好",
+        111702,
+        42
+      ],
+      [
+        "好好",
+        69148,
+        26
+      ]
+    ],
+    "supporting_dialogues": {
+      "好": 39,
+      "好好": 26
+    },
+    "key_observations": 376,
+    "distinct_utterances": {
+      "好": 42,
+      "好好": 20
+    },
+    "candidate_tokenizations": {
+      "好": [
+        [
+          "好"
+        ]
+      ],
+      "好好": [
+        [
+          "好好"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "直到",
+    "candidates": [
+      [
+        "我",
+        116883,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "我": 8
+    },
+    "key_observations": 77,
+    "distinct_utterances": {
+      "我": 9
+    },
+    "candidate_tokenizations": {
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "看把",
+    "candidates": [
+      [
+        "你",
+        652173,
+        15
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 15
+    },
+    "key_observations": 23,
+    "distinct_utterances": {
+      "你": 13
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "真心",
+    "candidates": [
+      [
+        "觉得",
+        100166,
+        60
+      ],
+      [
+        "不错",
+        43405,
+        26
+      ],
+      [
+        "喜欢",
+        35058,
+        21
+      ],
+      [
+        "希望",
+        35058,
+        21
+      ]
+    ],
+    "supporting_dialogues": {
+      "觉得": 59,
+      "不错": 26,
+      "喜欢": 21,
+      "希望": 21
+    },
+    "key_observations": 599,
+    "distinct_utterances": {
+      "觉得": 56,
+      "不错": 25,
+      "喜欢": 21,
+      "希望": 20
+    },
+    "candidate_tokenizations": {
+      "觉得": [
+        [
+          "觉得"
+        ]
+      ],
+      "不错": [
+        [
+          "不错"
+        ]
+      ],
+      "喜欢": [
+        [
+          "喜欢"
+        ]
+      ],
+      "希望": [
+        [
+          "希望"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "祝贺",
+    "candidates": [
+      [
+        "你",
+        377358,
+        20
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 20
+    },
+    "key_observations": 53,
+    "distinct_utterances": {
+      "你": 18
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "符合",
+    "candidates": [
+      [
+        "你",
+        203703,
+        22
+      ],
+      [
+        "我",
+        157407,
+        17
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 20,
+      "我": 17
+    },
+    "key_observations": 108,
+    "distinct_utterances": {
+      "你": 21,
+      "我": 16
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "网友",
+    "candidates": [
+      [
+        "说",
+        96385,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "说": 8
+    },
+    "key_observations": 83,
+    "distinct_utterances": {
+      "说": 3
+    },
+    "candidate_tokenizations": {
+      "说": [
+        [
+          "说"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "若",
+    "candidates": [
+      [
+        "是",
+        140000,
+        21
+      ],
+      [
+        "安好",
+        106666,
+        16
+      ],
+      [
+        "只如初见",
+        80000,
+        12
+      ]
+    ],
+    "supporting_dialogues": {
+      "是": 21,
+      "安好": 15,
+      "只如初见": 12
+    },
+    "key_observations": 150,
+    "distinct_utterances": {
+      "是": 21,
+      "安好": 14,
+      "只如初见": 10
+    },
+    "candidate_tokenizations": {
+      "是": [
+        [
+          "是"
+        ]
+      ],
+      "安好": [
+        [
+          "安好"
+        ]
+      ],
+      "只如初见": [
+        [
+          "只",
+          "如初",
+          "见"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "英语",
+    "candidates": [
+      [
+        "不好",
+        43650,
+        11
+      ],
+      [
+        "好",
+        35714,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "不好": 11,
+      "好": 8
+    },
+    "key_observations": 252,
+    "distinct_utterances": {
+      "不好": 11,
+      "好": 9
+    },
+    "candidate_tokenizations": {
+      "不好": [
+        [
+          "不好"
+        ]
+      ],
+      "好": [
+        [
+          "好"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "虽然不",
+    "candidates": [
+      [
+        "知道",
+        538461,
+        21
+      ]
+    ],
+    "supporting_dialogues": {
+      "知道": 21
+    },
+    "key_observations": 39,
+    "distinct_utterances": {
+      "知道": 21
+    },
+    "candidate_tokenizations": {
+      "知道": [
+        [
+          "知道"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "表扬",
+    "candidates": [
+      [
+        "你",
+        187500,
+        12
+      ],
+      [
+        "我",
+        156250,
+        10
+      ],
+      [
+        "一下",
+        125000,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 12,
+      "我": 10,
+      "一下": 7
+    },
+    "key_observations": 64,
+    "distinct_utterances": {
+      "你": 10,
+      "我": 10,
+      "一下": 7
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ],
+      "一下": [
+        [
+          "一下"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "要是",
+    "candidates": [
+      [
+        "我",
+        61068,
+        64
+      ],
+      [
+        "有",
+        52480,
+        55
+      ],
+      [
+        "能",
+        51526,
+        54
+      ],
+      [
+        "你",
+        35305,
+        37
+      ]
+    ],
+    "supporting_dialogues": {
+      "我": 64,
+      "有": 55,
+      "能": 54,
+      "你": 37
+    },
+    "key_observations": 1048,
+    "distinct_utterances": {
+      "我": 60,
+      "有": 55,
+      "能": 54,
+      "你": 35
+    },
+    "candidate_tokenizations": {
+      "我": [
+        [
+          "我"
+        ]
+      ],
+      "有": [
+        [
+          "有"
+        ]
+      ],
+      "能": [
+        [
+          "能"
+        ]
+      ],
+      "你": [
+        [
+          "你"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "让我",
+    "candidates": [
+      [
+        "来",
+        97777,
+        44
+      ],
+      [
+        "想起",
+        46666,
+        21
+      ],
+      [
+        "去",
+        31111,
+        14
+      ]
+    ],
+    "supporting_dialogues": {
+      "来": 44,
+      "想起": 21,
+      "去": 14
+    },
+    "key_observations": 450,
+    "distinct_utterances": {
+      "来": 36,
+      "想起": 21,
+      "去": 13
+    },
+    "candidate_tokenizations": {
+      "来": [
+        [
+          "来"
+        ]
+      ],
+      "想起": [
+        [
+          "想起"
+        ]
+      ],
+      "去": [
+        [
+          "去"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "说的好",
+    "candidates": [
+      [
+        "有道理",
+        344827,
+        10
+      ]
+    ],
+    "supporting_dialogues": {
+      "有道理": 10
+    },
+    "key_observations": 29,
+    "distinct_utterances": {
+      "有道理": 7
+    },
+    "candidate_tokenizations": {
+      "有道理": [
+        [
+          "有",
+          "道理"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "资格",
+    "candidates": [
+      [
+        "说",
+        223404,
+        21
+      ]
+    ],
+    "supporting_dialogues": {
+      "说": 19
+    },
+    "key_observations": 94,
+    "distinct_utterances": {
+      "说": 19
+    },
+    "candidate_tokenizations": {
+      "说": [
+        [
+          "说"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "赶上",
+    "candidates": [
+      [
+        "我",
+        109890,
+        10
+      ]
+    ],
+    "supporting_dialogues": {
+      "我": 10
+    },
+    "key_observations": 91,
+    "distinct_utterances": {
+      "我": 10
+    },
+    "candidate_tokenizations": {
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "跟你",
+    "candidates": [
+      [
+        "说",
+        174825,
+        50
+      ],
+      [
+        "一样",
+        87412,
+        25
+      ],
+      [
+        "有",
+        80419,
+        23
+      ],
+      [
+        "一起",
+        48951,
+        14
+      ]
+    ],
+    "supporting_dialogues": {
+      "说": 50,
+      "一样": 25,
+      "有": 23,
+      "一起": 13
+    },
+    "key_observations": 286,
+    "distinct_utterances": {
+      "说": 45,
+      "一样": 23,
+      "有": 19,
+      "一起": 14
+    },
+    "candidate_tokenizations": {
+      "说": [
+        [
+          "说"
+        ]
+      ],
+      "一样": [
+        [
+          "一样"
+        ]
+      ],
+      "有": [
+        [
+          "有"
+        ]
+      ],
+      "一起": [
+        [
+          "一起"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "转发",
+    "candidates": [
+      [
+        "量",
+        92485,
+        16
+      ],
+      [
+        "一下",
+        52023,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "量": 15,
+      "一下": 9
+    },
+    "key_observations": 173,
+    "distinct_utterances": {
+      "量": 10,
+      "一下": 9
+    },
+    "candidate_tokenizations": {
+      "量": [
+        [
+          "量"
+        ]
+      ],
+      "一下": [
+        [
+          "一下"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "那你",
+    "candidates": [
+      [
+        "是",
+        43866,
+        113
+      ]
+    ],
+    "supporting_dialogues": {
+      "是": 112
+    },
+    "key_observations": 2576,
+    "distinct_utterances": {
+      "是": 113
+    },
+    "candidate_tokenizations": {
+      "是": [
+        [
+          "是"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "那就是",
+    "candidates": [
+      [
+        "你",
+        151685,
+        27
+      ],
+      [
+        "我",
+        78651,
+        14
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 27,
+      "我": 14
+    },
+    "key_observations": 178,
+    "distinct_utterances": {
+      "你": 25,
+      "我": 14
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "那我也",
+    "candidates": [
+      [
+        "要",
+        184873,
+        22
+      ],
+      [
+        "是",
+        84033,
+        10
+      ],
+      [
+        "去",
+        75630,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "要": 22,
+      "是": 10,
+      "去": 9
+    },
+    "key_observations": 119,
+    "distinct_utterances": {
+      "要": 22,
+      "是": 10,
+      "去": 9
+    },
+    "candidate_tokenizations": {
+      "要": [
+        [
+          "要"
+        ]
+      ],
+      "是": [
+        [
+          "是"
+        ]
+      ],
+      "去": [
+        [
+          "去"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "都不知道",
+    "candidates": [
+      [
+        "怎么",
+        139534,
+        12
+      ]
+    ],
+    "supporting_dialogues": {
+      "怎么": 12
+    },
+    "key_observations": 86,
+    "distinct_utterances": {
+      "怎么": 12
+    },
+    "candidate_tokenizations": {
+      "怎么": [
+        [
+          "怎么"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "都准备",
+    "candidates": [
+      [
+        "好",
+        1000000,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "好": 8
+    },
+    "key_observations": 8,
+    "distinct_utterances": {
+      "好": 8
+    },
+    "candidate_tokenizations": {
+      "好": [
+        [
+          "好"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "酒店",
+    "candidates": [
+      [
+        "住",
+        40723,
+        9
+      ]
+    ],
+    "supporting_dialogues": {
+      "住": 6
+    },
+    "key_observations": 221,
+    "distinct_utterances": {
+      "住": 4
+    },
+    "candidate_tokenizations": {
+      "住": [
+        [
+          "住"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "重",
+    "candidates": [
+      [
+        "口味",
+        212121,
+        91
+      ],
+      [
+        "来",
+        88578,
+        38
+      ],
+      [
+        "发",
+        48951,
+        21
+      ],
+      [
+        "做",
+        32634,
+        14
+      ]
+    ],
+    "supporting_dialogues": {
+      "口味": 80,
+      "来": 38,
+      "发": 20,
+      "做": 11
+    },
+    "key_observations": 429,
+    "distinct_utterances": {
+      "口味": 84,
+      "来": 38,
+      "发": 21,
+      "做": 13
+    },
+    "candidate_tokenizations": {
+      "口味": [
+        [
+          "口味"
+        ]
+      ],
+      "来": [
+        [
+          "来"
+        ]
+      ],
+      "发": [
+        [
+          "发"
+        ]
+      ],
+      "做": [
+        [
+          "做"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "难道",
+    "candidates": [
+      [
+        "你",
+        208977,
+        284
+      ],
+      [
+        "不是",
+        134657,
+        183
+      ],
+      [
+        "是",
+        102281,
+        139
+      ],
+      [
+        "我",
+        64017,
+        87
+      ]
+    ],
+    "supporting_dialogues": {
+      "你": 281,
+      "不是": 182,
+      "是": 139,
+      "我": 87
+    },
+    "key_observations": 1359,
+    "distinct_utterances": {
+      "你": 281,
+      "不是": 172,
+      "是": 135,
+      "我": 86
+    },
+    "candidate_tokenizations": {
+      "你": [
+        [
+          "你"
+        ]
+      ],
+      "不是": [
+        [
+          "不是"
+        ]
+      ],
+      "是": [
+        [
+          "是"
+        ]
+      ],
+      "我": [
+        [
+          "我"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "难道你不",
+    "candidates": [
+      [
+        "觉得",
+        347826,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "觉得": 8
+    },
+    "key_observations": 23,
+    "distinct_utterances": {
+      "觉得": 8
+    },
+    "candidate_tokenizations": {
+      "觉得": [
+        [
+          "觉得"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "非",
+    "candidates": [
+      [
+        "要",
+        458823,
+        156
+      ],
+      [
+        "说",
+        35294,
+        12
+      ]
+    ],
+    "supporting_dialogues": {
+      "要": 151,
+      "说": 12
+    },
+    "key_observations": 340,
+    "distinct_utterances": {
+      "要": 151,
+      "说": 12
+    },
+    "candidate_tokenizations": {
+      "要": [
+        [
+          "要"
+        ]
+      ],
+      "说": [
+        [
+          "说"
+        ]
+      ]
+    }
+  },
+  {
+    "group": "uniform",
+    "key": "音乐",
+    "candidates": [
+      [
+        "人",
+        54455,
+        11
+      ],
+      [
+        "是",
+        39603,
+        8
+      ]
+    ],
+    "supporting_dialogues": {
+      "人": 11,
+      "是": 8
+    },
+    "key_observations": 202,
+    "distinct_utterances": {
+      "人": 11,
+      "是": 8
+    },
+    "candidate_tokenizations": {
+      "人": [
+        [
+          "人"
+        ]
+      ],
+      "是": [
+        [
+          "是"
+        ]
+      ]
+    }
+  }
+]

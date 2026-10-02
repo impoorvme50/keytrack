@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Score sources against the frozen 200-example next-word evaluation."""
+"""Score sources against a frozen next-word evaluation (default: v1, 200 samples)."""
 from pathlib import Path
 import argparse
 import json

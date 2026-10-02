@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "dataset_id": "prediction-evaluation-v3-independent-holdout-100",
+  "sha256": "ab1d6dabca620e93395b67907639c57bf833e6af03734b9bccca02d0ecba832d",
+  "samples": 100,
+  "situations": 10,
+  "kind_counts": {
+    "word": 40,
+    "phrase": 40,
+    "unmatched": 10,
+    "boundary": 10
+  },
+  "frozen_date": "2026-10-03",
+  "status": "frozen-before-scoring",
+  "role": "independent-additional-holdout",
+  "replaces_v1": false,
+  "replaces_v2": false,
+  "scored_at_freeze": false,
+  "deduplication_reference": "data/prediction/evaluation-v2.json",
+  "exact_commit_overlap_with_v2": 0,
+  "construction_constraints": [
+    "仅为去重读取本作者自己的 v2 数据，不改写 v2",
+    "未读取 v1 或任何候选逐题报告",
+    "未读取公共词库、本轮补充数据或生成器",
+    "未读取真实输入历史或复制青简数据",
+    "完整上屏单位及下一词答案在候选评分前独立确定并冻结"
+  ]
+}

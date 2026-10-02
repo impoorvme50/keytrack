@@ -1,0 +1,48 @@
+{
+  "format_version": 1,
+  "status": "candidate; evaluate and review before promotion",
+  "source": {
+    "url": "https://huggingface.co/datasets/silver/lccc/resolve/5bd582fa28cd7143f2f9c852e08e23089d677c44/lccc_base_train.jsonl.gz",
+    "revision": "5bd582fa28cd7143f2f9c852e08e23089d677c44",
+    "file": "lccc_base_train.jsonl.gz",
+    "sha256": "2162e0ed923fba62329cabf7e1493fbe59248afc94a62508e4abdea61e624627",
+    "bytes": 369854377,
+    "license": "MIT"
+  },
+  "tokenizer": {
+    "name": "jieba",
+    "version": "0.42.1",
+    "license": "MIT",
+    "hmm": false,
+    "module_sha256": "b47cefcfd0bf683b0c708c1de0328df83be2c35264637c442106e79d739fb7f3",
+    "dictionary_sha256": "7197c3211ddd98962b036cdf40324d1ea2bfaa12bd028e68faa70111a88e12a8"
+  },
+  "generator_sha256": "9d68878ca301369eae59045c03ecc03f3661ce9acda351e08c040ba18dcd7316",
+  "parameters": {
+    "seed": 20261002,
+    "sample_every": 32,
+    "min_count": 5,
+    "max_contexts": 10000,
+    "min_dialogues": 3,
+    "single_token_dictionary_min_frequency": 10000,
+    "max_candidates": 8,
+    "prefix_words": 3,
+    "prefix_characters": 12
+  },
+  "sampling": {
+    "duplicate_dialogues": 1,
+    "excluded_utterances": 822,
+    "sampled_dialogues": 213540,
+    "source_dialogues": 6820506,
+    "utterances": 628540
+  },
+  "weighting": "per-key normalized corpus counts; starter replaces its entire keys; no weight summing",
+  "starter_sha256": "6999b5394ebe987b2fffb75cb9339a72b213de0be396195b7f556ced0a4079b7",
+  "review_sampling": "20 keys with highest retained count total; 100 uniform keys from the remainder; same seed",
+  "corpus_contexts": 10000,
+  "corpus_records": 35481,
+  "public_contexts": 10060,
+  "public_records": 35222,
+  "corpus_sha256": "55c9a9f41d2e0866e28fb3be7ec5a13512451d158830c146e8e9f72dc3a8bfef",
+  "public_sha256": "b1709b748ec1824c194e430b80b80d1fcf724835f34f0c1f703a36ee4415fbcd"
+}

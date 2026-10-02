@@ -336,7 +336,7 @@ def main():
     parser.add_argument("--revision", required=True)
     parser.add_argument("--jieba-path", type=Path)
     parser.add_argument("--starter", type=Path, default=PROJECT / "data/prediction/starter.ngram.tsv")
-    parser.add_argument("--output", type=Path, default=PROJECT / "data/prediction/quality-v2")
+    parser.add_argument("--output", type=Path, default=PROJECT / "data/prediction")
     parser.add_argument("--seed", type=int, default=20261002)
     parser.add_argument("--sample-every", type=int, default=32)
     parser.add_argument("--min-count", type=int, default=8)

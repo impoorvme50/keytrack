@@ -3362,33 +3362,33 @@
     "sources": [
       {
         "file": "data/prediction/public.ngram.tsv",
-        "sha256": "a47faf822914012f80de1bb95f2257e4ba2bea9b514f5fc83251d344d328f005"
+        "sha256": "b1709b748ec1824c194e430b80b80d1fcf724835f34f0c1f703a36ee4415fbcd"
       }
     ],
-    "preprocessed_sha256": "64dfb68aceba5fdadd2b7a645d6c4a539b7398f8a53b2e9ae741176604687e96",
-    "contexts": 9998,
-    "records": 33433,
+    "preprocessed_sha256": "63e874151a65763a88cb76fb032dd0249a56db4587696a04f981d9a850f8c2e2",
+    "contexts": 10060,
+    "records": 35222,
     "overall": {
       "samples": 200,
       "lookup_hit": {
-        "numerator": 83,
+        "numerator": 78,
         "denominator": 200,
-        "percent": 41.5
+        "percent": 39.0
       },
       "top1_acceptable_overall": {
-        "numerator": 22,
+        "numerator": 19,
         "denominator": 200,
-        "percent": 11.0
+        "percent": 9.5
       },
       "top3_acceptable_overall": {
-        "numerator": 43,
+        "numerator": 39,
         "denominator": 200,
-        "percent": 21.5
+        "percent": 19.5
       },
       "top3_acceptable_given_hit": {
-        "numerator": 43,
-        "denominator": 83,
-        "percent": 51.807229
+        "numerator": 39,
+        "denominator": 78,
+        "percent": 50.0
       },
       "boundary_no_prediction": {
         "numerator": 20,
@@ -3428,24 +3428,24 @@
       "phrase": {
         "samples": 80,
         "lookup_hit": {
-          "numerator": 16,
+          "numerator": 11,
           "denominator": 80,
-          "percent": 20.0
+          "percent": 13.75
         },
         "top1_acceptable_overall": {
-          "numerator": 6,
+          "numerator": 3,
           "denominator": 80,
-          "percent": 7.5
+          "percent": 3.75
         },
         "top3_acceptable_overall": {
-          "numerator": 8,
+          "numerator": 4,
           "denominator": 80,
-          "percent": 10.0
+          "percent": 5.0
         },
         "top3_acceptable_given_hit": {
-          "numerator": 8,
-          "denominator": 16,
-          "percent": 50.0
+          "numerator": 4,
+          "denominator": 11,
+          "percent": 36.363636
         },
         "boundary_no_prediction": {
           "numerator": 0,
@@ -3598,34 +3598,6 @@
       "health_exercise": {
         "samples": 20,
         "lookup_hit": {
-          "numerator": 8,
-          "denominator": 20,
-          "percent": 40.0
-        },
-        "top1_acceptable_overall": {
-          "numerator": 3,
-          "denominator": 20,
-          "percent": 15.0
-        },
-        "top3_acceptable_overall": {
-          "numerator": 3,
-          "denominator": 20,
-          "percent": 15.0
-        },
-        "top3_acceptable_given_hit": {
-          "numerator": 3,
-          "denominator": 8,
-          "percent": 37.5
-        },
-        "boundary_no_prediction": {
-          "numerator": 2,
-          "denominator": 2,
-          "percent": 100.0
-        }
-      },
-      "product_supply": {
-        "samples": 20,
-        "lookup_hit": {
           "numerator": 7,
           "denominator": 20,
           "percent": 35.0
@@ -3636,14 +3608,42 @@
           "percent": 15.0
         },
         "top3_acceptable_overall": {
-          "numerator": 6,
+          "numerator": 3,
           "denominator": 20,
-          "percent": 30.0
+          "percent": 15.0
         },
         "top3_acceptable_given_hit": {
-          "numerator": 6,
+          "numerator": 3,
           "denominator": 7,
-          "percent": 85.714286
+          "percent": 42.857143
+        },
+        "boundary_no_prediction": {
+          "numerator": 2,
+          "denominator": 2,
+          "percent": 100.0
+        }
+      },
+      "product_supply": {
+        "samples": 20,
+        "lookup_hit": {
+          "numerator": 5,
+          "denominator": 20,
+          "percent": 25.0
+        },
+        "top1_acceptable_overall": {
+          "numerator": 1,
+          "denominator": 20,
+          "percent": 5.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 4,
+          "denominator": 20,
+          "percent": 20.0
+        },
+        "top3_acceptable_given_hit": {
+          "numerator": 4,
+          "denominator": 5,
+          "percent": 80.0
         },
         "boundary_no_prediction": {
           "numerator": 2,
@@ -3682,9 +3682,9 @@
       "software_documents": {
         "samples": 20,
         "lookup_hit": {
-          "numerator": 7,
+          "numerator": 6,
           "denominator": 20,
-          "percent": 35.0
+          "percent": 30.0
         },
         "top1_acceptable_overall": {
           "numerator": 1,
@@ -3692,14 +3692,14 @@
           "percent": 5.0
         },
         "top3_acceptable_overall": {
-          "numerator": 6,
+          "numerator": 5,
           "denominator": 20,
-          "percent": 30.0
+          "percent": 25.0
         },
         "top3_acceptable_given_hit": {
-          "numerator": 6,
-          "denominator": 7,
-          "percent": 85.714286
+          "numerator": 5,
+          "denominator": 6,
+          "percent": 83.333333
         },
         "boundary_no_prediction": {
           "numerator": 2,
@@ -3766,24 +3766,24 @@
       "work_meetings": {
         "samples": 20,
         "lookup_hit": {
-          "numerator": 9,
-          "denominator": 20,
-          "percent": 45.0
-        },
-        "top1_acceptable_overall": {
-          "numerator": 5,
-          "denominator": 20,
-          "percent": 25.0
-        },
-        "top3_acceptable_overall": {
           "numerator": 8,
           "denominator": 20,
           "percent": 40.0
         },
+        "top1_acceptable_overall": {
+          "numerator": 4,
+          "denominator": 20,
+          "percent": 20.0
+        },
+        "top3_acceptable_overall": {
+          "numerator": 7,
+          "denominator": 20,
+          "percent": 35.0
+        },
         "top3_acceptable_given_hit": {
-          "numerator": 8,
-          "denominator": 9,
-          "percent": 88.888889
+          "numerator": 7,
+          "denominator": 8,
+          "percent": 87.5
         },
         "boundary_no_prediction": {
           "numerator": 2,
@@ -4030,7 +4030,8 @@
           "努力",
           "看",
           "吃",
-          "减肥"
+          "减肥",
+          "喝"
         ],
         "lookup_hit": true,
         "first_acceptable_rank": 1
@@ -4076,6 +4077,7 @@
         "predictions": [
           "怎么样",
           "怎么",
+          "很",
           "在",
           "都",
           "是",
@@ -4204,6 +4206,7 @@
           "的",
           "都",
           "吃",
+          "啊",
           "好"
         ],
         "lookup_hit": true,
@@ -4225,6 +4228,7 @@
           "里",
           "的",
           "都",
+          "啊",
           "有"
         ],
         "lookup_hit": true,
@@ -4243,6 +4247,7 @@
         "predictions": [
           "也",
           "和",
+          "喝",
           "的"
         ],
         "lookup_hit": true,
@@ -4262,6 +4267,7 @@
           "的",
           "小哥",
           "了",
+          "啊",
           "到",
           "不",
           "就",
@@ -4537,7 +4543,8 @@
           "了",
           "师傅",
           "结伴",
-          "不"
+          "不",
+          "啊"
         ],
         "lookup_hit": true,
         "first_acceptable_rank": 5
@@ -4613,7 +4620,8 @@
         ],
         "predictions": [
           "了",
-          "的"
+          "的",
+          "啊"
         ],
         "lookup_hit": true,
         "first_acceptable_rank": null
@@ -4804,7 +4812,8 @@
           "们",
           "你",
           "是",
-          "也"
+          "也",
+          "啊"
         ],
         "lookup_hit": true,
         "first_acceptable_rank": null
@@ -4917,8 +4926,10 @@
           "的",
           "都",
           "了",
+          "穿",
           "是",
           "好看",
+          "啊",
           "我"
         ],
         "lookup_hit": true,
@@ -5128,6 +5139,7 @@
         "predictions": [
           "了",
           "的",
+          "啊",
           "完",
           "减肥",
           "前",
@@ -5135,7 +5147,7 @@
           "一下"
         ],
         "lookup_hit": true,
-        "first_acceptable_rank": 7
+        "first_acceptable_rank": 8
       },
       {
         "id": "health_exercise-02",
@@ -5151,6 +5163,7 @@
           "了",
           "的",
           "去",
+          "啊",
           "是",
           "吗",
           "减肥",
@@ -5192,6 +5205,7 @@
           "质量",
           "不好",
           "好",
+          "很",
           "的"
         ],
         "lookup_hit": true,
@@ -5214,6 +5228,7 @@
           "也",
           "都",
           "吧",
+          "啊",
           "你好"
         ],
         "lookup_hit": true,
@@ -5258,6 +5273,7 @@
           "状况"
         ],
         "predictions": [
+          "啊",
           "好",
           "不好",
           "的",
@@ -5293,12 +5309,8 @@
           "跑步",
           "散步"
         ],
-        "predictions": [
-          "公司",
-          "车站",
-          "超市"
-        ],
-        "lookup_hit": true,
+        "predictions": [],
+        "lookup_hit": false,
         "first_acceptable_rank": null
       },
       {
@@ -5634,7 +5646,8 @@
         "predictions": [
           "我",
           "的",
-          "了"
+          "了",
+          "很"
         ],
         "lookup_hit": true,
         "first_acceptable_rank": null
@@ -5663,13 +5676,9 @@
           "整理一下",
           "上传了"
         ],
-        "predictions": [
-          "发给你",
-          "整理好",
-          "放进去"
-        ],
-        "lookup_hit": true,
-        "first_acceptable_rank": 1
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
       },
       {
         "id": "work_meetings-14",
@@ -6279,13 +6288,9 @@
           "检查",
           "拍照"
         ],
-        "predictions": [
-          "确认",
-          "检查",
-          "核对"
-        ],
-        "lookup_hit": true,
-        "first_acceptable_rank": 1
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
       },
       {
         "id": "product_supply-14",
@@ -6325,13 +6330,9 @@
           "通知我",
           "入库"
         ],
-        "predictions": [
-          "检查",
-          "确认",
-          "反馈"
-        ],
-        "lookup_hit": true,
-        "first_acceptable_rank": 1
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
       },
       {
         "id": "product_supply-17",
@@ -6533,13 +6534,9 @@
           "上传",
           "删除"
         ],
-        "predictions": [
-          "更新",
-          "整理",
-          "上传"
-        ],
-        "lookup_hit": true,
-        "first_acceptable_rank": 3
+        "predictions": [],
+        "lookup_hit": false,
+        "first_acceptable_rank": null
       },
       {
         "id": "software_documents-10",
@@ -6699,6 +6696,7 @@
         ],
         "predictions": [
           "的",
+          "啊",
           "了",
           "呢",
           "去",
@@ -6801,6 +6799,7 @@
         "predictions": [
           "的",
           "了",
+          "啊",
           "都",
           "吗",
           "里",
@@ -7021,8 +7020,8 @@
   },
   "gate": {
     "minimum_hit_improvement_pp": 10,
-    "hit_improvement_pp": 23.5,
-    "top3_change_pp": 6.5,
+    "hit_improvement_pp": 21.0,
+    "top3_change_pp": 4.5,
     "hit_improvement_passed": true,
     "overall_top3_not_lower": true,
     "quality_gate_passed": true,

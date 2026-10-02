@@ -1,6 +1,55 @@
-# 扩充公共接词库：来源、生成与交付状态
+# 公共接词库：来源、精修与交付状态
 
-2026-10-03。本轮完成公开语料生成、冻结质量评测、DB 构建及隔离引擎计时。新库仍是**候选资源**：真实鼠须管候选窗、点击提交和四类应用验收尚未完成，因此没有替换 `keytrack-predict.db` 或本机正在使用的默认库。异步 AI 与个人学习没有接入。
+2026-10-03。当前随 Keytrack 0.4.3 提供的公共候选资源采用保守精修 v3，**仍未替换 starter、fixture、默认 DB 或本机正在使用的库**。原生常用语发现已单独交付；异步 Kev、自动个人学习和候选译词未启用。真实鼠须管候选窗、点击提交及四类应用验收尚未完成。
+
+## 当前候选：保守精修 v3
+
+严格 v2 的覆盖和整体可接受率退步，已归档到 `data/prediction/quality-v2/`，不作为本轮候选升级。v3 从冻结首版完整键表出发，只去掉纯汉字数词、原词典单字语素、机械重复键和独立暴力动作词；保留其他权重、粒度和查键规则。删除规则及复现见 [精修记录](public-prediction-refinement-v3.md)。
+
+另由独立作者编写 60 个日常／工作完整短语键、180 个下一词候选，未读取评测或个人历史来添加答案。按 **starter > 原创补充 > 原公共表** 整键覆盖，不相加权重；starter 的 224 个键原样保留。补充全部生效，其中 4 个覆盖旧键、56 个是新键。
+
+旧表筛选删除 1,955 对、118 个键；合并补充后的最终差异为删除 1,968 对、增加 179 对、净减少 1,789 对。1 个已有词对改用原创来源的排序权重。
+
+| 当前资源 | 值 |
+| --- | --- |
+| 公共完整键／词对 | 9,998／33,433 |
+| DB | 483,908 字节 |
+| 源表 SHA-256 | `a47faf822914012f80de1bb95f2257e4ba2bea9b514f5fc83251d344d328f005` |
+| DB SHA-256 | `bcefc0b84279c589b1ec45c2c6e9448a4ea64cc8909c9b182076db6ffd9022b9` |
+| 原创补充 SHA-256 | `fe4afb9e5bcb263448a956fae6825c476c73b52aac7b1728e6b2a3f2e3bdaab5` |
+
+`data/prediction/public.*` 与 `keytrack-predict-public.*` 是当前候选；`refined.ngram.tsv` 是含首版 starter 的过滤中间表。`lccc.ngram.tsv` 保留首版纯语料统计，仅为历史来源原料，没有改名冒充精修输出。完整来源链、许可、删除原因、补充来源及哈希见 `public.provenance.json`；首版全部资源保存在 `quality-v1/`。
+
+固定编辑抽查涵盖 120 个旧键的 272 个 Top 3 词对，以及原创补充全部 180 对，共 452 对。仍有 5 个机械／词序疑虑和若干弱搭配，原创补充也有需要继续输入才成句的候选。旧已知片段 `方→二八`、`是的是→的` 已清除，`吧来→吧` 仍存在。评分后没有按这些个例改表；详细发现见 `public-review-findings.json`。这是有限抽查，不是全库错误率。
+
+## 三份冻结评测
+
+同样用最后一次**完整上屏文本**精确查键，无运行时分词、尾词回溯或宽松答案。v1、v2 用于回归；v3 在精修规则和原创补充完成之前独立编写并冻结，评分后未改题、答案、规则或补充。每份分开展示，不合并分母。
+
+| 数据集 | 原公共库命中 → v3 | 整体 Top 3 可接受 | 短语 Top 3 可接受 |
+| --- | --- | --- | --- |
+| v1，200 条回归 | 78/200 → 83/200 | 39/200（19.5%）→ 43/200（21.5%） | 4/80（5%）→ 8/80（10%） |
+| v2，100 条回归 | 28/100 → 29/100 | 6/100 → 6/100 | 1/40 → 1/40 |
+| v3，100 条新留出 | 23/100 → 24/100 | 4/100 → 4/100 | 0/40 → 0/40 |
+
+v1 的整体 Top 1 从 19/200 到 22/200，命中内 Top 3 从 50% 到 51.81%。新 v3 留出中 Top 1 为 1/100；命中内 Top 3 从 4/23（17.39%）到 4/24（16.67%）。相对 starter 的新留出命中为 10%→24%、整体 Top 3 为 3%→4%，初始门槛通过。边界在三份数据均不出候选。
+
+保守版改善了旧集的短语覆盖，另外两份整体质量持平，**尚未证明泛化可接受率提高**。完整报告见 [v1 与 starter](public-prediction-evaluation.md)、[与首版的 v1 回归](public-prediction-refinement-v3-regression.md)、[v2 回归](public-prediction-refinement-v3-v2.md)、[新 v3 留出](public-prediction-evaluation-v3.md)。
+
+## 当前引擎验证
+
+Mac17,4、macOS 27.2、Squirrel 1.1.2／librime 1.16.0，私有 HOME、合成翻译、未修改的生产采集器。100 个固定命中键预热后测 1,000 次，前 3 项均与源表一致；无匹配另测 1,000 次。
+
+| 按键处理边界，含采集／观察器／查库 | 中位 | p95 | p99 |
+| --- | ---: | ---: | ---: |
+| 命中 | 0.2825 ms | 0.5098 ms | 0.7006 ms |
+| 未命中 | 0.1564 ms | 0.3230 ms | 0.4550 ms |
+
+性能预算通过，结果在 `data/prediction/public-engine-benchmark.json`。不是纯 DB 查询耗时，不包含真实候选窗；新进程首次选方案只有 1 次、1.5416 ms，缓存未受控，不能当冷启动分位数。源表变化和系统负载不同，不用两轮计时相减宣称提速。
+
+fixture 116 个按键及 Kev 35 个按键的隔离引擎回归均通过，普通拼音、空格、标点、退出、撤销和常用语保持原规则。桌面仍没有成功进入鼠须管中文输入，不能把引擎通过当作候选窗、点击或应用兼容验收。
+
+以下“首版”段落保留第一次交付的来源和历史结果；表中同名资源均指 `data/prediction/quality-v1/`，不代表当前候选。
 
 ## 固定来源
 
@@ -19,7 +68,7 @@
 
 原始公开对话与维护者工具只保存在忽略的 `.local/prediction-corpus/`。交付包含派生词对、审查样本、许可和清单；没有原始对话、模型权重、个人输入历史或常用语。分词工具是维护者生成依赖，输入法和安装包运行不需要 jieba。
 
-## 处理规则
+## 首版处理与规模（历史）
 
 `scripts/generate-public-prediction.py` 在离线环境运行。使用种子 `20261002`，按文件原始顺序对每个对话组用独立伪随机序列以 1/32 概率抽样。得到 213,540 组不同对话、628,540 条语句；1 组完全重复对话去重，822 条超长或命中过滤项的语句不参与提取。不是前 213,540 组截取。
 
@@ -39,7 +88,7 @@
 
 starter、fixture 和现有默认 DB 均保持原字节。原始生成参数与产物哈希见 `public.provenance.json`，匹配的引擎、编译器和 DB 哈希见 `keytrack-predict-public.manifest.json`。
 
-## 编辑抽查与质量
+## 首版编辑抽查与质量（历史）
 
 `public-review-sample.json` 固定抽取语料中保留次数总和最高的 20 个键，以及其余键中的 100 个均匀随机键。**该文件展示 starter 覆盖之前的语料候选**。本轮检查其全部 Top 3；另检查其中 12 个被 starter 覆盖的键在最终公共库里的 36 个替代候选。最终相同 120 个键共 286 个 Top 3 词对。
 
@@ -56,9 +105,9 @@ starter、fixture 和现有默认 DB 均保持原字节。原始生成参数与�
 | 短语 Top 3 可接受 | 0/80 | 4/80，5% |
 | 边界不出候选 | 20/20 | 20/20 |
 
-命中 +21 个百分点、整体 Top 3 +4.5 个百分点，两项初始数据门槛通过。命中内 Top 3 降到 50%，表明新增覆盖中的候选质量仍有限；短语收益也小，不能宣称已有高质量全面接词。完整逐题结果见 [评测报告](public-prediction-evaluation.md)。
+命中 +21 个百分点、整体 Top 3 +4.5 个百分点，两项初始数据门槛通过。命中内 Top 3 降到 50%，表明新增覆盖中的候选质量仍有限；短语收益也小，不能宣称已有高质量全面接词。完整逐题结果见 [首版评测报告](../data/prediction/quality-v1/public-prediction-evaluation.md)。
 
-## 引擎性能与验收边界
+## 首版引擎性能与验收边界（历史）
 
 在 Mac17,4、macOS 27.2、鼠须管 1.1.2／librime 1.16.0 上，用私有 HOME、合成翻译、未修改的生产采集器测量。命中组覆盖 100 个固定键，全部预热一遍后测试 1,000 次；未命中组预热 20 次后测试 1,000 次。
 
@@ -73,30 +122,31 @@ starter、fixture 和现有默认 DB 均保持原字节。原始生成参数与�
 
 本轮桌面自动化在 TextEdit 中没有成功切入鼠须管中文输入；屏幕显示普通英文文本和系统英文纠正，未出现真实 Rime 菜单。因此候选点击、四类应用与至少 100 次真实窗口计时**均未通过**。不因离线门槛通过就替换默认资源。
 
-## 复现及后续替换
+## 当前候选复现及回退
 
-生成工具只处理显式给出的公开文件，先核对 SHA-256；输出不能覆盖输入、源 starter 或脚本。固定原文件下载到 `.local/prediction-corpus/`，从 PyPI 下载 jieba 0.42.1 源包并核对上表哈希，解压到同目录 `tools/` 后：
+固定首版派生表、来源清单、原创补充和 jieba 0.42.1 原词典，然后在独立目录生成。工具会核对输入与词典哈希，不读取个人历史，不依赖评测答案：
 
 ```sh
-.venv/bin/python scripts/generate-public-prediction.py \
-  --input .local/prediction-corpus/lccc_base_train.jsonl.gz \
-  --sha256 2162e0ed923fba62329cabf7e1493fbe59248afc94a62508e4abdea61e624627 \
-  --source-url https://huggingface.co/datasets/silver/lccc/resolve/5bd582fa28cd7143f2f9c852e08e23089d677c44/lccc_base_train.jsonl.gz \
-  --revision 5bd582fa28cd7143f2f9c852e08e23089d677c44 \
-  --jieba-path .local/prediction-corpus/tools/jieba-0.42.1
-.venv/bin/python scripts/evaluate-prediction.py \
-  --candidate data/prediction/public.ngram.tsv \
-  --json data/prediction/public-evaluation.json \
-  --markdown docs/public-prediction-evaluation.md --fail-on-gate
+.venv/bin/python scripts/refine-public-prediction.py \
+  --jieba-path .local/prediction-corpus/tools/jieba-0.42.1 \
+  --supplement data/prediction/workday-supplement-v1.ngram.tsv \
+  --supplement-provenance data/prediction/workday-supplement-v1.manifest.json \
+  --output /absolute/path/refinement-repro
 .venv/bin/python scripts/build-predict-db.py --offline \
-  --input data/prediction/public.ngram.tsv \
-  --output data/prediction/keytrack-predict-public.db --license MIT
+  --input /absolute/path/refinement-repro/public.ngram.tsv \
+  --output /absolute/path/refinement-repro/keytrack-predict-public.db --license MIT
+.venv/bin/python scripts/evaluate-prediction.py \
+  --baseline data/prediction/quality-v1/public.ngram.tsv \
+  --candidate /absolute/path/refinement-repro/public.ngram.tsv \
+  --dataset data/prediction/evaluation-v3.json
 .venv/bin/python tests/native_prediction_benchmark.py \
-  --db data/prediction/keytrack-predict-public.db \
-  --source data/prediction/public.ngram.tsv \
-  --output data/prediction/public-engine-benchmark.json
+  --db /absolute/path/refinement-repro/keytrack-predict-public.db \
+  --source /absolute/path/refinement-repro/public.ngram.tsv \
+  --output /absolute/path/refinement-repro/benchmark.json
 ```
 
-默认 `build-predict-db.py` 仍构建 starter。后续先备份本机管理文件，再以显式 DB 路径安装候选库，完成真实窗口及点击验证后才晋升默认公共版本。当前安装器把显式 `--db-file` 视为自定义库，重复安装会保留它；本轮未提前实现阶段 D 的 public/custom/merged 模式迁移。
+相同输入的四类表／清单二次生成逐字节一致，DB 在固定引擎和架构重建一致。严格生成器现在默认输出 `quality-v2/`，避免覆盖当前候选；严格规则文档和旧分数只作为未选实验保留。
 
-回退候选库时恢复安装前备份中的 DB 与安装清单，然后部署、重新切换方案，确认读取上一版本。当前默认库没有被替换，无需执行这一步。公共库升级及个人合并仍需后续独立实现。
+默认 builder 仍构建 starter。候选晋升前须备份本机 DB／清单、显式安装并完成真实窗口与点击检查。安装器把显式 `--db-file` 视为自定义库，重复安装保留它；public/custom/merged 模式及个人合并仍属后续范围。
+
+本机没有切换预测库，本轮回退只需退回应用。若以后显式试用候选库，恢复安装前 DB 与清单，再部署、切换方案并确认读到旧库。候选资源和个人常用语互相独立。

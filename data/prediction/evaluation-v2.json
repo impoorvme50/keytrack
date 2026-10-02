@@ -1,0 +1,1151 @@
+{
+  "schema_version": 1,
+  "dataset_id": "prediction-evaluation-v2-independent-holdout-100",
+  "purpose": "第二轮公共接词改进的独立追加 holdout；v2 名称不表示替换 evaluation-v1。",
+  "construction": "仅查阅评测器和命令入口的格式；先人工独立构造语义与下一词答案，再冻结；未读取现有题库、报告、词库、生成器输出或真实输入历史。",
+  "next_word_policy": "acceptable_next 是紧跟完整上屏单位的一个词，含独立语气词和功能词；不接受把后续整句或多词串视作一个下一词。",
+  "examples": [
+    {
+      "id": "v2-001",
+      "situation": "home_daily",
+      "situation_label": "家庭日常",
+      "kind": "word",
+      "commit": "门锁",
+      "acceptable_next": [
+        "松动",
+        "生锈"
+      ]
+    },
+    {
+      "id": "v2-002",
+      "situation": "home_daily",
+      "situation_label": "家庭日常",
+      "kind": "word",
+      "commit": "阳台",
+      "acceptable_next": [
+        "晒",
+        "种"
+      ]
+    },
+    {
+      "id": "v2-003",
+      "situation": "home_daily",
+      "situation_label": "家庭日常",
+      "kind": "word",
+      "commit": "地板",
+      "acceptable_next": [
+        "湿",
+        "滑"
+      ]
+    },
+    {
+      "id": "v2-004",
+      "situation": "home_daily",
+      "situation_label": "家庭日常",
+      "kind": "word",
+      "commit": "垃圾",
+      "acceptable_next": [
+        "分类",
+        "桶"
+      ]
+    },
+    {
+      "id": "v2-005",
+      "situation": "home_daily",
+      "situation_label": "家庭日常",
+      "kind": "phrase",
+      "commit": "下班回家",
+      "acceptable_next": [
+        "以后",
+        "之前"
+      ]
+    },
+    {
+      "id": "v2-006",
+      "situation": "home_daily",
+      "situation_label": "家庭日常",
+      "kind": "phrase",
+      "commit": "窗户开着",
+      "acceptable_next": [
+        "呢",
+        "吗"
+      ]
+    },
+    {
+      "id": "v2-007",
+      "situation": "home_daily",
+      "situation_label": "家庭日常",
+      "kind": "phrase",
+      "commit": "刚洗完澡",
+      "acceptable_next": [
+        "了",
+        "就"
+      ]
+    },
+    {
+      "id": "v2-008",
+      "situation": "home_daily",
+      "situation_label": "家庭日常",
+      "kind": "phrase",
+      "commit": "我找不到",
+      "acceptable_next": [
+        "钥匙",
+        "手机",
+        "眼镜"
+      ]
+    },
+    {
+      "id": "v2-009",
+      "situation": "home_daily",
+      "situation_label": "家庭日常",
+      "kind": "unmatched",
+      "commit": "储物柜最上层的毛毯",
+      "acceptable_next": [
+        "受潮",
+        "发霉"
+      ],
+      "annotation": "独立构造的稀疏长前键探针；未查词库，是否未匹配由冻结后的实际精确查键结果确定。"
+    },
+    {
+      "id": "v2-010",
+      "situation": "home_daily",
+      "situation_label": "家庭日常",
+      "kind": "boundary",
+      "commit": "到家了。",
+      "acceptable_next": [],
+      "annotation": "边界输入应无接词；完整文本含终止标点、空白或非纯中文字符，不能清理后查键。"
+    },
+    {
+      "id": "v2-011",
+      "situation": "meal_ordering",
+      "situation_label": "吃饭与点餐",
+      "kind": "word",
+      "commit": "早餐",
+      "acceptable_next": [
+        "吃",
+        "准备"
+      ]
+    },
+    {
+      "id": "v2-012",
+      "situation": "meal_ordering",
+      "situation_label": "吃饭与点餐",
+      "kind": "word",
+      "commit": "米饭",
+      "acceptable_next": [
+        "凉",
+        "热",
+        "软"
+      ]
+    },
+    {
+      "id": "v2-013",
+      "situation": "meal_ordering",
+      "situation_label": "吃饭与点餐",
+      "kind": "word",
+      "commit": "口味",
+      "acceptable_next": [
+        "偏",
+        "清淡",
+        "重"
+      ]
+    },
+    {
+      "id": "v2-014",
+      "situation": "meal_ordering",
+      "situation_label": "吃饭与点餐",
+      "kind": "word",
+      "commit": "外卖",
+      "acceptable_next": [
+        "订单",
+        "平台",
+        "骑手"
+      ]
+    },
+    {
+      "id": "v2-015",
+      "situation": "meal_ordering",
+      "situation_label": "吃饭与点餐",
+      "kind": "phrase",
+      "commit": "今天想吃",
+      "acceptable_next": [
+        "面条",
+        "火锅",
+        "饺子"
+      ]
+    },
+    {
+      "id": "v2-016",
+      "situation": "meal_ordering",
+      "situation_label": "吃饭与点餐",
+      "kind": "phrase",
+      "commit": "少放一点",
+      "acceptable_next": [
+        "盐",
+        "辣椒",
+        "糖"
+      ]
+    },
+    {
+      "id": "v2-017",
+      "situation": "meal_ordering",
+      "situation_label": "吃饭与点餐",
+      "kind": "phrase",
+      "commit": "这道菜",
+      "acceptable_next": [
+        "好吃",
+        "咸",
+        "辣"
+      ]
+    },
+    {
+      "id": "v2-018",
+      "situation": "meal_ordering",
+      "situation_label": "吃饭与点餐",
+      "kind": "phrase",
+      "commit": "一共多少钱",
+      "acceptable_next": [
+        "啊",
+        "呢"
+      ]
+    },
+    {
+      "id": "v2-019",
+      "situation": "meal_ordering",
+      "situation_label": "吃饭与点餐",
+      "kind": "unmatched",
+      "commit": "靠窗那桌的菌菇汤",
+      "acceptable_next": [
+        "凉",
+        "咸"
+      ],
+      "annotation": "独立构造的稀疏长前键探针；未查词库，是否未匹配由冻结后的实际精确查键结果确定。"
+    },
+    {
+      "id": "v2-020",
+      "situation": "meal_ordering",
+      "situation_label": "吃饭与点餐",
+      "kind": "boundary",
+      "commit": "不加辣，谢谢！",
+      "acceptable_next": [],
+      "annotation": "边界输入应无接词；完整文本含终止标点、空白或非纯中文字符，不能清理后查键。"
+    },
+    {
+      "id": "v2-021",
+      "situation": "local_transport",
+      "situation_label": "市内出行",
+      "kind": "word",
+      "commit": "地铁",
+      "acceptable_next": [
+        "站",
+        "线路",
+        "入口"
+      ]
+    },
+    {
+      "id": "v2-022",
+      "situation": "local_transport",
+      "situation_label": "市内出行",
+      "kind": "word",
+      "commit": "公交",
+      "acceptable_next": [
+        "车",
+        "站",
+        "线路"
+      ]
+    },
+    {
+      "id": "v2-023",
+      "situation": "local_transport",
+      "situation_label": "市内出行",
+      "kind": "word",
+      "commit": "路口",
+      "acceptable_next": [
+        "右转",
+        "左转",
+        "直行"
+      ]
+    },
+    {
+      "id": "v2-024",
+      "situation": "local_transport",
+      "situation_label": "市内出行",
+      "kind": "word",
+      "commit": "停车",
+      "acceptable_next": [
+        "收费",
+        "时间",
+        "方便"
+      ]
+    },
+    {
+      "id": "v2-025",
+      "situation": "local_transport",
+      "situation_label": "市内出行",
+      "kind": "phrase",
+      "commit": "我在路上",
+      "acceptable_next": [
+        "了",
+        "呢"
+      ]
+    },
+    {
+      "id": "v2-026",
+      "situation": "local_transport",
+      "situation_label": "市内出行",
+      "kind": "phrase",
+      "commit": "下一站",
+      "acceptable_next": [
+        "下车",
+        "换乘"
+      ]
+    },
+    {
+      "id": "v2-027",
+      "situation": "local_transport",
+      "situation_label": "市内出行",
+      "kind": "phrase",
+      "commit": "快到公司",
+      "acceptable_next": [
+        "了",
+        "吗"
+      ]
+    },
+    {
+      "id": "v2-028",
+      "situation": "local_transport",
+      "situation_label": "市内出行",
+      "kind": "phrase",
+      "commit": "这里能停车",
+      "acceptable_next": [
+        "吗"
+      ]
+    },
+    {
+      "id": "v2-029",
+      "situation": "local_transport",
+      "situation_label": "市内出行",
+      "kind": "unmatched",
+      "commit": "河边那条临时便道",
+      "acceptable_next": [
+        "封闭",
+        "积水"
+      ],
+      "annotation": "独立构造的稀疏长前键探针；未查词库，是否未匹配由冻结后的实际精确查键结果确定。"
+    },
+    {
+      "id": "v2-030",
+      "situation": "local_transport",
+      "situation_label": "市内出行",
+      "kind": "boundary",
+      "commit": "地铁 站",
+      "acceptable_next": [],
+      "annotation": "边界输入应无接词；完整文本含终止标点、空白或非纯中文字符，不能清理后查键。"
+    },
+    {
+      "id": "v2-031",
+      "situation": "work_coordination",
+      "situation_label": "同事协作",
+      "kind": "word",
+      "commit": "会议",
+      "acceptable_next": [
+        "时间",
+        "纪要",
+        "安排"
+      ]
+    },
+    {
+      "id": "v2-032",
+      "situation": "work_coordination",
+      "situation_label": "同事协作",
+      "kind": "word",
+      "commit": "进度",
+      "acceptable_next": [
+        "如何",
+        "正常",
+        "缓慢"
+      ]
+    },
+    {
+      "id": "v2-033",
+      "situation": "work_coordination",
+      "situation_label": "同事协作",
+      "kind": "word",
+      "commit": "文件",
+      "acceptable_next": [
+        "版本",
+        "名称",
+        "格式"
+      ]
+    },
+    {
+      "id": "v2-034",
+      "situation": "work_coordination",
+      "situation_label": "同事协作",
+      "kind": "word",
+      "commit": "同事",
+      "acceptable_next": [
+        "休假",
+        "请假",
+        "出差"
+      ]
+    },
+    {
+      "id": "v2-035",
+      "situation": "work_coordination",
+      "situation_label": "同事协作",
+      "kind": "phrase",
+      "commit": "下午开会",
+      "acceptable_next": [
+        "吗",
+        "吧"
+      ]
+    },
+    {
+      "id": "v2-036",
+      "situation": "work_coordination",
+      "situation_label": "同事协作",
+      "kind": "phrase",
+      "commit": "我已经看过",
+      "acceptable_next": [
+        "了",
+        "邮件",
+        "附件"
+      ]
+    },
+    {
+      "id": "v2-037",
+      "situation": "work_coordination",
+      "situation_label": "同事协作",
+      "kind": "phrase",
+      "commit": "请大家确认",
+      "acceptable_next": [
+        "时间",
+        "名单",
+        "数量"
+      ]
+    },
+    {
+      "id": "v2-038",
+      "situation": "work_coordination",
+      "situation_label": "同事协作",
+      "kind": "phrase",
+      "commit": "这件事",
+      "acceptable_next": [
+        "需要",
+        "可以",
+        "已经"
+      ]
+    },
+    {
+      "id": "v2-039",
+      "situation": "work_coordination",
+      "situation_label": "同事协作",
+      "kind": "unmatched",
+      "commit": "临时借来的圆形转接头",
+      "acceptable_next": [
+        "坏",
+        "丢失"
+      ],
+      "annotation": "独立构造的稀疏长前键探针；未查词库，是否未匹配由冻结后的实际精确查键结果确定。"
+    },
+    {
+      "id": "v2-040",
+      "situation": "work_coordination",
+      "situation_label": "同事协作",
+      "kind": "boundary",
+      "commit": "会议\n",
+      "acceptable_next": [],
+      "annotation": "边界输入应无接词；完整文本含终止标点、空白或非纯中文字符，不能清理后查键。"
+    },
+    {
+      "id": "v2-041",
+      "situation": "customer_service",
+      "situation_label": "客户沟通",
+      "kind": "word",
+      "commit": "客户",
+      "acceptable_next": [
+        "反馈",
+        "要求",
+        "咨询"
+      ]
+    },
+    {
+      "id": "v2-042",
+      "situation": "customer_service",
+      "situation_label": "客户沟通",
+      "kind": "word",
+      "commit": "样品",
+      "acceptable_next": [
+        "颜色",
+        "尺寸",
+        "数量"
+      ]
+    },
+    {
+      "id": "v2-043",
+      "situation": "customer_service",
+      "situation_label": "客户沟通",
+      "kind": "word",
+      "commit": "报价",
+      "acceptable_next": [
+        "有效期",
+        "包含"
+      ]
+    },
+    {
+      "id": "v2-044",
+      "situation": "customer_service",
+      "situation_label": "客户沟通",
+      "kind": "word",
+      "commit": "售后",
+      "acceptable_next": [
+        "服务",
+        "处理",
+        "电话"
+      ]
+    },
+    {
+      "id": "v2-045",
+      "situation": "customer_service",
+      "situation_label": "客户沟通",
+      "kind": "phrase",
+      "commit": "请问您需要",
+      "acceptable_next": [
+        "什么",
+        "多少",
+        "哪种"
+      ]
+    },
+    {
+      "id": "v2-046",
+      "situation": "customer_service",
+      "situation_label": "客户沟通",
+      "kind": "phrase",
+      "commit": "我们可以提供",
+      "acceptable_next": [
+        "样品",
+        "发票",
+        "资料"
+      ]
+    },
+    {
+      "id": "v2-047",
+      "situation": "customer_service",
+      "situation_label": "客户沟通",
+      "kind": "phrase",
+      "commit": "货已经发出",
+      "acceptable_next": [
+        "了"
+      ]
+    },
+    {
+      "id": "v2-048",
+      "situation": "customer_service",
+      "situation_label": "客户沟通",
+      "kind": "phrase",
+      "commit": "方便的话",
+      "acceptable_next": [
+        "请",
+        "可以"
+      ]
+    },
+    {
+      "id": "v2-049",
+      "situation": "customer_service",
+      "situation_label": "客户沟通",
+      "kind": "unmatched",
+      "commit": "盒内那张双语保养卡",
+      "acceptable_next": [
+        "缺失",
+        "破损"
+      ],
+      "annotation": "独立构造的稀疏长前键探针；未查词库，是否未匹配由冻结后的实际精确查键结果确定。"
+    },
+    {
+      "id": "v2-050",
+      "situation": "customer_service",
+      "situation_label": "客户沟通",
+      "kind": "boundary",
+      "commit": "客户？",
+      "acceptable_next": [],
+      "annotation": "边界输入应无接词；完整文本含终止标点、空白或非纯中文字符，不能清理后查键。"
+    },
+    {
+      "id": "v2-051",
+      "situation": "purchase_payment",
+      "situation_label": "购物与付款",
+      "kind": "word",
+      "commit": "预算",
+      "acceptable_next": [
+        "有限",
+        "多少",
+        "不足"
+      ]
+    },
+    {
+      "id": "v2-052",
+      "situation": "purchase_payment",
+      "situation_label": "购物与付款",
+      "kind": "word",
+      "commit": "发票",
+      "acceptable_next": [
+        "抬头",
+        "税号",
+        "开具"
+      ]
+    },
+    {
+      "id": "v2-053",
+      "situation": "purchase_payment",
+      "situation_label": "购物与付款",
+      "kind": "word",
+      "commit": "库存",
+      "acceptable_next": [
+        "不足",
+        "充足",
+        "数量"
+      ]
+    },
+    {
+      "id": "v2-054",
+      "situation": "purchase_payment",
+      "situation_label": "购物与付款",
+      "kind": "word",
+      "commit": "付款",
+      "acceptable_next": [
+        "方式",
+        "时间",
+        "完成"
+      ]
+    },
+    {
+      "id": "v2-055",
+      "situation": "purchase_payment",
+      "situation_label": "购物与付款",
+      "kind": "phrase",
+      "commit": "这个还有",
+      "acceptable_next": [
+        "货",
+        "库存",
+        "优惠"
+      ]
+    },
+    {
+      "id": "v2-056",
+      "situation": "purchase_payment",
+      "situation_label": "购物与付款",
+      "kind": "phrase",
+      "commit": "价格有点",
+      "acceptable_next": [
+        "高",
+        "贵",
+        "低"
+      ]
+    },
+    {
+      "id": "v2-057",
+      "situation": "purchase_payment",
+      "situation_label": "购物与付款",
+      "kind": "phrase",
+      "commit": "我先付款",
+      "acceptable_next": [
+        "了",
+        "吧"
+      ]
+    },
+    {
+      "id": "v2-058",
+      "situation": "purchase_payment",
+      "situation_label": "购物与付款",
+      "kind": "phrase",
+      "commit": "能不能便宜",
+      "acceptable_next": [
+        "一点",
+        "些"
+      ]
+    },
+    {
+      "id": "v2-059",
+      "situation": "purchase_payment",
+      "situation_label": "购物与付款",
+      "kind": "unmatched",
+      "commit": "快递箱侧面的白色封条",
+      "acceptable_next": [
+        "破损",
+        "脱落"
+      ],
+      "annotation": "独立构造的稀疏长前键探针；未查词库，是否未匹配由冻结后的实际精确查键结果确定。"
+    },
+    {
+      "id": "v2-060",
+      "situation": "purchase_payment",
+      "situation_label": "购物与付款",
+      "kind": "boundary",
+      "commit": "\t付款",
+      "acceptable_next": [],
+      "annotation": "边界输入应无接词；完整文本含终止标点、空白或非纯中文字符，不能清理后查键。"
+    },
+    {
+      "id": "v2-061",
+      "situation": "travel_stay",
+      "situation_label": "旅行与住宿",
+      "kind": "word",
+      "commit": "酒店",
+      "acceptable_next": [
+        "地址",
+        "房间",
+        "预订"
+      ]
+    },
+    {
+      "id": "v2-062",
+      "situation": "travel_stay",
+      "situation_label": "旅行与住宿",
+      "kind": "word",
+      "commit": "行李",
+      "acceptable_next": [
+        "托运",
+        "寄存",
+        "箱"
+      ]
+    },
+    {
+      "id": "v2-063",
+      "situation": "travel_stay",
+      "situation_label": "旅行与住宿",
+      "kind": "word",
+      "commit": "景点",
+      "acceptable_next": [
+        "门票",
+        "开放",
+        "介绍"
+      ]
+    },
+    {
+      "id": "v2-064",
+      "situation": "travel_stay",
+      "situation_label": "旅行与住宿",
+      "kind": "word",
+      "commit": "航班",
+      "acceptable_next": [
+        "延误",
+        "取消",
+        "时间"
+      ]
+    },
+    {
+      "id": "v2-065",
+      "situation": "travel_stay",
+      "situation_label": "旅行与住宿",
+      "kind": "phrase",
+      "commit": "我想预订",
+      "acceptable_next": [
+        "房间",
+        "酒店",
+        "机票"
+      ]
+    },
+    {
+      "id": "v2-066",
+      "situation": "travel_stay",
+      "situation_label": "旅行与住宿",
+      "kind": "phrase",
+      "commit": "明天出发",
+      "acceptable_next": [
+        "吗",
+        "吧",
+        "了"
+      ]
+    },
+    {
+      "id": "v2-067",
+      "situation": "travel_stay",
+      "situation_label": "旅行与住宿",
+      "kind": "phrase",
+      "commit": "我们几点",
+      "acceptable_next": [
+        "集合",
+        "出发",
+        "到"
+      ]
+    },
+    {
+      "id": "v2-068",
+      "situation": "travel_stay",
+      "situation_label": "旅行与住宿",
+      "kind": "phrase",
+      "commit": "附近有没有",
+      "acceptable_next": [
+        "超市",
+        "餐厅",
+        "地铁"
+      ]
+    },
+    {
+      "id": "v2-069",
+      "situation": "travel_stay",
+      "situation_label": "旅行与住宿",
+      "kind": "unmatched",
+      "commit": "山脚那间带木窗的小客栈",
+      "acceptable_next": [
+        "停业",
+        "安静"
+      ],
+      "annotation": "独立构造的稀疏长前键探针；未查词库，是否未匹配由冻结后的实际精确查键结果确定。"
+    },
+    {
+      "id": "v2-070",
+      "situation": "travel_stay",
+      "situation_label": "旅行与住宿",
+      "kind": "boundary",
+      "commit": "。",
+      "acceptable_next": [],
+      "annotation": "边界输入应无接词；完整文本含终止标点、空白或非纯中文字符，不能清理后查键。"
+    },
+    {
+      "id": "v2-071",
+      "situation": "study_reading",
+      "situation_label": "学习与阅读",
+      "kind": "word",
+      "commit": "作业",
+      "acceptable_next": [
+        "完成",
+        "提交",
+        "要求"
+      ]
+    },
+    {
+      "id": "v2-072",
+      "situation": "study_reading",
+      "situation_label": "学习与阅读",
+      "kind": "word",
+      "commit": "词典",
+      "acceptable_next": [
+        "解释",
+        "释义",
+        "里"
+      ]
+    },
+    {
+      "id": "v2-073",
+      "situation": "study_reading",
+      "situation_label": "学习与阅读",
+      "kind": "word",
+      "commit": "笔记",
+      "acceptable_next": [
+        "整理",
+        "内容",
+        "本"
+      ]
+    },
+    {
+      "id": "v2-074",
+      "situation": "study_reading",
+      "situation_label": "学习与阅读",
+      "kind": "word",
+      "commit": "考试",
+      "acceptable_next": [
+        "时间",
+        "成绩",
+        "范围"
+      ]
+    },
+    {
+      "id": "v2-075",
+      "situation": "study_reading",
+      "situation_label": "学习与阅读",
+      "kind": "phrase",
+      "commit": "这道题",
+      "acceptable_next": [
+        "怎么",
+        "很",
+        "有点"
+      ]
+    },
+    {
+      "id": "v2-076",
+      "situation": "study_reading",
+      "situation_label": "学习与阅读",
+      "kind": "phrase",
+      "commit": "我不太明白",
+      "acceptable_next": [
+        "意思",
+        "为什么"
+      ]
+    },
+    {
+      "id": "v2-077",
+      "situation": "study_reading",
+      "situation_label": "学习与阅读",
+      "kind": "phrase",
+      "commit": "这本书",
+      "acceptable_next": [
+        "值得",
+        "好看",
+        "很"
+      ]
+    },
+    {
+      "id": "v2-078",
+      "situation": "study_reading",
+      "situation_label": "学习与阅读",
+      "kind": "phrase",
+      "commit": "请再解释",
+      "acceptable_next": [
+        "一下"
+      ]
+    },
+    {
+      "id": "v2-079",
+      "situation": "study_reading",
+      "situation_label": "学习与阅读",
+      "kind": "unmatched",
+      "commit": "课本边上画着星号的例题",
+      "acceptable_next": [
+        "很",
+        "比较"
+      ],
+      "annotation": "独立构造的稀疏长前键探针；未查词库，是否未匹配由冻结后的实际精确查键结果确定。"
+    },
+    {
+      "id": "v2-080",
+      "situation": "study_reading",
+      "situation_label": "学习与阅读",
+      "kind": "boundary",
+      "commit": "考试2026",
+      "acceptable_next": [],
+      "annotation": "边界输入应无接词；完整文本含终止标点、空白或非纯中文字符，不能清理后查键。"
+    },
+    {
+      "id": "v2-081",
+      "situation": "family_care",
+      "situation_label": "家人与关心",
+      "kind": "word",
+      "commit": "家人",
+      "acceptable_next": [
+        "平安",
+        "团聚",
+        "支持"
+      ]
+    },
+    {
+      "id": "v2-082",
+      "situation": "family_care",
+      "situation_label": "家人与关心",
+      "kind": "word",
+      "commit": "孩子",
+      "acceptable_next": [
+        "睡",
+        "喜欢",
+        "放学"
+      ]
+    },
+    {
+      "id": "v2-083",
+      "situation": "family_care",
+      "situation_label": "家人与关心",
+      "kind": "word",
+      "commit": "生日",
+      "acceptable_next": [
+        "礼物",
+        "快乐",
+        "蛋糕"
+      ]
+    },
+    {
+      "id": "v2-084",
+      "situation": "family_care",
+      "situation_label": "家人与关心",
+      "kind": "word",
+      "commit": "周末",
+      "acceptable_next": [
+        "有空",
+        "休息",
+        "安排"
+      ]
+    },
+    {
+      "id": "v2-085",
+      "situation": "family_care",
+      "situation_label": "家人与关心",
+      "kind": "phrase",
+      "commit": "到家给我",
+      "acceptable_next": [
+        "打",
+        "发"
+      ]
+    },
+    {
+      "id": "v2-086",
+      "situation": "family_care",
+      "situation_label": "家人与关心",
+      "kind": "phrase",
+      "commit": "别忘了带",
+      "acceptable_next": [
+        "钥匙",
+        "伞",
+        "水"
+      ]
+    },
+    {
+      "id": "v2-087",
+      "situation": "family_care",
+      "situation_label": "家人与关心",
+      "kind": "phrase",
+      "commit": "早点休息",
+      "acceptable_next": [
+        "吧",
+        "啊"
+      ]
+    },
+    {
+      "id": "v2-088",
+      "situation": "family_care",
+      "situation_label": "家人与关心",
+      "kind": "phrase",
+      "commit": "今天过生日",
+      "acceptable_next": [
+        "吗",
+        "呢"
+      ]
+    },
+    {
+      "id": "v2-089",
+      "situation": "family_care",
+      "situation_label": "家人与关心",
+      "kind": "unmatched",
+      "commit": "玄关小篮子里的备用围巾",
+      "acceptable_next": [
+        "脏",
+        "旧",
+        "湿"
+      ],
+      "annotation": "独立构造的稀疏长前键探针；未查词库，是否未匹配由冻结后的实际精确查键结果确定。"
+    },
+    {
+      "id": "v2-090",
+      "situation": "family_care",
+      "situation_label": "家人与关心",
+      "kind": "boundary",
+      "commit": "家人 ",
+      "acceptable_next": [],
+      "annotation": "边界输入应无接词；完整文本含终止标点、空白或非纯中文字符，不能清理后查键。"
+    },
+    {
+      "id": "v2-091",
+      "situation": "leisure_friends",
+      "situation_label": "休闲与朋友",
+      "kind": "word",
+      "commit": "电影",
+      "acceptable_next": [
+        "票",
+        "开场",
+        "推荐"
+      ]
+    },
+    {
+      "id": "v2-092",
+      "situation": "leisure_friends",
+      "situation_label": "休闲与朋友",
+      "kind": "word",
+      "commit": "音乐",
+      "acceptable_next": [
+        "好听",
+        "节奏",
+        "播放"
+      ]
+    },
+    {
+      "id": "v2-093",
+      "situation": "leisure_friends",
+      "situation_label": "休闲与朋友",
+      "kind": "word",
+      "commit": "朋友",
+      "acceptable_next": [
+        "聚会",
+        "介绍",
+        "推荐"
+      ]
+    },
+    {
+      "id": "v2-094",
+      "situation": "leisure_friends",
+      "situation_label": "休闲与朋友",
+      "kind": "word",
+      "commit": "照片",
+      "acceptable_next": [
+        "清晰",
+        "好看",
+        "保存"
+      ]
+    },
+    {
+      "id": "v2-095",
+      "situation": "leisure_friends",
+      "situation_label": "休闲与朋友",
+      "kind": "phrase",
+      "commit": "要不要一起",
+      "acceptable_next": [
+        "去",
+        "看",
+        "吃"
+      ]
+    },
+    {
+      "id": "v2-096",
+      "situation": "leisure_friends",
+      "situation_label": "休闲与朋友",
+      "kind": "phrase",
+      "commit": "周末去哪儿",
+      "acceptable_next": [
+        "玩",
+        "逛"
+      ]
+    },
+    {
+      "id": "v2-097",
+      "situation": "leisure_friends",
+      "situation_label": "休闲与朋友",
+      "kind": "phrase",
+      "commit": "这张照片",
+      "acceptable_next": [
+        "好看",
+        "模糊",
+        "清晰"
+      ]
+    },
+    {
+      "id": "v2-098",
+      "situation": "leisure_friends",
+      "situation_label": "休闲与朋友",
+      "kind": "phrase",
+      "commit": "我先回去",
+      "acceptable_next": [
+        "了",
+        "吧"
+      ]
+    },
+    {
+      "id": "v2-099",
+      "situation": "leisure_friends",
+      "situation_label": "休闲与朋友",
+      "kind": "unmatched",
+      "commit": "上次野餐用过的格纹垫子",
+      "acceptable_next": [
+        "清洗",
+        "收"
+      ],
+      "annotation": "独立构造的稀疏长前键探针；未查词库，是否未匹配由冻结后的实际精确查键结果确定。"
+    },
+    {
+      "id": "v2-100",
+      "situation": "leisure_friends",
+      "situation_label": "休闲与朋友",
+      "kind": "boundary",
+      "commit": "好呀！",
+      "acceptable_next": [],
+      "annotation": "边界输入应无接词；完整文本含终止标点、空白或非纯中文字符，不能清理后查键。"
+    }
+  ]
+}
