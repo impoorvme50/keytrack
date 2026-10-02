@@ -55,6 +55,70 @@ class ConsoleTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "其他窗口"):
             self.store.save_settings(settings, revision)
 
+    def test_commit_detects_external_edit_before_previous_read_without_backup(self):
+        target = self.store.targets["phrases.json"]
+        target.parent.mkdir(parents=True)
+        target.write_text("[]")
+        draft = json.dumps([{"code": "qdraft", "text": "尚未保存的合成草稿", "category": "测试"}])
+        external = json.dumps([{"code": "qexternal", "text": "外部新增的合成表达", "category": "测试"}])
+        revision = self.store.revision()
+        original_revision = self.store.revision
+        checks = 0
+
+        def edit_after_initial_revision():
+            nonlocal checks
+            value = original_revision()
+            checks += 1
+            if checks == 1:
+                target.write_text(external)
+            return value
+
+        with patch.object(self.store, "revision", side_effect=edit_after_initial_revision), \
+                patch.object(self.store, "backup", wraps=self.store.backup) as backup:
+            with self.assertRaisesRegex(ValueError, "其他窗口"):
+                self.store.commit({target: draft}, "synthetic snapshot race", revision)
+            backup.assert_not_called()
+        self.assertEqual(target.read_text(), external)
+        self.assertFalse((self.store.root / "backups").exists())
+
+    def test_commit_detects_global_external_edit_during_backup_before_writing(self):
+        target = self.store.targets["phrases.json"]
+        target.parent.mkdir(parents=True)
+        target.write_text("[]")
+        draft = json.dumps([{"code": "qdraft", "text": "尚未保存的合成草稿", "category": "测试"}])
+        external_target = self.store.targets["squirrel.custom.yaml"]
+        external = external_target.read_text() + "# synthetic external edit during backup\n"
+        revision = self.store.revision()
+        original_backup = self.store.backup
+
+        def edit_during_backup(reason):
+            external_target.write_text(external)
+            return original_backup(reason)
+
+        with patch.object(self.store, "backup", side_effect=edit_during_backup):
+            with self.assertRaisesRegex(ValueError, "其他窗口"):
+                self.store.commit({target: draft}, "synthetic backup race", revision)
+        self.assertEqual(target.read_text(), "[]")
+        self.assertEqual(external_target.read_text(), external)
+        self.assertEqual(len(self.store.backups()), 1)
+
+    def test_state_refuses_old_phrases_with_a_new_revision(self):
+        target = self.store.targets["phrases.json"]
+        target.parent.mkdir(parents=True)
+        target.write_text(json.dumps([{"code": "qold", "text": "原有合成表达", "category": "测试"}]))
+        external = json.dumps([{"code": "qexternal", "text": "外部新增合成表达", "category": "测试"}])
+        original_prediction_state = self.store.prediction_state
+
+        def edit_after_phrases_read():
+            target.write_text(external)
+            return original_prediction_state()
+
+        with patch.object(self.store, "prediction_state", side_effect=edit_after_phrases_read):
+            with self.assertRaisesRegex(ValueError, "读取期间"):
+                self.store.state()
+        self.assertEqual(target.read_text(), external)
+        self.assertEqual(self.store.backups(), [])
+
     def test_restore_preserves_unrelated_newer_edits(self):
         result = self.store.save_settings(dict(console.DEFAULTS, theme="green"), self.store.revision())
         custom = self.rime / "squirrel.custom.yaml"

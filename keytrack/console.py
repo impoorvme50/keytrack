@@ -7,6 +7,7 @@ import os
 import re
 import secrets
 import sqlite3
+import stat
 import subprocess
 import tempfile
 import threading
@@ -21,7 +22,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from . import key_stats
-from . import agent, appearance, doctor, kev_rime_setup, kev_switch, layouts, prediction_setup, rime_setup, storage, standalone
+from . import agent, appearance, doctor, kev_rime_setup, kev_switch, layouts, phrase_discovery, prediction_setup, rime_setup, storage, standalone
 
 PROJECT = Path(__file__).resolve().parent.parent
 ZONE = ZoneInfo("Asia/Shanghai")
@@ -323,6 +324,7 @@ class ConsoleStore:
         self.rime = rime_dir or Path(rime_setup.RIME_DIR)
         self.db, self.demo = db, demo
         self.lock = threading.RLock()
+        self._discovery_ids: set[str] = set()
         self._demo_prediction = {"enabled": False, "installed": True, "max_candidates": 3,
                                  "max_iterations": 1, "schema_id": "rime_ice_predict",
                                  "schema_name": prediction_setup.TITLE}
@@ -372,6 +374,7 @@ class ConsoleStore:
         return result
 
     def state(self) -> dict:
+        revision = self.revision()
         settings = json.loads(read_text(self.targets["settings.json"]) or "null")
         if settings is None:
             settings = dict(DEFAULTS)
@@ -391,12 +394,15 @@ class ConsoleStore:
         else:
             status = {"kev_enabled": kev_switch.is_enabled(), "recorder": agent.service_status(), "demo": False}
         prediction = self.prediction_state()
-        return {"settings": settings, "phrases": phrases, "revision": self.revision(), "status": status,
-                "appearance_themes": appearance.catalog(),
-                "appearance_baseline": self.appearance_baseline(settings),
-                "prediction": prediction,
-                "today": datetime.now(ZONE).date().isoformat(), "deployment": self.deployment(),
-                "installation": {"packaged": False, "configured": True, "can_install": False} if self.demo else standalone.status()}
+        result = {"settings": settings, "phrases": phrases, "revision": revision, "status": status,
+                  "appearance_themes": appearance.catalog(),
+                  "appearance_baseline": self.appearance_baseline(settings),
+                  "prediction": prediction,
+                  "today": datetime.now(ZONE).date().isoformat(), "deployment": self.deployment(),
+                  "installation": {"packaged": False, "configured": True, "can_install": False} if self.demo else standalone.status()}
+        if revision != self.revision():
+            raise ValueError("设置在读取期间被其他窗口或编辑器修改，请刷新后重试")
+        return result
 
     def save_prediction(self, request: dict) -> dict:
         """This independent switch never changes Kev or starts its model service."""
@@ -458,7 +464,11 @@ class ConsoleStore:
             raise ValueError("设置已被其他窗口或编辑器修改，请刷新后再保存")
         previous = {path: read_text(path) for path in changes}
         previous_prediction = self.prediction_state() if prediction is not None else None
+        if revision != self.revision():
+            raise ValueError("设置已被其他窗口或编辑器修改，请刷新后再保存")
         identifier = self.backup(reason)
+        if revision != self.revision():
+            raise ValueError("设置已被其他窗口或编辑器修改，请刷新后再保存")
         written = []
         prediction_changed = False
         try:
@@ -514,6 +524,61 @@ class ConsoleStore:
                    self.targets["rime_ice.custom.yaml"]: custom}
         changes.update(prediction_setup.console_schema_changes(self.rime, hotkey=settings["hotkey"]))
         return self.commit(changes, "更新外观与输入设置", revision)
+
+    def discovery_rejected(self) -> set[str]:
+        path = self.root / "discovery-rejected.json"
+        if path.is_symlink() or self.root.is_symlink():
+            raise ValueError("拒绝记录不能使用符号链接")
+        try:
+            descriptor = os.open(path, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW)
+        except FileNotFoundError:
+            return set()
+        try:
+            metadata = os.fstat(descriptor)
+            if not stat.S_ISREG(metadata.st_mode):
+                raise ValueError("拒绝记录必须是普通文件，原文件已保留")
+            if metadata.st_size > 150_000:
+                raise ValueError("拒绝记录超过上限，请检查本地文件")
+            with os.fdopen(descriptor, "rb") as stream:
+                descriptor = None
+                content = stream.read(150_001)
+            if len(content) > 150_000:
+                raise ValueError("拒绝记录超过上限，请检查本地文件")
+            value = json.loads(content.decode("utf-8"))
+        except (ValueError, UnicodeError) as error:
+            raise ValueError("拒绝记录格式不正确，原文件已保留") from error
+        finally:
+            if descriptor is not None:
+                os.close(descriptor)
+        ids = value.get("ids") if isinstance(value, dict) else None
+        if (not isinstance(value, dict) or value.get("version") != 1
+                or not isinstance(ids, list) or len(ids) > phrase_discovery.MAX_REJECTED
+                or any(not isinstance(item, str) or not re.fullmatch(r"[0-9a-f]{64}", item) for item in ids)):
+            raise ValueError("拒绝记录格式不正确，原文件已保留")
+        return set(ids)
+
+    def discover_phrases(self, days: int = 30) -> dict:
+        revision = self.revision()
+        rejected = self.discovery_rejected()
+        phrases = validate_phrases(json.loads(read_text(self.targets["phrases.json"]) or "[]"))
+        if revision != self.revision():
+            raise ValueError("常用语配置已改变，请刷新后重新分析")
+        result = phrase_discovery.discover(self.db, days, phrases, rejected)
+        self._discovery_ids = {item["id"] for item in result["candidates"]}
+        result["revision"] = revision
+        return result
+
+    def reject_discovered_phrases(self, ids) -> dict:
+        if (not isinstance(ids, list) or not 1 <= len(ids) <= 50
+                or any(not isinstance(item, str) or item not in self._discovery_ids for item in ids)):
+            raise ValueError("请先分析，再选择要忽略的建议")
+        rejected = self.discovery_rejected() | set(ids)
+        if len(rejected) > phrase_discovery.MAX_REJECTED:
+            raise ValueError("忽略记录达到 2000 条上限，未覆盖原文件")
+        atomic(self.root / "discovery-rejected.json",
+               json.dumps({"version": 1, "ids": sorted(rejected)}, ensure_ascii=False, indent=2) + "\n")
+        return {"message": "已记住忽略的建议，后续分析不再显示。", "rejected_count": len(rejected),
+                "rejected_ids": sorted(set(ids)), "revision": self.revision()}
 
     def save_phrases(self, raw, revision: str) -> dict:
         items = validate_phrases(raw)
@@ -730,6 +795,13 @@ def demo_store() -> tuple[ConsoleStore, tempfile.TemporaryDirectory]:
                     "keys": {"a": 8, "e": 10, "i": 4, "n": 6, "o": 5, "space": 3, "BackSpace": 1,
                              "comma": 1, "Super+Super_L": 1, "Super+a": 1, "Left": 1}}
                     for minute in range(20)])
+        for offset in (0, 1, 2):
+            base = datetime.combine(today - timedelta(days=offset), datetime.min.time(), ZONE).timestamp()
+            for hour, text in ((10, "收到，谢谢。我会核对后回复。"),
+                               (15, "样品准备好后，我会通知您。"),
+                               (17, "我们会在确认细节后安排发货。")):
+                storage.insert_segment(conn, "演示记录", None, base + hour * 3600,
+                                       base + hour * 3600 + 30, text, len(text))
     store = ConsoleStore(root / "console", rime, str(db), demo=True)
     items = [{"code": "qreply", "category": "工作回复", "text": "收到，谢谢。我会核对后回复。"},
              {"code": "qsample", "category": "外贸", "text": "Thank you for your inquiry. We will confirm the sample details shortly."}]
@@ -790,6 +862,10 @@ def native_request(store: ConsoleStore, request: dict) -> dict:
             return store.save_settings(request.get("settings"), request.get("revision"))
         if action == "phrases":
             return store.save_phrases(request.get("phrases"), request.get("revision"))
+        if action == "phrase_discovery":
+            return store.discover_phrases(request.get("days", 30))
+        if action == "phrase_discovery_reject":
+            return store.reject_discovered_phrases(request.get("ids"))
         if action == "prediction":
             return store.save_prediction(request)
         if action == "prediction_install":

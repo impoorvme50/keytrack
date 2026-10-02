@@ -8,6 +8,115 @@ struct Phrase: Codable, Equatable, Identifiable {
     var text: String
     var id: String { code }
 }
+struct PhraseDiscoveryCandidate: Decodable, Identifiable {
+    var id: String
+    var text: String
+    var count: Int
+    var batch_count: Int
+    var suggested_code: String
+    var duplicate: Bool
+    var code_conflict: Bool
+    var existing_code: String?
+}
+struct PhraseDiscoveryReport: Decodable {
+    var days: Int
+    var start_day: String
+    var end_day: String
+    var scanned_segments: Int
+    var truncated: Bool
+    var message: String
+    var batch_basis: String
+    var rejected_count: Int
+    var revision: String
+    var candidates: [PhraseDiscoveryCandidate]
+}
+struct PhraseDiscoveryRejection: Decodable {
+    var message: String
+    var rejected_count: Int
+    var rejected_ids: [String]
+    var revision: String
+}
+enum PhraseDiscoverySelection {
+    static func mnemonicCode(for text: String, transform: (String) -> String? = {
+        $0.applyingTransform(.mandarinToLatin, reverse: false)?.applyingTransform(.stripDiacritics, reverse: false)
+    }) -> String? {
+        guard text.range(of: "\\p{Han}", options: .regularExpression) != nil,
+              let converted = transform(text), converted.range(of: "\\p{Han}", options: .regularExpression) == nil else { return nil }
+        let words = converted.lowercased().components(separatedBy: CharacterSet.letters.inverted)
+            .filter { !$0.isEmpty && $0.range(of: "^[a-z]+$", options: .regularExpression) != nil }
+        guard words.count >= 4 else { return nil }
+        return "q" + words.prefix(6).compactMap { $0.first }.map(String.init).joined()
+    }
+    static func initialCodes(candidates: [PhraseDiscoveryCandidate], phrases: [Phrase], edits: [String: String],
+                             transform: (String) -> String? = {
+        $0.applyingTransform(.mandarinToLatin, reverse: false)?.applyingTransform(.stripDiacritics, reverse: false)
+    }) -> [String: String] {
+        var result = edits
+        var reserved = Set(phrases.map(\.code))
+        reserved.formUnion(result.values.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) })
+        // Reserve all portable fallbacks before choosing mnemonics, including
+        // later rows. Existing edits remain the user's responsibility to review.
+        let fallbacks = Set(candidates.map(\.suggested_code))
+        for candidate in candidates where result[candidate.id] == nil {
+            let fallback = candidate.suggested_code
+            let chosen: String
+            if let existing = duplicate(candidate, in: phrases) {
+                chosen = existing.code
+            } else if candidate.duplicate {
+                chosen = candidate.existing_code ?? fallback
+            } else if let mnemonic = mnemonicCode(for: candidate.text, transform: transform),
+                      !reserved.contains(mnemonic), !fallbacks.contains(mnemonic) || mnemonic == fallback {
+                chosen = mnemonic
+            } else {
+                chosen = fallback
+            }
+            result[candidate.id] = chosen
+            reserved.insert(chosen)
+        }
+        return result
+    }
+    static func normalizedText(_ text: String) -> String {
+        text.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    static func code(for candidate: PhraseDiscoveryCandidate, edits: [String: String]) -> String {
+        (edits[candidate.id] ?? candidate.suggested_code).trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    static func duplicate(_ candidate: PhraseDiscoveryCandidate, in phrases: [Phrase]) -> Phrase? {
+        phrases.first { normalizedText($0.text) == normalizedText(candidate.text) }
+    }
+    static func issue(for candidate: PhraseDiscoveryCandidate, candidates: [PhraseDiscoveryCandidate],
+                      selected: Set<String>, edits: [String: String], phrases: [Phrase]) -> String? {
+        if let existing = duplicate(candidate, in: phrases) { return "内容已在常用语列表中：\(existing.code)" }
+        if candidate.duplicate { return "已保存的常用语已有相同内容：\(candidate.existing_code ?? "请刷新后核对")" }
+        let code = code(for: candidate, edits: edits)
+        if code.range(of: "^[a-z]{2,20}$", options: .regularExpression) == nil || code.hasPrefix("u") || code.hasPrefix("v") {
+            return "短编码须为 2–20 位小写字母，避开 u、v 开头。"
+        }
+        if phrases.contains(where: { $0.code == code }) { return "短编码已被占用，请修改。" }
+        if candidate.code_conflict && code == candidate.suggested_code.trimmingCharacters(in: .whitespacesAndNewlines) {
+            return "原建议短编码已被占用，请修改。"
+        }
+        if candidates.contains(where: { $0.id != candidate.id && selected.contains($0.id) && Self.code(for: $0, edits: edits) == code }) {
+            return "所选建议的短编码重复，请修改。"
+        }
+        return nil
+    }
+    static func additions(candidates: [PhraseDiscoveryCandidate], selected: Set<String>,
+                          edits: [String: String], phrases: [Phrase]) throws -> [Phrase] {
+        let chosen = candidates.filter { selected.contains($0.id) }
+        guard !chosen.isEmpty else { throw LocalError(message: "请先勾选要加入的表达。") }
+        guard chosen.count + phrases.count <= 300 else { throw LocalError(message: "常用语最多 300 条，请减少选择或移出已有条目。") }
+        guard Set(chosen.map { normalizedText($0.text) }).count == chosen.count else {
+            throw LocalError(message: "所选建议包含相同内容，请保留一条。")
+        }
+        for candidate in chosen {
+            if let issue = issue(for: candidate, candidates: candidates, selected: selected, edits: edits, phrases: phrases) {
+                throw LocalError(message: issue)
+            }
+        }
+        return chosen.map { Phrase(code: code(for: $0, edits: edits), category: "发现", text: $0.text) }
+    }
+}
 struct AppRule: Codable, Equatable, Identifiable {
     var bundle: String
     var english: Bool
@@ -266,6 +375,10 @@ final class NativeBridge: @unchecked Sendable {
     @Published var notice = ""
     @Published var error: String?
     @Published var showText = false
+    @Published var discoveryDays = 30
+    @Published var phraseDiscovery: PhraseDiscoveryReport?
+    @Published var discoverySelected: Set<String> = []
+    @Published var discoveryCodes: [String: String] = [:]
     let bridge = NativeBridge.shared
     var dirty: Bool { guard let state else { return false }; return preferences != state.settings || phrases != state.phrases }
     static let dayFormat: DateFormatter = {
@@ -312,7 +425,60 @@ final class NativeBridge: @unchecked Sendable {
             self.showText = true
         }
     }
-    func discard() { guard let state else { return }; preferences = state.settings; phrases = state.phrases; notice = "已放弃未保存的修改" }
+    func discard() {
+        guard let state else { return }
+        preferences = state.settings; phrases = state.phrases
+        discoverySelected.removeAll(); notice = "已放弃未保存的修改"
+    }
+    func analyzePhraseHistory() {
+        let days = discoveryDays
+        operation {
+            let report: PhraseDiscoveryReport = try await self.bridge.request("phrase_discovery", ["days": days])
+            let phrases = self.phrases, codes = self.discoveryCodes
+            let initial = await Task.detached(priority: .userInitiated) {
+                PhraseDiscoverySelection.initialCodes(candidates: report.candidates, phrases: phrases, edits: codes)
+            }.value
+            self.discoveryCodes = initial
+            self.phraseDiscovery = report
+            self.discoverySelected.removeAll()
+        }
+    }
+    func clearPhraseDiscovery() {
+        phraseDiscovery = nil; discoverySelected.removeAll(); discoveryCodes.removeAll()
+    }
+    func discoveryIssue(_ candidate: PhraseDiscoveryCandidate) -> String? {
+        PhraseDiscoverySelection.issue(for: candidate, candidates: phraseDiscovery?.candidates ?? [],
+                                       selected: discoverySelected, edits: discoveryCodes, phrases: phrases)
+    }
+    var discoveryCanAdd: Bool {
+        guard let report = phraseDiscovery else { return false }
+        return (try? PhraseDiscoverySelection.additions(candidates: report.candidates, selected: discoverySelected,
+                                                       edits: discoveryCodes, phrases: phrases)) != nil
+    }
+    func addDiscoveredPhrases() {
+        guard let report = phraseDiscovery else { return }
+        do {
+            let additions = try PhraseDiscoverySelection.additions(candidates: report.candidates, selected: discoverySelected,
+                                                                   edits: discoveryCodes, phrases: phrases)
+            phrases.append(contentsOf: additions); discoverySelected.removeAll()
+            notice = "已加入 \(additions.count) 条待保存常用语，点击“保存并应用”后生效。"
+        } catch { self.error = error.localizedDescription }
+    }
+    func rejectDiscoveredPhrases(_ ids: [String]) {
+        guard !ids.isEmpty else { return }
+        operation {
+            let result: PhraseDiscoveryRejection = try await self.bridge.request("phrase_discovery_reject", ["ids": ids])
+            self.applyDiscoveryRejection(result)
+        }
+    }
+    func applyDiscoveryRejection(_ result: PhraseDiscoveryRejection) {
+        let rejected = Set(result.rejected_ids)
+        phraseDiscovery?.candidates.removeAll { rejected.contains($0.id) }
+        phraseDiscovery?.rejected_count = result.rejected_count
+        discoverySelected.subtract(rejected)
+        discoveryCodes = discoveryCodes.filter { !rejected.contains($0.key) }
+        notice = result.message
+    }
     func save() {
         guard let state else { return }
         operation {
@@ -321,7 +487,7 @@ final class NativeBridge: @unchecked Sendable {
             let value = try JSONSerialization.jsonObject(with: encoded)
             let field = action == "phrases" ? "phrases" : "settings"
             let result: Outcome = try await self.bridge.request(action, [field: value, "revision": state.revision])
-            try await self.reload(); self.notice = result.message
+            try await self.reload(); self.discoverySelected.removeAll(); self.notice = result.message
         }
     }
     func action(_ name: String, fields: [String: Any] = [:]) {

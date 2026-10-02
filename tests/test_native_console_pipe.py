@@ -46,6 +46,23 @@ class NativePipeTests(unittest.TestCase):
         self.assertEqual(self.request({"action": "state"})["phrases"], before)
         self.assertEqual(len(self.request({"action": "backups"})["backups"]), 2)
 
+    def test_discovery_is_explicit_hash_only_rejections_and_import_is_separate(self):
+        state = self.request({"action": "state"})
+        self.assertNotIn("candidates", state)
+        before = state["phrases"]
+        result = self.request({"action": "phrase_discovery", "days": 30})
+        self.assertTrue(result["candidates"])
+        self.assertEqual(result["revision"], state["revision"])
+        self.assertTrue(any(item["duplicate"] for item in result["candidates"]))
+        selected = next(item for item in result["candidates"] if not item["duplicate"])
+        ignored = self.request({"action": "phrase_discovery_reject", "ids": [selected["id"]]})
+        self.assertEqual(ignored["revision"], state["revision"])
+        self.assertEqual(ignored["rejected_ids"], [selected["id"]])
+        again = self.request({"action": "phrase_discovery", "days": 30})
+        self.assertNotIn(selected["id"], {item["id"] for item in again["candidates"]})
+        self.assertEqual(self.request({"action": "state"})["phrases"], before)
+        self.assertEqual(self.request({"action": "backups"})["backups"], [])
+
     def test_malformed_line_returns_one_error_and_next_request_succeeds(self):
         self.process.stdin.write("not-json\n")
         self.process.stdin.flush()

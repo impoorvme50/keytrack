@@ -288,6 +288,7 @@ struct PhrasesView: View {
             TextField("搜索内容、分类或编码", text: $query).textFieldStyle(.roundedBorder)
             Picker("分类", selection: $category) { Text("所有分类").tag(""); ForEach(categories, id: \.self) { Text($0).tag($0) } }.frame(width: 180)
         }
+        PhraseDiscoveryView()
         if filtered.isEmpty { Panel(title: model.phrases.isEmpty ? "添加第一条常用语" : "没有匹配的常用语") { Text("保存并应用后，短编码会接入雾凇拼音。").foregroundStyle(.secondary) } }
         ForEach(filtered) { item in
             Panel(title: item.category, caption: item.code) {
@@ -301,6 +302,100 @@ struct PhrasesView: View {
             }
         }
         .sheet(item: $editor) { item in PhraseEditor(initial: item, originalCode: originalCode).environmentObject(model) }
+    }
+}
+struct PhraseDiscoveryView: View {
+    @EnvironmentObject var model: ConsoleModel
+    @State private var expanded = false
+    var body: some View {
+        Panel(title: "发现重复表达", caption: "仅在本机分析") {
+            DisclosureGroup("查看分析选项", isExpanded: $expanded) {
+                VStack(alignment: .leading, spacing: 14) {
+                    Text("仅在点击“分析已有历史”后读取所选范围的历史。候选需至少出现 3 次、来自 2 个独立记录批次；分析不会自动加入常用语。")
+                        .font(.caption).foregroundStyle(.secondary)
+                    Text("记录批次按应用、窗口标题及至少 30 分钟的间隔估算，不代表可靠的输入会话。")
+                        .font(.caption).foregroundStyle(.secondary)
+                    HStack {
+                        Picker("分析范围", selection: $model.discoveryDays) {
+                            Text("最近 7 天").tag(7); Text("最近 30 天").tag(30); Text("最近 90 天").tag(90)
+                        }.frame(width: 230)
+                        Button("分析已有历史") { model.analyzePhraseHistory() }.buttonStyle(.borderedProminent)
+                        Spacer()
+                    }
+                    if let report = model.phraseDiscovery {
+                        Text("\(report.start_day) 至 \(report.end_day) · 检查 \(report.scanned_segments.formatted()) 条记录 · 显示 \(report.candidates.count) 条建议")
+                            .font(.caption).foregroundStyle(.secondary)
+                        if report.days != model.discoveryDays {
+                            Label("范围已调整，请重新分析。当前仍显示最近 \(report.days) 天的结果。", systemImage: "info.circle")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
+                        if report.truncated {
+                            Label("本次达到扫描或建议显示上限，显示的次数可能仅代表已扫描记录。", systemImage: "exclamationmark.triangle")
+                                .font(.caption).foregroundStyle(.orange)
+                            Text(report.message).font(.caption).foregroundStyle(.secondary)
+                        }
+                        if report.candidates.isEmpty {
+                            Text("没有可显示的重复表达。").foregroundStyle(.secondary)
+                        }
+                        ForEach(Array(report.candidates.enumerated()), id: \.element.id) { index, candidate in
+                            PhraseDiscoveryRow(candidate: candidate, number: index + 1)
+                        }
+                        HStack {
+                            Button("加入所选常用语") { model.addDiscoveredPhrases() }
+                                .buttonStyle(.borderedProminent).disabled(!model.discoveryCanAdd)
+                            Text("\(model.discoverySelected.count) 条已勾选").font(.caption).foregroundStyle(.secondary)
+                            Spacer()
+                            Button("清除分析结果") { model.clearPhraseDiscovery() }
+                        }
+                        Text("加入列表后仍需点击“保存并应用”；修改前会自动备份。点击“不再推荐”会记住拒绝，不会删除历史。")
+                            .font(.caption).foregroundStyle(.secondary)
+                        Text("建议编码优先使用拼音首字母，冲突或无法转换时保留备用编码；可按自己的习惯修改。")
+                            .font(.caption).foregroundStyle(.secondary)
+                        if report.rejected_count > 0 {
+                            Text("已记住 \(report.rejected_count) 条拒绝，后续分析会跳过这些表达。")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
+                    }
+                }.padding(.top, 12)
+            }
+        }
+        .onChange(of: expanded) { _, visible in if !visible { model.clearPhraseDiscovery() } }
+        .onDisappear { model.clearPhraseDiscovery() }
+    }
+}
+struct PhraseDiscoveryRow: View {
+    @EnvironmentObject var model: ConsoleModel
+    var candidate: PhraseDiscoveryCandidate
+    var number: Int
+    private var duplicate: Phrase? { PhraseDiscoverySelection.duplicate(candidate, in: model.phrases) }
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 10) {
+                Toggle("选择建议 \(number)", isOn: Binding(get: { model.discoverySelected.contains(candidate.id) }, set: { selected in
+                    if selected { model.discoverySelected.insert(candidate.id) } else { model.discoverySelected.remove(candidate.id) }
+                })).labelsHidden().toggleStyle(.checkbox).disabled(duplicate != nil || candidate.duplicate)
+                    .accessibilityLabel("选择建议 \(number)")
+                Text(candidate.text).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            HStack {
+                Text("\(candidate.count) 次 · \(candidate.batch_count) 个独立记录批次").font(.caption).foregroundStyle(.secondary)
+                Spacer()
+                Button("不再推荐") { model.rejectDiscoveredPhrases([candidate.id]) }
+                    .accessibilityLabel("不再推荐建议 \(number)")
+            }
+            HStack {
+                Text("建议短编码").font(.caption).foregroundStyle(.secondary)
+                TextField("短编码", text: Binding(get: { model.discoveryCodes[candidate.id] ?? candidate.suggested_code }, set: { model.discoveryCodes[candidate.id] = $0 }))
+                    .textFieldStyle(.roundedBorder).frame(width: 180).disabled(duplicate != nil || candidate.duplicate)
+                    .accessibilityLabel("建议短编码 \(number)")
+                Spacer()
+            }
+            if let issue = model.discoveryIssue(candidate) {
+                Label(issue, systemImage: duplicate != nil || candidate.duplicate ? "checkmark.circle" : "exclamationmark.triangle")
+                    .font(.caption).foregroundStyle(duplicate != nil || candidate.duplicate ? Color.secondary : .orange)
+            }
+        }.padding(14).background(Color.secondary.opacity(0.05), in: RoundedRectangle(cornerRadius: 8))
     }
 }
 struct PhraseEditor: View {

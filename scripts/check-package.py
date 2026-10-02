@@ -65,6 +65,16 @@ with tempfile.TemporaryDirectory(prefix="keytrack-package-check-") as temporary:
         assert restored["settings"]["theme"] == original_theme
         assert restored["prediction"] == original_prediction
         assert restored["status"]["kev_enabled"] == original_kev
+        discovery = request({"action": "phrase_discovery", "days": 30})
+        assert discovery["revision"] == restored["revision"]
+        assert discovery["candidates"]
+        assert any(item["duplicate"] for item in discovery["candidates"])
+        candidate = next(item for item in discovery["candidates"] if not item["duplicate"])
+        rejection = request({"action": "phrase_discovery_reject", "ids": [candidate["id"]]})
+        assert rejection["revision"] == restored["revision"]
+        again = request({"action": "phrase_discovery", "days": 30})
+        assert candidate["id"] not in {item["id"] for item in again["candidates"]}
+        assert request({"action": "state"})["phrases"] == original_phrases
         request({"action": "install"}, ok=False)
         assert len(request({"action": "backups"})["backups"]) == 3
         assert request({"action": "doctor"})["checks"]
