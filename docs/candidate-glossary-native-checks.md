@@ -42,3 +42,9 @@ python3 tests/native_kev_rime.py
 ```
 
 native 脚本需要本机 Squirrel 提供的 librime/Lua/predict 插件和仓库 fixture DB；不部署到真实 Rime 目录。计时数值随本机负载变动。
+
+## 后端 patch 编译补验
+
+用户解锁后另做独立临时 HOME 检查，直接用 `annotations.render_patch` 生成 daily custom，schema 源不预先添加释义配置，再由真实 librime 部署并输入 5 键 `nihao`。off／en／ja 的编译语言值分别正确，原分页设置 7 保留；off 使用真实 en→off 受管转换。候选分别为「你好／原注释」「你好／原注释 · EN:hello」「你好／原注释 · 日:こんにちは」。三组控制文件均为无 writer 的 FIFO，编译与按键均未被它阻塞。
+
+这项补验证明后端语言 patch 能进入输入引擎，仍不等同于 macOS 实际候选窗口验收。临时文件已清理，未修改真实 Rime 或仓库源文件，未查询历史。
