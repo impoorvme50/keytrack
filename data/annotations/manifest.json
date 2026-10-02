@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "id": "keytrack-glossary-v1",
+  "version": 1,
+  "source_file": "glossary-v1.json",
+  "source_sha256": "46fc10966ba2661789b0adc9198be15b5b05f19a38b43a3b4dbb1729c9323385",
+  "entry_count": 120,
+  "category_count": 10,
+  "category_counts": {
+    "问候与交往": 12,
+    "时间与日程": 12,
+    "日常用品": 12,
+    "饮食": 12,
+    "交通与出行": 12,
+    "工作沟通": 12,
+    "业务与交付": 12,
+    "动作与任务": 12,
+    "状态与评价": 12,
+    "生活与场所": 12
+  },
+  "license": "MIT",
+  "license_basis": "本词表独立编写，沿用项目 MIT 许可证。",
+  "origin": {
+    "type": "original",
+    "method": "由 Codex 在本任务中独立编写的简短常用译法。",
+    "external_sources": [],
+    "used_input_history": false,
+    "used_evaluation_data": false,
+    "used_qingjian_wordlist": false,
+    "used_external_copyright_dictionaries": false
+  },
+  "scope": "覆盖有限的入门释义词表；多义词仅选择一个常用义。",
+  "review_status": "未作专业辞典或语言专家审校。",
+  "reading_policy": "v1 的 reading 均为空字符串；日文值为释义，不附加读音。",
+  "max_lengths": {
+    "word_han_characters": 2,
+    "en_characters": 15,
+    "ja_and_reading_characters": 6
+  }
+}

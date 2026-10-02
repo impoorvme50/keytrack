@@ -1,5 +1,6 @@
 """Diagnose job state and deployment drift using isolated fixtures."""
 import io
+import hashlib
 import json
 import subprocess
 import tempfile
@@ -10,7 +11,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from keytrack import agent, doctor, kev_rime_bridge, kev_rime_setup, kev_service
+from keytrack import annotations, agent, doctor, kev_rime_bridge, kev_rime_setup, kev_service
 
 
 class AgentStateTests(unittest.TestCase):
@@ -62,6 +63,17 @@ class LocalConnectionTests(unittest.TestCase):
 
 
 class DoctorTests(unittest.TestCase):
+    def test_previous_release_and_missing_optional_modules_are_compatible_when_off(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "lua").mkdir()
+            previous = b"-- synthetic previous release\n"
+            (root / "lua/kev_filter.lua").write_bytes(previous)
+            with patch.object(kev_rime_setup, "RIME_DIR", root), patch.object(doctor.kev_switch, "is_enabled", return_value=False), patch.object(agent, "service_status", return_value={"running":True,"pid":123}), patch.dict(annotations.PREVIOUS, {"kev_filter.lua":hashlib.sha256(previous).hexdigest()}):
+                result = {item["name"]:item for item in doctor.checks()}
+                self.assertEqual(result["kev_filter.lua"]["level"], "ok")
+                self.assertTrue(all(result[name]["level"] == "ok" for name in annotations.SHARED_FILES))
+
     def test_drift_is_reported_and_disabled_ai_does_not_connect(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

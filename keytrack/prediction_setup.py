@@ -15,7 +15,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-from . import rime_setup
+from . import annotations, rime_setup
 
 PROJECT = Path(__file__).resolve().parent.parent
 SCHEMA = "rime_ice_predict"
@@ -201,11 +201,20 @@ def state(rime_dir=None) -> dict:
                      and translators.count("predict_translator") == 1
                      and filters.count(FILTER) == 1 and filters[-1] == FILTER
                      and (root / DB_NAME).is_file()
-                     and all((root / "lua" / n).read_bytes() == (PROJECT / "rime" / n).read_bytes() for n in LUA_FILES))
+                     and all(_compatible_lua(root, n) for n in LUA_FILES))
     except (OSError, ValueError):
         pass
     return {**settings, "installed": installed, "schema_id": SCHEMA, "schema_name": TITLE,
             "settings_path": str(settings_path(root))}
+
+
+def _compatible_lua(root: Path, name: str) -> bool:
+    data = (root / "lua" / name).read_bytes()
+    if data == (PROJECT / "rime" / name).read_bytes():
+        return True
+    # Updating the app with glosses off must not disable the previously
+    # validated prediction controls or force a live Rime reinstall.
+    return annotations.language(root) == "off" and hashlib.sha256(data).hexdigest() == annotations.PREVIOUS.get(name)
 
 
 def set_settings(enabled: bool, max_candidates=3, max_iterations=1, rime_dir=None) -> dict:
@@ -225,7 +234,7 @@ def set_settings(enabled: bool, max_candidates=3, max_iterations=1, rime_dir=Non
     return {"message": f"本地接词联想已{'开启' if enabled else '关闭'}，下一次按键生效；请使用「{TITLE}」方案"}
 
 
-def console_schema_changes(rime_dir=None, hotkey=None, phrases=False) -> dict:
+def console_schema_changes(rime_dir=None, hotkey=None, phrases=False, gloss_language=None) -> dict:
     """Propagate native console controls to the owned experimental snapshot.
 
     Return writes for the console's existing atomic transaction; backup this
@@ -254,6 +263,8 @@ def console_schema_changes(rime_dir=None, hotkey=None, phrases=False) -> dict:
         phrase = "lua_translator@*keytrack_phrases"
         if phrase not in translators:
             updated = _replace_list(updated, "engine", "translators", translators + [phrase])
+    if gloss_language is not None:
+        updated = annotations.schema_language(updated, gloss_language)
     if source == updated:
         return {}
     snapshot = state_root(root) / "backups" / (datetime.now().strftime("%Y%m%d-%H%M%S-%f") + "-console")
@@ -291,9 +302,13 @@ def setup(verbose=True, rime_dir=None, deploy=True, db_file=None) -> bool:
         for name in LUA_FILES:
             target = root / "lua" / name
             data = (PROJECT / "rime" / name).read_bytes()
-            if target.exists() and target.read_bytes() != data and not target.read_text().startswith("-- keytrack-local-prediction"):
-                raise ValueError(f"{name} 已由其他插件占用")
+            if target.exists() and target.read_bytes() != data:
+                owned = (hashlib.sha256(target.read_bytes()).hexdigest() == annotations.PREVIOUS[name]
+                         if name in annotations.PREVIOUS else target.read_text().startswith("-- keytrack-local-prediction"))
+                if not owned:
+                    raise ValueError(f"{name} 有独立修改或由其他插件占用，原文件已保留")
             plans[target] = data
+        plans.update({path: text.encode() for path, text in annotations.source_changes(root).items()})
         db = root / DB_NAME
         custom_db = db_file is not None or manifest.get("custom_db", False)
         db_source = Path(db_file) if db_file else (db if custom_db and db.exists() else PROJECT / "data/prediction/keytrack-predict.db")

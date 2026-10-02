@@ -35,7 +35,8 @@ local function run()
   local properties = {}
   local last_commit = "你好"
   local commit_callback
-  local segment = { start = 0, _end = 3, selected_index = 0, status = "kGuess" }
+  local segment = { start = 0, _end = 3, selected_index = 0, status = "kGuess",
+    has_tag = function() return false end }
   local context = {
     input = "nin",
     caret_pos = 3,

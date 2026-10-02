@@ -34,6 +34,9 @@ with tempfile.TemporaryDirectory(prefix="keytrack-package-check-") as temporary:
         assert {item["id"] for item in themes} == {"green", "blue", "slate", "forest", "mint", "mist", "navy", "sand", "paper"}
         assert all(item["name"] and item["description"] and item["light"] and item["dark"] for item in themes)
         assert state["prediction"]["enabled"] is False
+        assert state["settings"]["gloss_language"] == "off"
+        assert state["glossary"]["count"] == 120
+        assert all("EN:" in item["en_comment"] and "日:" in item["ja_comment"] for item in state["glossary"]["examples"])
         assert state["prediction"]["max_candidates"] == 3
         request({"action": "prediction", "enabled": True, "max_candidates": 4})
         prediction = request({"action": "state"})
@@ -77,6 +80,16 @@ with tempfile.TemporaryDirectory(prefix="keytrack-package-check-") as temporary:
         assert request({"action": "state"})["phrases"] == original_phrases
         request({"action": "install"}, ok=False)
         assert len(request({"action": "backups"})["backups"]) == 3
+        current = request({"action": "state"})
+        saved_gloss = request({"action": "settings", "settings": dict(current["settings"], gloss_language="en"), "revision": current["revision"]})
+        current = request({"action": "state"})
+        assert current["settings"]["gloss_language"] == "en"
+        assert current["prediction"] == original_prediction
+        request({"action": "settings", "settings": dict(current["settings"], gloss_language="ja"), "revision": current["revision"]})
+        current = request({"action": "state"})
+        assert current["settings"]["gloss_language"] == "ja"
+        request({"action": "restore", "id": saved_gloss["backup"], "revision": current["revision"]})
+        assert request({"action": "state"})["settings"]["gloss_language"] == "off"
         assert request({"action": "doctor"})["checks"]
     finally:
         process.stdin.close()
@@ -111,6 +124,9 @@ with tempfile.TemporaryDirectory(prefix="keytrack-package-check-") as temporary:
     assert (rime / "keytrack-predict.db").read_bytes() == source_db.read_bytes()
     assert (data / "prediction/control").read_text() == "enabled=0\nmax_candidates=3\nmax_iterations=1\n"
     assert enabled.read_text() == "1\n"
+    assert not (data / "annotations/control").exists()
+    assert (rime / "lua/keytrack_comments.lua").is_file()
+    assert (rime / "lua/keytrack_glossary.lua").is_file()
     managed = [rime / "default.custom.yaml", rime / "rime_ice_predict.schema.yaml", rime / "keytrack-predict.db",
                rime / "lua/prediction_guard.lua", rime / "lua/prediction_filter.lua"]
     before_managed = {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in managed}

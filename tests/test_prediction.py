@@ -4,10 +4,11 @@ from __future__ import annotations
 from contextlib import ExitStack
 from pathlib import Path
 import tempfile
+import hashlib
 import unittest
 from unittest.mock import patch
 
-from keytrack import prediction_setup as prediction
+from keytrack import annotations, prediction_setup as prediction
 
 
 DAILY = '''__build_info:
@@ -172,6 +173,31 @@ class PredictionTests(unittest.TestCase):
         self.assertEqual(sorted((prediction.state_root(self.rime) / "backups").rglob("*")), backups)
         self.assertTrue(prediction.state(self.rime)["enabled"])
         self.assertEqual(prediction.state(self.rime)["max_candidates"], 3)
+
+    def test_reinstall_refuses_independent_edit_inside_managed_filter(self) -> None:
+        self.install()
+        path = self.rime / "lua/prediction_filter.lua"
+        path.write_text(path.read_text() + "\n-- independent user change\n")
+        before = self.before()
+        self.assertFalse(prediction.setup(False, self.rime, deploy=False))
+        self.assertEqual(self.before(), before)
+
+    def test_known_previous_filter_remains_usable_with_glosses_off_only(self) -> None:
+        self.install()
+        self.deploy_fixture()
+        target = self.rime / "lua/prediction_filter.lua"
+        previous = b"-- synthetic exact previous release\n"
+        target.write_bytes(previous)
+        with patch.dict(annotations.PREVIOUS, {"prediction_filter.lua": hashlib.sha256(previous).hexdigest()}):
+            self.assertTrue(prediction.state(self.rime)["installed"])
+            prediction.set_settings(True, rime_dir=self.rime)
+            path = annotations.settings_path(self.rime)
+            path.parent.mkdir(parents=True)
+            path.write_text("language=en\n")
+            self.assertFalse(prediction.state(self.rime)["installed"])
+            path.write_text("language=off\n")
+            target.write_bytes(previous + b"-- independent edit\n")
+            self.assertFalse(prediction.state(self.rime)["installed"])
 
     def test_controls_require_deployment_and_do_not_touch_kev(self) -> None:
         with self.assertRaises(ValueError):

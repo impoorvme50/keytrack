@@ -1,0 +1,846 @@
+{
+  "schema_version": 1,
+  "id": "keytrack-glossary-v1",
+  "entries": [
+    {
+      "word": "你好",
+      "en": "hello",
+      "ja": "こんにちは",
+      "reading": "",
+      "category": "问候与交往"
+    },
+    {
+      "word": "谢谢",
+      "en": "thank you",
+      "ja": "ありがとう",
+      "reading": "",
+      "category": "问候与交往"
+    },
+    {
+      "word": "再见",
+      "en": "goodbye",
+      "ja": "さようなら",
+      "reading": "",
+      "category": "问候与交往"
+    },
+    {
+      "word": "抱歉",
+      "en": "sorry",
+      "ja": "ごめんなさい",
+      "reading": "",
+      "category": "问候与交往"
+    },
+    {
+      "word": "请问",
+      "en": "excuse me",
+      "ja": "すみません",
+      "reading": "",
+      "category": "问候与交往"
+    },
+    {
+      "word": "欢迎",
+      "en": "welcome",
+      "ja": "ようこそ",
+      "reading": "",
+      "category": "问候与交往"
+    },
+    {
+      "word": "朋友",
+      "en": "friend",
+      "ja": "友達",
+      "reading": "",
+      "category": "问候与交往"
+    },
+    {
+      "word": "同事",
+      "en": "colleague",
+      "ja": "同僚",
+      "reading": "",
+      "category": "问候与交往"
+    },
+    {
+      "word": "家人",
+      "en": "family",
+      "ja": "家族",
+      "reading": "",
+      "category": "问候与交往"
+    },
+    {
+      "word": "名字",
+      "en": "name",
+      "ja": "名前",
+      "reading": "",
+      "category": "问候与交往"
+    },
+    {
+      "word": "联系",
+      "en": "contact",
+      "ja": "連絡",
+      "reading": "",
+      "category": "问候与交往"
+    },
+    {
+      "word": "帮助",
+      "en": "help",
+      "ja": "手伝う",
+      "reading": "",
+      "category": "问候与交往"
+    },
+    {
+      "word": "今天",
+      "en": "today",
+      "ja": "今日",
+      "reading": "",
+      "category": "时间与日程"
+    },
+    {
+      "word": "明天",
+      "en": "tomorrow",
+      "ja": "明日",
+      "reading": "",
+      "category": "时间与日程"
+    },
+    {
+      "word": "昨天",
+      "en": "yesterday",
+      "ja": "昨日",
+      "reading": "",
+      "category": "时间与日程"
+    },
+    {
+      "word": "早上",
+      "en": "morning",
+      "ja": "朝",
+      "reading": "",
+      "category": "时间与日程"
+    },
+    {
+      "word": "中午",
+      "en": "noon",
+      "ja": "昼",
+      "reading": "",
+      "category": "时间与日程"
+    },
+    {
+      "word": "晚上",
+      "en": "night",
+      "ja": "夜",
+      "reading": "",
+      "category": "时间与日程"
+    },
+    {
+      "word": "现在",
+      "en": "now",
+      "ja": "今",
+      "reading": "",
+      "category": "时间与日程"
+    },
+    {
+      "word": "以后",
+      "en": "later",
+      "ja": "後で",
+      "reading": "",
+      "category": "时间与日程"
+    },
+    {
+      "word": "周末",
+      "en": "weekend",
+      "ja": "週末",
+      "reading": "",
+      "category": "时间与日程"
+    },
+    {
+      "word": "星期",
+      "en": "week",
+      "ja": "週",
+      "reading": "",
+      "category": "时间与日程"
+    },
+    {
+      "word": "时间",
+      "en": "time",
+      "ja": "時間",
+      "reading": "",
+      "category": "时间与日程"
+    },
+    {
+      "word": "日期",
+      "en": "date",
+      "ja": "日付",
+      "reading": "",
+      "category": "时间与日程"
+    },
+    {
+      "word": "手机",
+      "en": "mobile phone",
+      "ja": "携帯電話",
+      "reading": "",
+      "category": "日常用品"
+    },
+    {
+      "word": "电脑",
+      "en": "computer",
+      "ja": "パソコン",
+      "reading": "",
+      "category": "日常用品"
+    },
+    {
+      "word": "键盘",
+      "en": "keyboard",
+      "ja": "キーボード",
+      "reading": "",
+      "category": "日常用品"
+    },
+    {
+      "word": "屏幕",
+      "en": "screen",
+      "ja": "画面",
+      "reading": "",
+      "category": "日常用品"
+    },
+    {
+      "word": "钥匙",
+      "en": "key",
+      "ja": "鍵",
+      "reading": "",
+      "category": "日常用品"
+    },
+    {
+      "word": "钱包",
+      "en": "wallet",
+      "ja": "財布",
+      "reading": "",
+      "category": "日常用品"
+    },
+    {
+      "word": "衣服",
+      "en": "clothes",
+      "ja": "服",
+      "reading": "",
+      "category": "日常用品"
+    },
+    {
+      "word": "鞋子",
+      "en": "shoes",
+      "ja": "靴",
+      "reading": "",
+      "category": "日常用品"
+    },
+    {
+      "word": "雨伞",
+      "en": "umbrella",
+      "ja": "傘",
+      "reading": "",
+      "category": "日常用品"
+    },
+    {
+      "word": "桌子",
+      "en": "table",
+      "ja": "テーブル",
+      "reading": "",
+      "category": "日常用品"
+    },
+    {
+      "word": "椅子",
+      "en": "chair",
+      "ja": "椅子",
+      "reading": "",
+      "category": "日常用品"
+    },
+    {
+      "word": "房间",
+      "en": "room",
+      "ja": "部屋",
+      "reading": "",
+      "category": "日常用品"
+    },
+    {
+      "word": "早餐",
+      "en": "breakfast",
+      "ja": "朝食",
+      "reading": "",
+      "category": "饮食"
+    },
+    {
+      "word": "午餐",
+      "en": "lunch",
+      "ja": "昼食",
+      "reading": "",
+      "category": "饮食"
+    },
+    {
+      "word": "晚餐",
+      "en": "dinner",
+      "ja": "夕食",
+      "reading": "",
+      "category": "饮食"
+    },
+    {
+      "word": "米饭",
+      "en": "cooked rice",
+      "ja": "ご飯",
+      "reading": "",
+      "category": "饮食"
+    },
+    {
+      "word": "面条",
+      "en": "noodles",
+      "ja": "麺",
+      "reading": "",
+      "category": "饮食"
+    },
+    {
+      "word": "面包",
+      "en": "bread",
+      "ja": "パン",
+      "reading": "",
+      "category": "饮食"
+    },
+    {
+      "word": "鸡蛋",
+      "en": "egg",
+      "ja": "卵",
+      "reading": "",
+      "category": "饮食"
+    },
+    {
+      "word": "蔬菜",
+      "en": "vegetables",
+      "ja": "野菜",
+      "reading": "",
+      "category": "饮食"
+    },
+    {
+      "word": "水果",
+      "en": "fruit",
+      "ja": "果物",
+      "reading": "",
+      "category": "饮食"
+    },
+    {
+      "word": "茶叶",
+      "en": "tea leaves",
+      "ja": "茶葉",
+      "reading": "",
+      "category": "饮食"
+    },
+    {
+      "word": "咖啡",
+      "en": "coffee",
+      "ja": "コーヒー",
+      "reading": "",
+      "category": "饮食"
+    },
+    {
+      "word": "饮料",
+      "en": "drink",
+      "ja": "飲み物",
+      "reading": "",
+      "category": "饮食"
+    },
+    {
+      "word": "地铁",
+      "en": "subway",
+      "ja": "地下鉄",
+      "reading": "",
+      "category": "交通与出行"
+    },
+    {
+      "word": "公交",
+      "en": "bus",
+      "ja": "バス",
+      "reading": "",
+      "category": "交通与出行"
+    },
+    {
+      "word": "火车",
+      "en": "train",
+      "ja": "列車",
+      "reading": "",
+      "category": "交通与出行"
+    },
+    {
+      "word": "高铁",
+      "en": "high-speed rail",
+      "ja": "高速鉄道",
+      "reading": "",
+      "category": "交通与出行"
+    },
+    {
+      "word": "车站",
+      "en": "station",
+      "ja": "駅",
+      "reading": "",
+      "category": "交通与出行"
+    },
+    {
+      "word": "机场",
+      "en": "airport",
+      "ja": "空港",
+      "reading": "",
+      "category": "交通与出行"
+    },
+    {
+      "word": "机票",
+      "en": "air ticket",
+      "ja": "航空券",
+      "reading": "",
+      "category": "交通与出行"
+    },
+    {
+      "word": "车票",
+      "en": "ticket",
+      "ja": "乗車券",
+      "reading": "",
+      "category": "交通与出行"
+    },
+    {
+      "word": "行李",
+      "en": "luggage",
+      "ja": "荷物",
+      "reading": "",
+      "category": "交通与出行"
+    },
+    {
+      "word": "酒店",
+      "en": "hotel",
+      "ja": "ホテル",
+      "reading": "",
+      "category": "交通与出行"
+    },
+    {
+      "word": "地图",
+      "en": "map",
+      "ja": "地図",
+      "reading": "",
+      "category": "交通与出行"
+    },
+    {
+      "word": "路线",
+      "en": "route",
+      "ja": "ルート",
+      "reading": "",
+      "category": "交通与出行"
+    },
+    {
+      "word": "会议",
+      "en": "meeting",
+      "ja": "会議",
+      "reading": "",
+      "category": "工作沟通"
+    },
+    {
+      "word": "通知",
+      "en": "notice",
+      "ja": "通知",
+      "reading": "",
+      "category": "工作沟通"
+    },
+    {
+      "word": "邮件",
+      "en": "email",
+      "ja": "メール",
+      "reading": "",
+      "category": "工作沟通"
+    },
+    {
+      "word": "电话",
+      "en": "phone call",
+      "ja": "電話",
+      "reading": "",
+      "category": "工作沟通"
+    },
+    {
+      "word": "消息",
+      "en": "message",
+      "ja": "メッセージ",
+      "reading": "",
+      "category": "工作沟通"
+    },
+    {
+      "word": "文件",
+      "en": "file",
+      "ja": "ファイル",
+      "reading": "",
+      "category": "工作沟通"
+    },
+    {
+      "word": "附件",
+      "en": "attachment",
+      "ja": "添付ファイル",
+      "reading": "",
+      "category": "工作沟通"
+    },
+    {
+      "word": "表格",
+      "en": "table",
+      "ja": "表",
+      "reading": "",
+      "category": "工作沟通"
+    },
+    {
+      "word": "资料",
+      "en": "materials",
+      "ja": "資料",
+      "reading": "",
+      "category": "工作沟通"
+    },
+    {
+      "word": "报告",
+      "en": "report",
+      "ja": "報告書",
+      "reading": "",
+      "category": "工作沟通"
+    },
+    {
+      "word": "问题",
+      "en": "question",
+      "ja": "質問",
+      "reading": "",
+      "category": "工作沟通"
+    },
+    {
+      "word": "确认",
+      "en": "confirm",
+      "ja": "確認する",
+      "reading": "",
+      "category": "工作沟通"
+    },
+    {
+      "word": "样品",
+      "en": "sample",
+      "ja": "サンプル",
+      "reading": "",
+      "category": "业务与交付"
+    },
+    {
+      "word": "产品",
+      "en": "product",
+      "ja": "製品",
+      "reading": "",
+      "category": "业务与交付"
+    },
+    {
+      "word": "客户",
+      "en": "customer",
+      "ja": "顧客",
+      "reading": "",
+      "category": "业务与交付"
+    },
+    {
+      "word": "订单",
+      "en": "order",
+      "ja": "注文",
+      "reading": "",
+      "category": "业务与交付"
+    },
+    {
+      "word": "报价",
+      "en": "quotation",
+      "ja": "見積もり",
+      "reading": "",
+      "category": "业务与交付"
+    },
+    {
+      "word": "价格",
+      "en": "price",
+      "ja": "価格",
+      "reading": "",
+      "category": "业务与交付"
+    },
+    {
+      "word": "数量",
+      "en": "quantity",
+      "ja": "数量",
+      "reading": "",
+      "category": "业务与交付"
+    },
+    {
+      "word": "质量",
+      "en": "quality",
+      "ja": "品質",
+      "reading": "",
+      "category": "业务与交付"
+    },
+    {
+      "word": "库存",
+      "en": "stock",
+      "ja": "在庫",
+      "reading": "",
+      "category": "业务与交付"
+    },
+    {
+      "word": "付款",
+      "en": "payment",
+      "ja": "支払い",
+      "reading": "",
+      "category": "业务与交付"
+    },
+    {
+      "word": "交期",
+      "en": "delivery date",
+      "ja": "納期",
+      "reading": "",
+      "category": "业务与交付"
+    },
+    {
+      "word": "发货",
+      "en": "ship goods",
+      "ja": "発送する",
+      "reading": "",
+      "category": "业务与交付"
+    },
+    {
+      "word": "开始",
+      "en": "start",
+      "ja": "始める",
+      "reading": "",
+      "category": "动作与任务"
+    },
+    {
+      "word": "结束",
+      "en": "finish",
+      "ja": "終わる",
+      "reading": "",
+      "category": "动作与任务"
+    },
+    {
+      "word": "准备",
+      "en": "prepare",
+      "ja": "準備する",
+      "reading": "",
+      "category": "动作与任务"
+    },
+    {
+      "word": "等待",
+      "en": "wait",
+      "ja": "待つ",
+      "reading": "",
+      "category": "动作与任务"
+    },
+    {
+      "word": "发送",
+      "en": "send",
+      "ja": "送る",
+      "reading": "",
+      "category": "动作与任务"
+    },
+    {
+      "word": "接收",
+      "en": "receive",
+      "ja": "受け取る",
+      "reading": "",
+      "category": "动作与任务"
+    },
+    {
+      "word": "保存",
+      "en": "save",
+      "ja": "保存する",
+      "reading": "",
+      "category": "动作与任务"
+    },
+    {
+      "word": "打开",
+      "en": "open",
+      "ja": "開く",
+      "reading": "",
+      "category": "动作与任务"
+    },
+    {
+      "word": "关闭",
+      "en": "close",
+      "ja": "閉じる",
+      "reading": "",
+      "category": "动作与任务"
+    },
+    {
+      "word": "检查",
+      "en": "check",
+      "ja": "点検する",
+      "reading": "",
+      "category": "动作与任务"
+    },
+    {
+      "word": "修改",
+      "en": "edit",
+      "ja": "修正する",
+      "reading": "",
+      "category": "动作与任务"
+    },
+    {
+      "word": "完成",
+      "en": "complete",
+      "ja": "完了する",
+      "reading": "",
+      "category": "动作与任务"
+    },
+    {
+      "word": "正确",
+      "en": "correct",
+      "ja": "正しい",
+      "reading": "",
+      "category": "状态与评价"
+    },
+    {
+      "word": "错误",
+      "en": "mistake",
+      "ja": "間違い",
+      "reading": "",
+      "category": "状态与评价"
+    },
+    {
+      "word": "清楚",
+      "en": "clear",
+      "ja": "明確",
+      "reading": "",
+      "category": "状态与评价"
+    },
+    {
+      "word": "简单",
+      "en": "simple",
+      "ja": "簡単",
+      "reading": "",
+      "category": "状态与评价"
+    },
+    {
+      "word": "复杂",
+      "en": "complex",
+      "ja": "複雑",
+      "reading": "",
+      "category": "状态与评价"
+    },
+    {
+      "word": "方便",
+      "en": "convenient",
+      "ja": "便利",
+      "reading": "",
+      "category": "状态与评价"
+    },
+    {
+      "word": "重要",
+      "en": "important",
+      "ja": "重要",
+      "reading": "",
+      "category": "状态与评价"
+    },
+    {
+      "word": "安全",
+      "en": "safe",
+      "ja": "安全",
+      "reading": "",
+      "category": "状态与评价"
+    },
+    {
+      "word": "紧急",
+      "en": "urgent",
+      "ja": "緊急",
+      "reading": "",
+      "category": "状态与评价"
+    },
+    {
+      "word": "合适",
+      "en": "suitable",
+      "ja": "適切",
+      "reading": "",
+      "category": "状态与评价"
+    },
+    {
+      "word": "相同",
+      "en": "same",
+      "ja": "同じ",
+      "reading": "",
+      "category": "状态与评价"
+    },
+    {
+      "word": "不同",
+      "en": "different",
+      "ja": "異なる",
+      "reading": "",
+      "category": "状态与评价"
+    },
+    {
+      "word": "世界",
+      "en": "world",
+      "ja": "世界",
+      "reading": "",
+      "category": "生活与场所"
+    },
+    {
+      "word": "城市",
+      "en": "city",
+      "ja": "都市",
+      "reading": "",
+      "category": "生活与场所"
+    },
+    {
+      "word": "公园",
+      "en": "park",
+      "ja": "公園",
+      "reading": "",
+      "category": "生活与场所"
+    },
+    {
+      "word": "学校",
+      "en": "school",
+      "ja": "学校",
+      "reading": "",
+      "category": "生活与场所"
+    },
+    {
+      "word": "医院",
+      "en": "hospital",
+      "ja": "病院",
+      "reading": "",
+      "category": "生活与场所"
+    },
+    {
+      "word": "商店",
+      "en": "shop",
+      "ja": "店",
+      "reading": "",
+      "category": "生活与场所"
+    },
+    {
+      "word": "天气",
+      "en": "weather",
+      "ja": "天気",
+      "reading": "",
+      "category": "生活与场所"
+    },
+    {
+      "word": "空气",
+      "en": "air",
+      "ja": "空気",
+      "reading": "",
+      "category": "生活与场所"
+    },
+    {
+      "word": "家庭",
+      "en": "household",
+      "ja": "家庭",
+      "reading": "",
+      "category": "生活与场所"
+    },
+    {
+      "word": "孩子",
+      "en": "child",
+      "ja": "子供",
+      "reading": "",
+      "category": "生活与场所"
+    },
+    {
+      "word": "生日",
+      "en": "birthday",
+      "ja": "誕生日",
+      "reading": "",
+      "category": "生活与场所"
+    },
+    {
+      "word": "休息",
+      "en": "rest",
+      "ja": "休む",
+      "reading": "",
+      "category": "生活与场所"
+    }
+  ]
+}

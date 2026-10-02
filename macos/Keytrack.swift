@@ -663,6 +663,33 @@ struct InputSettingsView: View {
             Text("修改快捷键后，保存并重新部署生效。").font(.caption).foregroundStyle(.secondary)
             LabeledContent("模型位置", value: "127.0.0.1:8009")
         }
+        Panel(title: "候选释义", caption: "默认关闭") {
+            Picker("释义语言", selection: $model.preferences.gloss_language) {
+                Text("关闭").tag("off"); Text("英文").tag("en"); Text("日文").tag("ja")
+            }.frame(maxWidth: 400)
+                .disabled(model.state?.glossary == nil)
+                .accessibilityLabel("候选释义语言")
+            Text("仅使用本地入门词表，未收录的词不显示释义。选择后点击“保存并应用”生效。")
+                .font(.caption).foregroundStyle(.secondary)
+            if let glossary = model.state?.glossary {
+                Text("入门词表 · \(glossary.count) 条").font(.caption).foregroundStyle(.secondary)
+                if model.preferences.gloss_language != "off" {
+                    ForEach(Array(glossary.examples.prefix(3))) { example in
+                        HStack(alignment: .top, spacing: 16) {
+                            Text(example.text).font(.callout.weight(.medium)).frame(width: 70, alignment: .leading)
+                            Text(example.comment(for: model.preferences.gloss_language))
+                                .textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }.padding(.vertical, 4)
+                    }
+                    Text("样例仅用于设置预览，实际注释以鼠须管候选窗为准。")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            } else {
+                Text("当前运行组件未提供词表示例，请更新组件后启用。")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+        }
         Panel(title: "应用默认中英文") {
             Text("使用应用标识，例如 com.apple.Terminal。未在这里管理的原有设置会保留。").font(.caption).foregroundStyle(.secondary)
             ForEach(model.preferences.apps.indices, id: \.self) { index in
@@ -704,6 +731,6 @@ struct BackupsView: View {
         .alert("恢复这份备份？", isPresented: Binding(get: { restore != nil }, set: { if !$0 { restore = nil } })) {
             Button("取消", role: .cancel) { restore = nil }
             Button("备份当前并恢复") { if let backup = restore { model.action("restore", fields: ["id": backup.id]) }; restore = nil }
-        } message: { Text("恢复控制台管理的外观、快捷键、常用语和本地联想设置。当前版本会先备份，其他配置保留。") }
+        } message: { Text("恢复控制台管理的外观、候选释义、快捷键、常用语和本地联想设置。当前版本会先备份，其他配置保留。") }
     }
 }

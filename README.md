@@ -69,7 +69,7 @@ cd ~/keyboard
 
 独立安装版可从 [v0.4.1 下载页](https://github.com/impoorvme50/keytrack/releases/tag/v0.4.1) 获取（Apple 芯片，macOS 26 及以上）：将应用拖入「应用程序」，打开后点「完成本机安装」。界面和采集自带运行组件，不再依赖源码目录、Python 安装或 Homebrew；输入法需要已有鼠须管，可选 AI 沿用现有本机 Kev 模型。当前为本机自用/实验版，未做 Apple Developer ID 签名和公证。开发构建用 `./scripts/build-console.sh`，打包用 `./scripts/package-console.sh`。用法见 [输入控制台](docs/console.md)，版本变化见 [更新记录](CHANGELOG.md)。
 
-本地 v0.4.3 新增“发现重复表达”：主动分析本机历史、审核编码后加入待保存常用语，沿用备份和恢复。字体搜索与拼音位置保留。公共候选库完成保守精修和三份冻结评测；旧集短语收益提高，两份追加集整体质量持平，真实候选窗验收未完成，现有默认库保留。尚未发布远程下载版本。[常用语发现](docs/phrase-discovery.md) · [来源、评测和复现](docs/public-prediction-data.md)。
+本地 v0.4.4 新增默认关闭的英文／日文候选释义，附 120 词本地入门词表；在“输入与 AI”选择语言并保存，未收录词保留原注释。[候选释义](docs/candidate-glosses.md)。v0.4.3 已新增“发现重复表达”：主动分析本机历史、审核编码后加入待保存常用语，沿用备份和恢复。字体搜索与拼音位置保留。公共候选库完成保守精修和三份冻结评测；旧集短语收益提高，两份追加集整体质量持平，真实候选窗验收未完成，现有默认库保留。尚未发布远程下载版本。[常用语发现](docs/phrase-discovery.md) · [来源、评测和复现](docs/public-prediction-data.md)。
 
 ## 查询接口（做看板 / Swift 状态栏用）
 

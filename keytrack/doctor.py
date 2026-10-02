@@ -6,7 +6,7 @@ import hashlib
 import json
 import urllib.request
 
-from . import rime_setup, agent, kev_rime_bridge, kev_rime_setup, kev_service, kev_switch
+from . import annotations, rime_setup, agent, kev_rime_bridge, kev_rime_setup, kev_service, kev_switch
 
 
 def checks() -> list[dict]:
@@ -25,12 +25,20 @@ def checks() -> list[dict]:
     ready = rime_setup.installation_ready()
     add("key_capture", "ok" if ready else "warning", "按键采集器版本与最前位置已确认" if ready else "按键采集可能漏记；请完成本机安装或运行 kbd setup-ime")
     enabled = kev_switch.is_enabled()
+    gloss_off = annotations.language(kev_rime_setup.RIME_DIR) == "off"
     add("kev_switch", "ok", f"Kev 建议{'开启' if enabled else '关闭'}，由快捷键主动触发")
     for name in kev_rime_setup.LUA_FILES:
         target = kev_rime_setup.RIME_DIR / "lua" / name
         source = kev_rime_setup.PROJECT_DIR / "rime" / name
+        if name in annotations.SHARED_FILES and gloss_off and not target.exists():
+            add(name, "ok", f"{name} 是可选释义模块，当前释义关闭")
+            continue
         try:
-            identical = hashlib.sha256(target.read_bytes()).digest() == hashlib.sha256(source.read_bytes()).digest()
+            target_hash = hashlib.sha256(target.read_bytes()).hexdigest()
+            identical = target_hash == hashlib.sha256(source.read_bytes()).hexdigest()
+            if gloss_off and target_hash == annotations.PREVIOUS.get(name):
+                add(name, "ok", f"{name} 已安装兼容版本，释义关闭；显式启用释义时更新")
+                continue
             add(name, "ok" if identical else "error",
                 f"{name} 已安装且与源码一致" if identical else f"{name} 版本不同；运行 kbd setup-kev-rime")
         except OSError:

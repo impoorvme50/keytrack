@@ -11,7 +11,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from . import rime_setup
+from . import annotations, rime_setup
 
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +20,7 @@ QUEUE_ROOT = Path.home() / ".keytrack/kev-rime"
 SCHEMA = "rime_ice"
 BEGIN = "# >>> kev-rime (managed by kbd setup-kev-rime)"
 END = "# <<< kev-rime"
-LUA_FILES = ("kev_context.lua", "kev_hotkey.lua", "kev_filter.lua")
+LUA_FILES = ("kev_context.lua", "kev_hotkey.lua", "kev_filter.lua", *annotations.SHARED_FILES)
 
 
 def configured_hotkey(content: str) -> str:
@@ -93,6 +93,7 @@ def setup(verbose: bool = True) -> bool:
     current = custom.read_text(encoding="utf-8") if custom.exists() else ""
     try:
         updated = render_custom_yaml(current, python, bridge)
+        annotations.source_changes(RIME_DIR, filters=True)
     except ValueError as exc:
         say(f"❌ Rime 配置未改动：{exc}")
         return False

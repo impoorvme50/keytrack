@@ -22,7 +22,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from . import key_stats
-from . import agent, appearance, doctor, kev_rime_setup, kev_switch, layouts, phrase_discovery, prediction_setup, rime_setup, storage, standalone
+from . import agent, annotations, appearance, doctor, kev_rime_setup, kev_switch, layouts, phrase_discovery, prediction_setup, rime_setup, storage, standalone
 
 PROJECT = Path(__file__).resolve().parent.parent
 ZONE = ZoneInfo("Asia/Shanghai")
@@ -30,7 +30,7 @@ BEGIN = "# >>> keytrack-console (managed by kbd console)"
 END = "# <<< keytrack-console"
 THEMES = appearance.THEMES
 DEFAULTS = {"theme": "existing", "font_size": 16, "comment_size": 14,
-            "font_mode": "existing", "font_face": "", "preedit_mode": "existing",
+            "font_mode": "existing", "font_face": "", "preedit_mode": "existing", "gloss_language": "off",
             "layout": "horizontal", "density": "comfortable", "hotkey": "Control+Shift+k", "apps": []}
 HOTKEYS = ("Control+Shift+k", "Control+Alt+k", "Control+Alt+j")
 SCHEME_KEYS = ("style/color_scheme", "style/color_scheme_dark")
@@ -244,6 +244,8 @@ def validate_settings(raw: object) -> dict:
         raise ValueError("外观选项不正确")
     if value["density"] not in ("compact", "comfortable") or value["hotkey"] not in HOTKEYS:
         raise ValueError("间距或快捷键选项不正确")
+    if value["gloss_language"] not in annotations.LANGUAGES:
+        raise ValueError("候选释义选项不正确")
     if value["font_mode"] not in ("existing", "system", "custom") or value["preedit_mode"] not in ("existing", "inline", "candidate"):
         raise ValueError("字体或拼音显示选项不正确")
     face = value["font_face"]
@@ -332,9 +334,15 @@ class ConsoleStore:
                         "squirrel.custom.yaml": self.rime / "squirrel.custom.yaml",
                         "rime_ice.custom.yaml": self.rime / "rime_ice.custom.yaml",
                         "keytrack_phrases_data.lua": self.rime / "lua/keytrack_phrases_data.lua"}
+        self.targets["annotations.control"] = annotations.settings_path(self.rime)
+        for name in (*annotations.SHARED_FILES, *annotations.FILTER_FILES):
+            self.targets["annotations/" + name] = self.rime / "lua" / name
+
+    def target_text(self, key: str, path: Path) -> str:
+        return annotations.read_managed(path, 64 if key == "annotations.control" else 2_000_000) if key.startswith("annotations") else read_text(path)
 
     def revision(self) -> str:
-        payload = "\0".join(key + "\0" + read_text(path) for key, path in self.targets.items())
+        payload = "\0".join(key + "\0" + self.target_text(key, path) for key, path in self.targets.items())
         control = json.dumps(self._demo_prediction, sort_keys=True) if self.demo else read_text(prediction_setup.settings_path(self.rime))
         payload += "\0prediction\0" + control
         payload += "\0prediction_schema\0" + read_text(self.rime / f"{prediction_setup.SCHEMA}.schema.yaml")
@@ -388,6 +396,7 @@ class ConsoleStore:
             # Old clients/settings retain their choices while the new independent
             # controls start in preserve mode. Never reinitialize old preferences.
             settings = dict(DEFAULTS, **settings)
+        settings["gloss_language"] = annotations.language(self.rime)
         phrases = json.loads(read_text(self.targets["phrases.json"]) or "[]")
         if self.demo:
             status = {"kev_enabled": False, "recorder": {"running": True}, "demo": True}
@@ -397,6 +406,7 @@ class ConsoleStore:
         result = {"settings": settings, "phrases": phrases, "revision": revision, "status": status,
                   "appearance_themes": appearance.catalog(),
                   "appearance_baseline": self.appearance_baseline(settings),
+                  "glossary": annotations.catalog(),
                   "prediction": prediction,
                   "today": datetime.now(ZONE).date().isoformat(), "deployment": self.deployment(),
                   "installation": {"packaged": False, "configured": True, "can_install": False} if self.demo else standalone.status()}
@@ -453,7 +463,7 @@ class ConsoleStore:
         identifier = now.strftime("%Y%m%d-%H%M%S-%f") + "-" + secrets.token_hex(2)
         prediction = self.prediction_state()
         snapshot = {"created": now.isoformat(), "reason": reason,
-                    "files": {key: read_text(path) for key, path in self.targets.items()},
+                    "files": {key: self.target_text(key, path) for key, path in self.targets.items()},
                     "prediction": {key: prediction[key]
                                    for key in ("enabled", "max_candidates", "max_iterations")}}
         atomic(self.root / "backups" / f"{identifier}.json", json.dumps(snapshot, ensure_ascii=False, indent=2))
@@ -496,7 +506,7 @@ class ConsoleStore:
         current = self.state()["settings"]
         if isinstance(raw, dict):
             raw = dict(raw)
-            for key in ("font_mode", "font_face", "preedit_mode"):
+            for key in ("font_mode", "font_face", "preedit_mode", "gloss_language"):
                 raw.setdefault(key, current[key])
         settings = validate_settings(raw)
         settings["_original_schemes"] = current.get("_original_schemes", {})
@@ -522,7 +532,8 @@ class ConsoleStore:
         changes = {self.targets["settings.json"]: json.dumps(settings, ensure_ascii=False, indent=2),
                    self.targets["squirrel.custom.yaml"]: content,
                    self.targets["rime_ice.custom.yaml"]: custom}
-        changes.update(prediction_setup.console_schema_changes(self.rime, hotkey=settings["hotkey"]))
+        changes.update(annotations.console_changes(self.rime, settings["gloss_language"], custom=custom))
+        changes.update(prediction_setup.console_schema_changes(self.rime, hotkey=settings["hotkey"], gloss_language=settings["gloss_language"]))
         return self.commit(changes, "更新外观与输入设置", revision)
 
     def discovery_rejected(self) -> set[str]:
@@ -598,8 +609,17 @@ class ConsoleStore:
         files = snapshot["files"]
         changes = {}
         restored_hotkey = None
+        restored_language = re.fullmatch(r"language=(off|en|ja)\n", files.get("annotations.control", ""))
+        restored_language = restored_language[1] if restored_language else "off"
         for key, path in self.targets.items():
             previous = files.get(key, "")
+            if key.startswith("annotations/"):
+                # Preferences restore is not a code downgrade. Keep the current
+                # installed filters, including any later independent edits.
+                continue
+            if key == "annotations.control":
+                changes[path] = previous or "language=off\n"
+                continue
             if key.endswith("custom.yaml"):
                 entries = None
                 if BEGIN in previous:
@@ -619,8 +639,10 @@ class ConsoleStore:
             else:
                 value = previous or ("[]" if key == "phrases.json" else "null" if key == "settings.json" else "return {}\n")
             changes[path] = value
+        daily = self.targets["rime_ice.custom.yaml"]
+        changes[daily] = annotations.render_patch(changes[daily], restored_language)
         changes.update(prediction_setup.console_schema_changes(self.rime, hotkey=restored_hotkey,
-                       phrases="keytrack_phrases" in files.get("rime_ice.custom.yaml", "")))
+                       phrases="keytrack_phrases" in files.get("rime_ice.custom.yaml", ""), gloss_language=restored_language))
         return self.commit(changes, "恢复控制台配置", revision, prediction=snapshot.get("prediction"))
 
     def report(self, day_string: str, include_text=False) -> dict:

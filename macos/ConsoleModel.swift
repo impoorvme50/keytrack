@@ -129,13 +129,14 @@ struct Preferences: Codable, Equatable {
     var font_mode = "existing"
     var font_face = ""
     var preedit_mode = "existing"
+    var gloss_language = "off"
     var layout = "horizontal"
     var density = "comfortable"
     var hotkey = "Control+Shift+k"
     var apps: [AppRule] = []
     var _original_schemes: [String: String]? = nil
     enum CodingKeys: String, CodingKey {
-        case theme, font_size, comment_size, font_mode, font_face, preedit_mode
+        case theme, font_size, comment_size, font_mode, font_face, preedit_mode, gloss_language
         case layout, density, hotkey, apps, _original_schemes
     }
     init() {}
@@ -147,6 +148,7 @@ struct Preferences: Codable, Equatable {
         font_mode = try values.decodeIfPresent(String.self, forKey: .font_mode) ?? font_mode
         font_face = try values.decodeIfPresent(String.self, forKey: .font_face) ?? font_face
         preedit_mode = try values.decodeIfPresent(String.self, forKey: .preedit_mode) ?? preedit_mode
+        gloss_language = try values.decodeIfPresent(String.self, forKey: .gloss_language) ?? gloss_language
         layout = try values.decodeIfPresent(String.self, forKey: .layout) ?? layout
         density = try values.decodeIfPresent(String.self, forKey: .density) ?? density
         hotkey = try values.decodeIfPresent(String.self, forKey: .hotkey) ?? hotkey
@@ -198,6 +200,25 @@ struct PredictionState: Decodable {
     var schema_id: String
     var schema_name: String?
 }
+struct GlossaryExample: Decodable, Identifiable {
+    var text: String
+    var original_comment: String
+    var en_comment: String
+    var ja_comment: String
+    var id: String { text }
+    func comment(for language: String) -> String {
+        switch language {
+        case "en": return en_comment
+        case "ja": return ja_comment
+        default: return original_comment
+        }
+    }
+}
+struct Glossary: Decodable {
+    var count: Int
+    var version: String
+    var examples: [GlossaryExample]
+}
 struct AppearanceTheme: Decodable, Identifiable {
     var id: String
     var name: String
@@ -242,6 +263,7 @@ struct ConsoleState: Decodable {
     var prediction: PredictionState
     var appearance_themes: [AppearanceTheme]?
     var appearance_baseline: AppearanceBaseline?
+    var glossary: Glossary?
 }
 struct DayTotal: Decodable, Identifiable { var day: String; var chars: Int; var id: String { day } }
 struct AppTotal: Decodable, Identifiable { var name: String; var chars: Int; var id: String { name } }
