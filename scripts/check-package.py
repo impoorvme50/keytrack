@@ -29,6 +29,10 @@ with tempfile.TemporaryDirectory(prefix="keytrack-package-check-") as temporary:
     try:
         state = request({"action": "state"})
         assert state["status"]["demo"]
+        themes = state["appearance_themes"]
+        assert len(themes) == 9
+        assert {item["id"] for item in themes} == {"green", "blue", "slate", "forest", "mint", "mist", "navy", "sand", "paper"}
+        assert all(item["name"] and item["description"] and item["light"] and item["dark"] for item in themes)
         assert state["prediction"]["enabled"] is False
         assert state["prediction"]["max_candidates"] == 3
         request({"action": "prediction", "enabled": True, "max_candidates": 4})
@@ -39,17 +43,28 @@ with tempfile.TemporaryDirectory(prefix="keytrack-package-check-") as temporary:
         request({"action": "prediction", "enabled": False, "max_candidates": 3})
         state = request({"action": "state"})
         original_phrases = state["phrases"]
+        original_theme = state["settings"]["theme"]
+        original_prediction = state["prediction"]
+        original_kev = state["status"]["kev_enabled"]
         assert request({"action": "report", "day": state["today"]})["segments"] is None
         phrases = [{"code": "qpackage", "category": "测试", "text": '独立安装\n多行 "内容"'}]
         saved = request({"action": "phrases", "phrases": phrases, "revision": state["revision"]})
         state = request({"action": "state"})
         assert state["phrases"] == phrases
-        preferences = dict(state["settings"], theme="blue", font_size=17, layout="vertical")
+        preferences = dict(state["settings"], theme="mist", font_size=17, layout="vertical")
         request({"action": "settings", "settings": preferences, "revision": state["revision"]})
         state = request({"action": "state"})
-        assert state["settings"]["theme"] == "blue"
+        assert state["settings"]["theme"] == "mist"
+        assert state["appearance_themes"] == themes
+        assert state["phrases"] == phrases
+        assert state["prediction"] == original_prediction
+        assert state["status"]["kev_enabled"] == original_kev
         request({"action": "restore", "id": saved["backup"], "revision": state["revision"]})
-        assert request({"action": "state"})["phrases"] == original_phrases
+        restored = request({"action": "state"})
+        assert restored["phrases"] == original_phrases
+        assert restored["settings"]["theme"] == original_theme
+        assert restored["prediction"] == original_prediction
+        assert restored["status"]["kev_enabled"] == original_kev
         request({"action": "install"}, ok=False)
         assert len(request({"action": "backups"})["backups"]) == 3
         assert request({"action": "doctor"})["checks"]
@@ -141,4 +156,4 @@ with tempfile.TemporaryDirectory(prefix="keytrack-package-check-") as temporary:
     invalid.write_text("{}")
     bridge = subprocess.run([str(helper), str(app / "Contents/Resources/keytrack-runtime/_internal/rime/kev_bridge.marker"), str(invalid), str(root / "response")], cwd=root, env=env, capture_output=True, text=True, timeout=10)
     assert bridge.returncode == 1 and "Kev Rime bridge:" in bridge.stderr, bridge.stderr
-print("Package checks passed: isolated runtime, prediction install/reinstall/library replacement, private settings, read-only statistics, save/restore, recorder and bridge dispatch.")
+print("Package checks passed: isolated runtime, shared appearance catalog/new-theme save and restore, prediction install/reinstall/library replacement, private settings, read-only statistics, recorder and bridge dispatch.")

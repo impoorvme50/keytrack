@@ -2,6 +2,7 @@
 import hashlib
 import io
 import json
+import re
 import tempfile
 import unittest
 from datetime import datetime, timedelta
@@ -85,6 +86,85 @@ class ConsoleTests(unittest.TestCase):
         self.store.restore(saved["backup"], self.store.revision())
         self.assertIn('"style/color_scheme": "wechat"', custom.read_text())
         self.assertIn('  other: true', custom.read_text())
+
+    def test_existing_theme_colors_remain_compatible(self):
+        accents = {"green": ("#0f766e", "#14b8a6"), "blue": ("#2563eb", "#60a5fa"),
+                   "slate": ("#475569", "#94a3b8")}
+        light = {"back_color": "#f9fbfa", "text_color": "#334155", "candidate_text_color": "#172d2b",
+                 "comment_text_color": "#667b7b", "label_color": "#728785",
+                 "hilited_candidate_text_color": "#ffffff", "hilited_comment_text_color": "#ffffff",
+                 "hilited_label_color": "#ffffff", "border_color": "#dce8e5"}
+        dark = {"back_color": "#19232b", "text_color": "#dce6e5", "candidate_text_color": "#f1f5f9",
+                "comment_text_color": "#a5b5b8", "label_color": "#9badb3",
+                "hilited_candidate_text_color": "#102a2a", "hilited_comment_text_color": "#102a2a",
+                "hilited_label_color": "#102a2a", "border_color": "#334348"}
+        themes = {theme["id"]: theme for theme in self.store.state()["appearance_themes"]}
+        for identifier, (light_accent, dark_accent) in accents.items():
+            self.assertEqual(themes[identifier]["light"], dict(light, hilited_candidate_back_color=light_accent))
+            self.assertEqual(themes[identifier]["dark"], dict(dark, hilited_candidate_back_color=dark_accent))
+
+    def test_catalog_and_generated_palettes_use_identical_colors(self):
+        themes = console.native_request(self.store, {"action": "state"})["appearance_themes"]
+        self.assertEqual([theme["id"] for theme in themes],
+                         ["green", "blue", "slate", "forest", "mint", "mist", "navy", "sand", "paper"])
+        for theme in themes:
+            settings = console.validate_settings(dict(console.DEFAULTS, theme=theme["id"]))
+            generated = console.appearance_patch(settings)
+            self.assertEqual(generated.count('"preset_color_schemes/'), 2)
+            for mode in ("light", "dark"):
+                raw = re.search(r'^  "preset_color_schemes/keytrack_' + mode + r'": (.*)$', generated, re.M)[1]
+                native = json.loads(re.sub(r'(0x[0-9a-f]+)', r'"\1"', raw))
+                actual_rgb = {field: "#" + value[6:8] + value[4:6] + value[2:4]
+                              for field, value in native.items() if field.endswith("_color")}
+                self.assertEqual(actual_rgb, theme[mode])
+        # UI clients receive copies, so changing a preview cannot change future Rime output.
+        themes[0]["light"]["back_color"] = "#000000"
+        self.assertEqual(self.store.state()["appearance_themes"][0]["light"]["back_color"], "#f9fbfa")
+
+    def test_new_theme_text_has_readable_contrast_in_both_modes(self):
+        def luminance(rgb):
+            channels = [int(rgb[i:i + 2], 16) / 255 for i in (1, 3, 5)]
+            linear = [ch / 12.92 if ch <= .04045 else ((ch + .055) / 1.055) ** 2.4 for ch in channels]
+            return sum(ch * weight for ch, weight in zip(linear, (.2126, .7152, .0722)))
+
+        def contrast(foreground, background):
+            high, low = sorted((luminance(foreground), luminance(background)), reverse=True)
+            return (high + .05) / (low + .05)
+
+        for theme in self.store.state()["appearance_themes"][3:]:
+            for mode in ("light", "dark"):
+                palette = theme[mode]
+                for field in ("text_color", "candidate_text_color", "comment_text_color", "label_color"):
+                    with self.subTest(theme=theme["id"], mode=mode, field=field):
+                        self.assertGreaterEqual(contrast(palette[field], palette["back_color"]), 4.5)
+                for field in ("hilited_candidate_text_color", "hilited_comment_text_color", "hilited_label_color"):
+                    with self.subTest(theme=theme["id"], mode=mode, field=field):
+                        self.assertGreaterEqual(contrast(palette[field], palette["hilited_candidate_back_color"]), 4.5)
+
+    def test_unknown_theme_is_rejected_before_any_write(self):
+        revision = self.store.revision()
+        for identifier in ("pink", "forest-dark", "", None, ["mint"]):
+            with self.assertRaisesRegex(ValueError, "外观选项"):
+                self.store.save_settings(dict(console.DEFAULTS, theme=identifier), revision)
+        self.assertEqual(self.store.revision(), revision)
+        self.assertEqual(self.store.backups(), [])
+
+    def test_new_palette_backup_restore_keeps_phrases_prediction_and_external_edits(self):
+        phrases = [{"code": "qexample", "text": "已有常用语", "category": "回复"}]
+        self.store.save_phrases(phrases, self.store.revision())
+        self.store.save_prediction({"enabled": True, "max_candidates": 4})
+        self.store.save_settings(dict(console.DEFAULTS, theme="forest"), self.store.revision())
+        before = self.store.targets["squirrel.custom.yaml"].read_text()
+        saved = self.store.save_settings(dict(console.DEFAULTS, theme="sand"), self.store.revision())
+        custom = self.store.targets["squirrel.custom.yaml"]
+        custom.write_text(custom.read_text() + "# later external theme note\n")
+        self.store.restore(saved["backup"], self.store.revision())
+        self.assertEqual(custom.read_text(), before + "# later external theme note\n")
+        restored = self.store.state()
+        self.assertEqual(restored["settings"]["theme"], "forest")
+        self.assertEqual(restored["phrases"], phrases)
+        self.assertTrue(restored["prediction"]["enabled"])
+        self.assertEqual(restored["prediction"]["max_candidates"], 4)
 
     def test_duplicate_or_unsafe_phrase_codes_rejected(self):
         for items in ([{"code":"vabc","text":"x"}], [{"code":"qreply","text":"x"},{"code":"qreply","text":"y"}], [{"code":"qreply","text":"x\x00"}]):

@@ -338,20 +338,34 @@ struct PhraseEditor: View {
 struct AppearanceView: View {
     @EnvironmentObject var model: ConsoleModel
     @State private var dark = false
-    var selectedAccent: Color { switch model.preferences.theme { case "blue": return .blue; case "slate": return .gray; default: return accent } }
+    var themes: [AppearanceTheme] { model.state?.appearance_themes ?? AppearanceTheme.legacy }
+    var selectedTheme: AppearanceTheme? { themes.first { $0.id == model.preferences.theme } }
+    private var palette: AppearancePalette { AppearancePalette(colors: dark ? (selectedTheme?.dark ?? [:]) : (selectedTheme?.light ?? [:]), dark: dark) }
+    var candidateSpacing: CGFloat { model.preferences.density == "compact" ? 4 : 8 }
     var body: some View {
         PageHeading(title: "让候选窗更顺眼。", detail: "调整字体、布局与配色，保存前先看效果。")
-        Panel(title: "候选窗预览", caption: "布局示意 · 实际由鼠须管绘制") {
+        Panel(title: "候选窗预览", caption: selectedTheme == nil ? "仅布局示意 · 原有配色未读取" : "实际由鼠须管绘制") {
             Toggle("深色预览", isOn: $dark).toggleStyle(.switch).frame(maxWidth: .infinity, alignment: .trailing)
-            Group {
-                if model.preferences.layout == "vertical" { VStack(alignment: .leading, spacing: 4) { candidates } } else { HStack(spacing: 4) { candidates } }
-            }.padding(16).background(dark ? Color(red: 0.10, green: 0.14, blue: 0.17) : Color(red: 0.96, green: 0.98, blue: 0.97), in: RoundedRectangle(cornerRadius: 10)).frame(maxWidth: .infinity)
+            VStack(alignment: .leading, spacing: candidateSpacing) {
+                Text("ni hao").font(.system(size: CGFloat(model.preferences.font_size))).foregroundStyle(palette.color("text_color"))
+                if model.preferences.layout == "vertical" {
+                    VStack(alignment: .leading, spacing: candidateSpacing) { candidates }
+                } else {
+                    ScrollView(.horizontal, showsIndicators: false) { HStack(spacing: candidateSpacing) { candidates } }
+                }
+            }.padding(16).frame(maxWidth: .infinity, alignment: .leading)
+                .background(palette.color("back_color"), in: RoundedRectangle(cornerRadius: 10))
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(palette.color("border_color")))
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("\(dark ? "深色" : "浅色")候选窗预览，\(selectedTheme?.name ?? "原有配色未读取")，\(model.preferences.layout == "vertical" ? "竖排" : "横排")，候选字号 \(model.preferences.font_size)，注释字号 \(model.preferences.comment_size)")
         }
         Panel(title: "配色方案") {
-            Picker("配色", selection: $model.preferences.theme) {
-                Text("保留当前").tag("existing"); Text("青绿").tag("green"); Text("海蓝").tag("blue"); Text("石墨").tag("slate")
-            }.pickerStyle(.segmented)
-            Text("保留当前会恢复首次保存时的原有配色；新方案随系统切换浅色与深色。").font(.caption).foregroundStyle(.secondary)
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 172, maximum: 260), spacing: 12)], alignment: .leading, spacing: 12) {
+                ForEach([AppearanceTheme.existing] + themes) { theme in
+                    AppearanceThemeCard(theme: theme, selected: model.preferences.theme == theme.id) { model.preferences.theme = theme.id }
+                }
+            }
+            Text("选择只更新预览，点击“保存并应用”后生效。新方案随系统切换浅色与深色。“保留当前”恢复首次保存前的原有配色，预览只展示布局。").font(.caption).foregroundStyle(.secondary)
         }
         Panel(title: "字体与布局") {
             Form {
@@ -365,13 +379,82 @@ struct AppearanceView: View {
     @ViewBuilder var candidates: some View {
         ForEach(Array(["你好", "拟好", "你号", "你"].enumerated()), id: \.offset) { index, word in
             HStack(spacing: 8) {
-                Text("\(index + 1)").font(.caption)
+                Text("\(index + 1)").font(.system(size: CGFloat(max(11, model.preferences.font_size - 3))))
+                    .foregroundStyle(palette.color(index == 0 ? "hilited_label_color" : "label_color"))
                 Text(word).font(.system(size: CGFloat(model.preferences.font_size)))
-                if index == 0 { Text("✦ AI").font(.system(size: CGFloat(model.preferences.comment_size))) }
+                    .foregroundStyle(palette.color(index == 0 ? "hilited_candidate_text_color" : "candidate_text_color"))
+                Text(index == 0 ? "✦ AI" : (index == 1 ? "同音" : ""))
+                    .font(.system(size: CGFloat(model.preferences.comment_size)))
+                    .foregroundStyle(palette.color(index == 0 ? "hilited_comment_text_color" : "comment_text_color"))
             }.padding(model.preferences.density == "compact" ? 7 : 11)
-                .foregroundStyle(index == 0 ? .white : (dark ? Color.white : Color.primary))
-                .background(index == 0 ? selectedAccent : Color.clear, in: RoundedRectangle(cornerRadius: 6))
+                .fixedSize()
+                .background(index == 0 ? palette.color("hilited_candidate_back_color") : Color.clear, in: RoundedRectangle(cornerRadius: 6))
         }
+    }
+}
+
+private struct AppearancePalette {
+    var colors: [String: String]
+    var dark: Bool
+    func color(_ key: String) -> Color {
+        if let hex = colors[key], hex.count == 7, hex.first == "#", let rgb = UInt32(hex.dropFirst(), radix: 16) {
+            return Color(red: Double((rgb >> 16) & 255) / 255, green: Double((rgb >> 8) & 255) / 255, blue: Double(rgb & 255) / 255)
+        }
+        // The original user palette may be defined outside the managed config.
+        // Its clearly labelled layout-only preview uses neutral colors.
+        switch key {
+        case "back_color": return dark ? Color(white: 0.13) : Color(white: 0.97)
+        case "border_color": return dark ? Color(white: 0.30) : Color(white: 0.86)
+        case "hilited_candidate_back_color": return dark ? Color(white: 0.72) : Color(white: 0.30)
+        case "hilited_candidate_text_color", "hilited_comment_text_color", "hilited_label_color": return dark ? .black : .white
+        case "comment_text_color", "label_color": return dark ? Color(white: 0.72) : Color(white: 0.42)
+        default: return dark ? Color(white: 0.94) : Color(white: 0.12)
+        }
+    }
+}
+
+private struct AppearanceThemeCard: View {
+    var theme: AppearanceTheme
+    var selected: Bool
+    var choose: () -> Void
+    var body: some View {
+        Button(action: choose) {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Text(theme.name).font(.callout.weight(.semibold))
+                    Spacer(minLength: 4)
+                    Image(systemName: selected ? "checkmark.circle.fill" : "circle").foregroundStyle(selected ? accent : Color.secondary.opacity(0.4))
+                }
+                Text(theme.description).font(.caption).foregroundStyle(.secondary).lineLimit(2).frame(minHeight: 30, alignment: .topLeading)
+                HStack(spacing: 8) {
+                    sample(theme.light, dark: false)
+                    sample(theme.dark, dark: true)
+                }
+            }.padding(12).frame(maxWidth: .infinity, alignment: .leading)
+                .background(selected ? accent.opacity(0.06) : Color.primary.opacity(0.02), in: RoundedRectangle(cornerRadius: 10))
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(selected ? accent : Color.primary.opacity(0.12), lineWidth: selected ? 2 : 1))
+                .contentShape(RoundedRectangle(cornerRadius: 10))
+        }.buttonStyle(.plain)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(theme.name)，\(theme.description)，\(theme.id == "existing" ? "原有配色未读取" : "提供浅色和深色配色")")
+            .accessibilityValue(selected ? "已选中" : "未选中")
+            .accessibilityAddTraits(selected ? .isSelected : [])
+            .accessibilityHint("选择后可在上方预览，保存并应用后生效")
+    }
+    func sample(_ colors: [String: String], dark: Bool) -> some View {
+        let palette = AppearancePalette(colors: colors, dark: dark)
+        return VStack(alignment: .leading, spacing: 4) {
+            Text(dark ? "深色" : "浅色").font(.system(size: 9)).foregroundStyle(palette.color("comment_text_color"))
+            HStack(spacing: 5) {
+                HStack(spacing: 3) {
+                    Text("1").font(.system(size: 9)).foregroundStyle(palette.color("hilited_label_color"))
+                    Text("你").font(.system(size: 12)).foregroundStyle(palette.color("hilited_candidate_text_color"))
+                }.padding(.horizontal, 4).padding(.vertical, 3).background(palette.color("hilited_candidate_back_color"), in: RoundedRectangle(cornerRadius: 3))
+                Text("好").font(.system(size: 12)).foregroundStyle(palette.color("candidate_text_color"))
+            }
+        }.padding(7).frame(maxWidth: .infinity, alignment: .leading)
+            .background(palette.color("back_color"), in: RoundedRectangle(cornerRadius: 6))
+            .overlay(RoundedRectangle(cornerRadius: 6).stroke(palette.color("border_color")))
     }
 }
 struct InputSettingsView: View {

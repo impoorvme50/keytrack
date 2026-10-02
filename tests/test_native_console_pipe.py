@@ -67,3 +67,35 @@ class NativePipeTests(unittest.TestCase):
         self.request({"action": "prediction", "enabled": False})
         self.assertFalse(self.request({"action": "state"})["prediction"]["enabled"])
         self.assertIsNone(self.request({"action": "report", "day": current["today"]})["segments"])
+
+    def test_shared_appearance_catalog_and_new_theme_round_trip(self):
+        self.request({"action": "prediction", "enabled": True, "max_candidates": 4})
+        original = self.request({"action": "state"})
+        themes = original["appearance_themes"]
+        self.assertEqual({item["id"] for item in themes},
+                         {"green", "blue", "slate", "forest", "mint", "mist", "navy", "sand", "paper"})
+        self.assertEqual(len(themes), 9)
+        for item in themes:
+            self.assertTrue(item["name"])
+            self.assertTrue(item["description"])
+            for mode in ("light", "dark"):
+                self.assertIn("hilited_candidate_back_color", item[mode])
+                self.assertIn("candidate_text_color", item[mode])
+                for value in item[mode].values():
+                    self.assertRegex(value, r"^#[0-9A-Fa-f]{6}$")
+
+        saved = self.request({"action": "settings", "revision": original["revision"],
+                              "settings": dict(original["settings"], theme="forest", font_size=18)})
+        current = self.request({"action": "state"})
+        self.assertEqual(current["settings"]["theme"], "forest")
+        self.assertEqual(current["settings"]["font_size"], 18)
+        self.assertEqual(current["appearance_themes"], themes)
+        for key in ("phrases", "prediction"):
+            self.assertEqual(current[key], original[key])
+        self.assertEqual(current["status"]["kev_enabled"], original["status"]["kev_enabled"])
+
+        self.request({"action": "restore", "id": saved["backup"], "revision": current["revision"]})
+        restored = self.request({"action": "state"})
+        for key in ("settings", "phrases", "prediction"):
+            self.assertEqual(restored[key], original[key])
+        self.assertEqual(restored["status"]["kev_enabled"], original["status"]["kev_enabled"])

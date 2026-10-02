@@ -21,17 +21,13 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from . import key_stats
-from . import agent, doctor, kev_rime_setup, kev_switch, layouts, prediction_setup, rime_setup, storage, standalone
+from . import agent, appearance, doctor, kev_rime_setup, kev_switch, layouts, prediction_setup, rime_setup, storage, standalone
 
 PROJECT = Path(__file__).resolve().parent.parent
 ZONE = ZoneInfo("Asia/Shanghai")
 BEGIN = "# >>> keytrack-console (managed by kbd console)"
 END = "# <<< keytrack-console"
-THEMES = {
-    "green": ("#0f766e", "#14b8a6"),
-    "blue": ("#2563eb", "#60a5fa"),
-    "slate": ("#475569", "#94a3b8"),
-}
+THEMES = appearance.THEMES
 DEFAULTS = {"theme": "existing", "font_size": 16, "comment_size": 14,
             "layout": "horizontal", "density": "comfortable", "hotkey": "Control+Shift+k", "apps": []}
 HOTKEYS = ("Control+Shift+k", "Control+Alt+k", "Control+Alt+j")
@@ -107,20 +103,9 @@ def appearance_patch(settings: dict) -> str:
     entries += scalar("style/line_spacing", 4 if settings["density"] == "compact" else 8)
     entries += scalar("style/spacing", 5 if settings["density"] == "compact" else 10)
     if settings["theme"] != "existing":
-        accents = THEMES[settings["theme"]]
-        for dark, accent in zip((False, True), accents):
-            suffix = "dark" if dark else "light"
+        for suffix in ("light", "dark"):
             theme = {"name": f"Keytrack {suffix}", "author": "Keytrack",
-                     "back_color": color("#19232b" if dark else "#f9fbfa"),
-                     "text_color": color("#dce6e5" if dark else "#334155"),
-                     "candidate_text_color": color("#f1f5f9" if dark else "#172d2b"),
-                     "comment_text_color": color("#a5b5b8" if dark else "#667b7b"),
-                     "label_color": color("#9badb3" if dark else "#728785"),
-                     "hilited_candidate_back_color": color(accent),
-                     "hilited_candidate_text_color": color("#102a2a" if dark else "#ffffff"),
-                     "hilited_comment_text_color": color("#102a2a" if dark else "#ffffff"),
-                     "hilited_label_color": color("#102a2a" if dark else "#ffffff"),
-                     "border_color": color("#334348" if dark else "#dce8e5")}
+                     **{field: color(rgb) for field, rgb in THEMES[settings["theme"]][suffix].items()}}
             # Hex colors are native Rime scalars, not quoted strings.
             rendered = json.dumps(theme, ensure_ascii=False)
             rendered = re.sub(r'"(0x[0-9a-f]+)"', r'\1', rendered)
@@ -253,6 +238,7 @@ class ConsoleStore:
             status = {"kev_enabled": kev_switch.is_enabled(), "recorder": agent.service_status(), "demo": False}
         prediction = self.prediction_state()
         return {"settings": settings, "phrases": phrases, "revision": self.revision(), "status": status,
+                "appearance_themes": appearance.catalog(),
                 "prediction": prediction,
                 "today": datetime.now(ZONE).date().isoformat(), "deployment": self.deployment(),
                 "installation": {"packaged": False, "configured": True, "can_install": False} if self.demo else standalone.status()}

@@ -35,6 +35,39 @@ struct PredictionState: Decodable {
     var schema_id: String
     var schema_name: String?
 }
+struct AppearanceTheme: Decodable, Identifiable {
+    var id: String
+    var name: String
+    var description: String
+    var light: [String: String]
+    var dark: [String: String]
+
+    // Older bundled helpers do not supply the shared catalog. Keep their original
+    // three themes usable without duplicating the newer palettes in the UI.
+    static let legacy: [AppearanceTheme] = [
+        ("green", "青绿", "清爽的青绿色", "#0f766e", "#14b8a6"),
+        ("blue", "海蓝", "明亮的蓝色", "#2563eb", "#60a5fa"),
+        ("slate", "石墨", "克制的灰色", "#475569", "#94a3b8"),
+    ].map { id, name, description, lightAccent, darkAccent in
+        func palette(dark: Bool, accent: String) -> [String: String] {
+            ["back_color": dark ? "#19232b" : "#f9fbfa",
+             "text_color": dark ? "#dce6e5" : "#334155",
+             "candidate_text_color": dark ? "#f1f5f9" : "#172d2b",
+             "comment_text_color": dark ? "#a5b5b8" : "#667b7b",
+             "label_color": dark ? "#9badb3" : "#728785",
+             "hilited_candidate_back_color": accent,
+             "hilited_candidate_text_color": dark ? "#102a2a" : "#ffffff",
+             "hilited_comment_text_color": dark ? "#102a2a" : "#ffffff",
+             "hilited_label_color": dark ? "#102a2a" : "#ffffff",
+             "border_color": dark ? "#334348" : "#dce8e5"]
+        }
+        return AppearanceTheme(id: id, name: name, description: description,
+                               light: palette(dark: false, accent: lightAccent),
+                               dark: palette(dark: true, accent: darkAccent))
+    }
+    static let existing = AppearanceTheme(id: "existing", name: "保留当前",
+        description: "恢复首次保存前的配色", light: [:], dark: [:])
+}
 struct ConsoleState: Decodable {
     var settings: Preferences
     var phrases: [Phrase]
@@ -44,6 +77,7 @@ struct ConsoleState: Decodable {
     var deployment: Deployment
     var installation: Installation?
     var prediction: PredictionState
+    var appearance_themes: [AppearanceTheme]?
 }
 struct DayTotal: Decodable, Identifiable { var day: String; var chars: Int; var id: String { day } }
 struct AppTotal: Decodable, Identifiable { var name: String; var chars: Int; var id: String { name } }
