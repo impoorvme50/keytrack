@@ -16,7 +16,7 @@ os.environ['HOME'] = str(root)
 (root/'.keytrack/kev-rime/enabled').write_text('1\n')
 (root/'build').mkdir()
 (root/'lua').mkdir()
-for name in ['kev_context.lua','kev_filter.lua','kev_hotkey.lua','keytrack_phrases.lua']:
+for name in ['kev_context.lua','kev_filter.lua','kev_hotkey.lua','keytrack_phrases.lua','keytrack_logger.lua']:
  shutil.copyfile(project/'rime'/name,root/'lua'/name)
 (root/'lua/keytrack_phrases_data.lua').write_text('return {{code="qreply", text="第一行\\n第二行", category="测试"}}\n')
 (root/'bridge.sh').write_text('cp "$1" "$HOME/request.json"\necho called >> "$HOME/calls"\nprintf "2\\t1\\n" > "$2"\n')
@@ -31,7 +31,7 @@ end
   name: Probe
   version: "1"
 engine:
-  processors: ["lua_processor@*kev_hotkey", speller, punctuator, selector, express_editor]
+  processors: ["lua_processor@*keytrack_logger", "lua_processor@*kev_hotkey", speller, punctuator, selector, express_editor]
   segmentors: [abc_segmentor, punct_segmentor, fallback_segmentor]
   translators: [punct_translator, "lua_translator@*probe", "lua_translator@*keytrack_phrases"]
   filters: ["lua_filter@*kev_filter"]
@@ -75,8 +75,21 @@ def call(name,result,*types):
 t=Traits();t.data_size=C.sizeof(t)-C.sizeof(C.c_int)
 t.shared_data_dir=t.user_data_dir=str(root).encode();t.app_name=b'rime.keytrack-check'
 t.min_log_level=2;t.log_dir=str(root).encode()
-mods=(C.c_char_p*3)(b'default',b'lua',None);t.modules=mods
+mods=(C.c_char_p*4)(b'default',b'deployer',b'lua',None);t.modules=mods
 call('setup',None,C.POINTER(Traits))(C.byref(t))
+# Exercise actual Rime patch compilation as well as the runtime observer.
+import sys
+sys.path.insert(0, str(project))
+from keytrack import rime_setup, kev_rime_setup
+source = (root/'build/probe.schema.yaml').read_text().replace('"lua_processor@*keytrack_logger", "lua_processor@*kev_hotkey", ', '')
+(root/'probe.schema.yaml').write_text(source)
+old = 'patch:\n  "engine/processors/@next": lua_processor@*keytrack_logger\n'
+old = kev_rime_setup.render_custom_yaml(old, Path('/bin/sh'), root/'bridge.sh')
+(root/'probe.custom.yaml').write_text(rime_setup.render_custom_yaml(old))
+call('deployer_initialize',None,C.POINTER(Traits))(C.byref(t))
+assert call('deploy_schema',C.c_int,C.c_char_p)(str(root/'probe.schema.yaml').encode())
+deployed = (root/'build/probe.schema.yaml').read_text()
+assert deployed.index('lua_processor@*keytrack_logger') < deployed.index('lua_processor@*kev_hotkey') < deployed.index('    - speller'), deployed
 call('initialize',None,C.POINTER(Traits))(C.byref(t))
 s=call('create_session',C.c_size_t)()
 assert s
@@ -126,6 +139,18 @@ for ch in 'qreply': key(s,ord(ch),0)
 _,words=snapshot('phrase');assert words[0]==('第一行\n第二行','测试')
 assert key(s,ord(' '),0)
 assert committed()=='第一行\n第二行'
+# Releases are observed but must not be counted.
+key(s, ord('a'), 1 << 30)
 call('destroy_session',C.c_int,C.c_size_t)(s)
 call('finalize',None)()
 print('Native Rime context, cache, candidate marker, cancellation, Space and comma PASS',flush=True)
+
+buckets = [json.loads(line) for line in (root/'.keytrack/ime_keys.jsonl').read_text().splitlines()]
+assert all(b['capture_version'] == 3 for b in buckets), buckets
+from collections import Counter
+observed = Counter()
+for b in buckets: observed.update(b['keys'])
+expected = Counter('nihao' * 4 + 'qreply')
+expected.update({'space': 4, 'Shift+Control+k': 4, 'comma': 1})
+assert observed == expected, (observed, expected)
+print('Logger: exact 35 keypresses, releases excluded, capture_version 3 PASS')

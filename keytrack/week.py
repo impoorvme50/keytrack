@@ -35,7 +35,7 @@ def week_report(end: date | None = None, days: int = 7, db_path: str = storage.D
 
     total_chars = sum(d["chars"] for d in per_day)
     total_keys = sum(d["keys"] for d in per_day)
-    total_active = sum(d["active_minutes"] for d in per_day)
+    total_active = sum(d["active_minutes"] or 0 for d in per_day) if all(d["active_minutes"] is not None or not d["keys"] and not d["chars"] for d in per_day) else None
     best = max(per_day, key=lambda d: d["chars"]) if per_day else None
     return {
         "start": start.isoformat(),
@@ -44,21 +44,25 @@ def week_report(end: date | None = None, days: int = 7, db_path: str = storage.D
         "total_chars": total_chars,
         "total_keys": total_keys,
         "active_minutes": total_active,
-        "avg_cpm": round(total_chars / total_active, 1) if total_active else 0,
+        "avg_cpm": round(total_chars / total_active, 1) if total_active else None,
         "best_day": best,
         "apps": dict(sorted(apps.items(), key=lambda kv: kv[1], reverse=True)[:10]),
     }
 
 
+def shown(value):
+    return "待完善" if value is None else str(value)
+
+
 def format_text(rep: dict) -> str:
     lines = [
         f"📊 keytrack 周报（{rep['start']} ~ {rep['end']}）",
-        f"上屏 {rep['total_chars']} 字 · 击键 {rep['total_keys']} 次 · 活跃 {rep['active_minutes']} 分钟",
-        f"平均速度 {rep['avg_cpm']} 字/活跃分钟",
+        f"上屏 {rep['total_chars']} 字 · 击键 {rep['total_keys']} 次 · 活跃 {shown(rep['active_minutes'])} 分钟",
+        f"平均速度 {shown(rep['avg_cpm'])} 字/活跃分钟",
     ]
     if rep["best_day"] and rep["best_day"]["chars"]:
         b = rep["best_day"]
-        lines.append(f"巅峰日：{b['day']}（{b['chars']} 字，{b['cpm']} 字/分钟）")
+        lines.append(f"巅峰日：{b['day']}（{b['chars']} 字，{shown(b['cpm'])} 字/分钟）")
     if rep["apps"]:
         top = "  ".join(f"{a}({n}字)" for a, n in list(rep["apps"].items())[:5])
         lines.append(f"主战场：{top}")
@@ -72,11 +76,11 @@ def format_text(rep: dict) -> str:
 
 def show(rep: dict) -> None:
     print(f"\n===== keytrack 周报 · {rep['start']} ~ {rep['end']} =====\n")
-    print(f"上屏 {rep['total_chars']} 字 · 击键 {rep['total_keys']} 次 · 活跃 {rep['active_minutes']} 分钟")
-    print(f"平均速度 {rep['avg_cpm']} 字/活跃分钟")
+    print(f"上屏 {rep['total_chars']} 字 · 击键 {rep['total_keys']} 次 · 活跃 {shown(rep['active_minutes'])} 分钟")
+    print(f"平均速度 {shown(rep['avg_cpm'])} 字/活跃分钟")
     if rep["best_day"] and rep["best_day"]["chars"]:
         b = rep["best_day"]
-        print(f"巅峰日：{b['day']}（{b['chars']} 字，{b['cpm']} 字/分钟）")
+        print(f"巅峰日：{b['day']}（{b['chars']} 字，{shown(b['cpm'])} 字/分钟）")
     if rep["apps"]:
         top = "  ".join(f"{a}({n}字)" for a, n in list(rep["apps"].items())[:5])
         print(f"主战场：{top}")
@@ -84,8 +88,8 @@ def show(rep: dict) -> None:
     print(f"{'日期':<12}{'字数':>6}{'击键':>8}{'活跃分':>7}{'CPM':>6}{'改稿率':>8}")
     for d in rep["days"]:
         print(
-            f"{d['day']:<12}{d['chars']:>6}{d['keys']:>8}{d['active_minutes']:>7}"
-            f"{d['cpm']:>6}{d['correction_rate']*100:>7.1f}%"
+            f"{d['day']:<12}{d['chars']:>6}{d['keys']:>8}{shown(d['active_minutes']):>7}"
+            f"{shown(d['cpm']):>6}{shown(None if d['correction_rate'] is None else round(d['correction_rate']*100,1)):>7}%"
         )
     print()
 

@@ -4,7 +4,7 @@
 
 ## 打开
 
-独立安装包为 `dist/Keytrack-0.4.0-apple-silicon.dmg`，适用于 Apple 芯片 Mac、macOS 26 及以上。打开磁盘镜像，将 `Keytrack.app` 拖入 `Applications`，从「应用程序」打开后点击「完成本机安装」→「备份并安装」。也支持个人的 `~/Applications` 目录。在磁盘镜像或源码目录直接打开时会提示先移动应用，避免后台服务绑定到临时位置。
+独立安装包为 `dist/Keytrack-0.4.1-apple-silicon.dmg`，适用于 Apple 芯片 Mac、macOS 26 及以上。打开磁盘镜像，将 `Keytrack.app` 拖入 `Applications`，从「应用程序」打开后点击「完成本机安装」→「备份并安装」。也支持个人的 `~/Applications` 目录。在磁盘镜像或源码目录直接打开时会提示先移动应用，避免后台服务绑定到临时位置。
 
 应用包含 SwiftUI 界面、内置 Python 运行组件、PyObjC 和本项目的输入法接入脚本，不需要安装 Python 或 Homebrew，也不依赖项目位置和 `.venv`。采集继续使用已有的鼠须管；可选 AI 使用已有本机 Kev 模型服务，模型权重和模型服务没有放进安装包。首次安装不会改变 AI 开关或模型服务配置。
 
@@ -39,3 +39,5 @@
 - 上一轮本机构建配置包含 keytrack_phrases 翻译器及保留的微信配色。完整 Rime lint 为 0 errors，8 条警告来自既有 cold_word_drop 的 logger/metatable；新增 Lua 与 YAML 通过。
 
 仍需在日常应用实际试打确认候选弹窗外观。引擎测试不能替代桌面候选弹窗的视觉验收。此次未实现 AIME 式独立输入法前端或生成式润色面板，Kev 仍是候选决策模型。
+
+升级 v0.4.1 后，请再次完成本机安装，以更新采集脚本和处理器顺序。旧按键记录与修复当天的混合记录会显示「统计不完整」；历史上屏字数与原文保留。看板展示实际开始收到新版采集的时间，不推算缺失按键。

@@ -6,7 +6,7 @@ import hashlib
 import json
 import urllib.request
 
-from . import agent, kev_rime_bridge, kev_rime_setup, kev_service, kev_switch
+from . import rime_setup, agent, kev_rime_bridge, kev_rime_setup, kev_service, kev_switch
 
 
 def checks() -> list[dict]:
@@ -22,6 +22,8 @@ def checks() -> list[dict]:
         message = "采集服务状态无法读取" if recorder["state"] == "unknown" else "采集服务未运行"
         add("recorder", "warning", message + "；可检查 kbd status")
 
+    ready = rime_setup.installation_ready()
+    add("key_capture", "ok" if ready else "warning", "按键采集器版本与最前位置已确认" if ready else "按键采集可能漏记；请完成本机安装或运行 kbd setup-ime")
     enabled = kev_switch.is_enabled()
     add("kev_switch", "ok", f"Kev 建议{'开启' if enabled else '关闭'}，由快捷键主动触发")
     for name in kev_rime_setup.LUA_FILES:

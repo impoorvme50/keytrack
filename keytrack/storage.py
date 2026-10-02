@@ -70,6 +70,11 @@ def _init_schema(conn: sqlite3.Connection) -> None:
             PRIMARY KEY (day, key)
         );
 
+        CREATE TABLE IF NOT EXISTS key_capture_minutes (
+            minute TEXT NOT NULL PRIMARY KEY,
+            count INTEGER NOT NULL DEFAULT 0
+        );
+
         -- 每分钟按键数，用于计算打字速度/节奏（minute 形如 2026-07-28T10:26）
         CREATE TABLE IF NOT EXISTS key_minutes (
             minute TEXT    NOT NULL PRIMARY KEY,
@@ -96,7 +101,7 @@ def insert_segment(
     conn.commit()
 
 
-def bump_key_counts(conn: sqlite3.Connection, day: str, counts: dict[str, int]) -> None:
+def bump_key_counts(conn: sqlite3.Connection, day: str, counts: dict[str, int], *, commit: bool = True) -> None:
     if not counts:
         return
     for key, n in counts.items():
@@ -105,10 +110,11 @@ def bump_key_counts(conn: sqlite3.Connection, day: str, counts: dict[str, int]) 
             "ON CONFLICT(day, key) DO UPDATE SET count = count + excluded.count",
             (day, key, n),
         )
-    conn.commit()
+    if commit:
+        conn.commit()
 
 
-def bump_key_minutes(conn: sqlite3.Connection, minutes: dict[str, int]) -> None:
+def bump_key_minutes(conn: sqlite3.Connection, minutes: dict[str, int], *, commit: bool = True) -> None:
     if not minutes:
         return
     for minute, n in minutes.items():
@@ -117,7 +123,8 @@ def bump_key_minutes(conn: sqlite3.Connection, minutes: dict[str, int]) -> None:
             "ON CONFLICT(minute) DO UPDATE SET count = count + excluded.count",
             (minute, n),
         )
-    conn.commit()
+    if commit:
+        conn.commit()
 
 
 def key_minutes_for_day(conn: sqlite3.Connection, day: date) -> list[sqlite3.Row]:

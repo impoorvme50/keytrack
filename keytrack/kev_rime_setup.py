@@ -30,8 +30,14 @@ def configured_hotkey(content: str) -> str:
 
 def render_custom_yaml(content: str, python: Path, bridge: Path) -> str:
     """Add or update the managed patch block without disturbing other settings."""
+    slot = "@before 1" if re.search(r'engine/processors/@before 0["\']?:\s*lua_processor@\*keytrack_logger', content) else "@before 0"
+    outside = content
+    if BEGIN in content and END in content:
+        outside = content[:content.index(BEGIN)] + content[content.index(END) + len(END):]
+    if re.search(r'engine/processors/' + re.escape(slot) + r'["\']?:', outside):
+        raise ValueError("Kev insertion position already occupied in custom.yaml")
     entries = (
-        f'  "engine/processors/@before 0": lua_processor@*kev_hotkey\n'
+        f'  "engine/processors/{slot}": lua_processor@*kev_hotkey\n'
         f'  "engine/filters/@last": lua_filter@*kev_filter\n'
         f'  "kev_rime/python": {json.dumps(str(python), ensure_ascii=False)}\n'
         f'  "kev_rime/bridge": {json.dumps(str(bridge), ensure_ascii=False)}\n'
@@ -47,7 +53,7 @@ def render_custom_yaml(content: str, python: Path, bridge: Path) -> str:
             stop += 1
         return content[:start] + block + content[stop:]
 
-    if re.search(r'^\s*"engine/(?:processors/@before 0|filters/@last)"\s*:', content, re.M):
+    if re.search(r'^\s*"engine/(?:filters/@last)"\s*:', content, re.M):
         raise ValueError("Kev insertion position already occupied in custom.yaml")
     if re.search(r"^patch:\s*\{", content, re.M):
         raise ValueError("inline patch mapping needs manual editing")

@@ -7,7 +7,7 @@ from pathlib import Path
 
 out = Path(sys.argv[1])
 out.mkdir(parents=True, exist_ok=True)
-notes = ["Keytrack 0.4.0 — bundled runtime components", "", "The native interface and local helper run on this Mac.", "No AIME source code is included in this bundle.", ""]
+notes = ["Keytrack 0.4.1 — bundled runtime components", "", "The native interface and local helper run on this Mac.", "No AIME source code is included in this bundle.", ""]
 for name in ("pyobjc-core", "pyobjc-framework-Cocoa", "pyobjc-framework-Quartz", "pyinstaller"):
     dist = importlib.metadata.distribution(name)
     notes.append(f"{name} {dist.version}")

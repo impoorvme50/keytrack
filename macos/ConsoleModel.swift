@@ -48,9 +48,14 @@ struct KeySpec: Decodable {
         width = try row.decode(Double.self); finger = try row.decode(String.self)
     }
 }
+struct KeyQuality: Decodable {
+    var status: String; var reliable: Bool; var message: String; var scope: String
+    var first_verified_minute: String?; var mapped_keys: Int; var unmapped_keys: Int
+}
 struct Report: Decodable {
     var day: String; var total_chars: Int; var segment_count: Int
-    var active_minutes: Int; var cpm: Double; var total_keys: Int; var correction_rate: Double
+    var active_minutes: Int?; var cpm: Double?; var total_keys: Int; var correction_rate: Double?
+    var key_quality: KeyQuality
     var apps: [AppTotal]; var hours: [Int]; var trend: [DayTotal]; var calendar: [DayTotal]
     var key_frequency: [String: Int]; var fingers: [FingerTotal]; var keyboard: [[KeySpec]]
     var segments: [Segment]?; var segment_limit: Int

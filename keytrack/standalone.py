@@ -22,7 +22,7 @@ def status() -> dict:
     if packaged:
         try:
             current = plistlib.loads(Path(agent.PLIST_PATH).read_bytes())
-            configured = current.get("ProgramArguments") == [sys.executable, "record"]
+            configured = current.get("ProgramArguments") == [sys.executable, "record"] and rime_setup.installation_ready()
             schema = kev_rime_setup.RIME_DIR / "rime_ice.custom.yaml"
             if schema.exists() and kev_rime_setup.BEGIN in schema.read_text():
                 configured = configured and str(Path(sys.executable)) in schema.read_text()

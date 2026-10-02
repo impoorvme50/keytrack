@@ -12,7 +12,8 @@ from __future__ import annotations
 
 from datetime import datetime, date
 
-from . import storage
+from . import storage, key_stats
+from .layouts import norm_key
 
 
 def segments_for_day(day: date, db_path: str = storage.DEFAULT_DB_PATH) -> list[dict]:
@@ -37,6 +38,7 @@ def key_stats_for_day(day: date, db_path: str = storage.DEFAULT_DB_PATH) -> dict
     with storage.connect(db_path) as conn:
         minutes = storage.key_minutes_for_day(conn, day)
         counts = storage.key_counts_for_day(conn, day)
+        quality = key_stats.quality(conn, day.isoformat())
 
     per_minute = {r["minute"]: r["count"] for r in minutes}
     total = sum(per_minute.values())
@@ -47,19 +49,20 @@ def key_stats_for_day(day: date, db_path: str = storage.DEFAULT_DB_PATH) -> dict
         by_hour[hour] = by_hour.get(hour, 0) + n
 
     deleted = sum(
-        r["count"] for r in counts if r["key"].lower() in ("backspace", "delete")
+        r["count"] for r in counts if norm_key(r["key"]) == "backspace"
     )
     counted = sum(r["count"] for r in counts)  # key_counts 表总量（与 minutes 口径略异）
     return {
-        "total_keys": total,
-        "active_minutes": active,
-        "avg_kpm": round(total / active, 1) if active else 0,
-        "peak_kpm": max(per_minute.values()) if per_minute else 0,
-        "by_hour": {h: by_hour[h] for h in sorted(by_hour)},
+        "total_keys": counted,
+        "key_quality": quality,
+        "active_minutes": active if quality["reliable"] else None,
+        "avg_kpm": round(total / active, 1) if active and quality["reliable"] else None,
+        "peak_kpm": max(per_minute.values()) if per_minute and quality["reliable"] else None,
+        "by_hour": {h: by_hour[h] for h in sorted(by_hour)} if quality["reliable"] else {},
         "per_minute": per_minute,
         "key_frequency": {r["key"]: r["count"] for r in counts},
         "deleted_keys": deleted,
-        "correction_rate": round(deleted / counted, 4) if counted else 0,
+        "correction_rate": round(deleted / counted, 4) if counted and quality["reliable"] else None,
     }
 
 
@@ -77,7 +80,7 @@ def day_report(day: date, db_path: str = storage.DEFAULT_DB_PATH) -> dict:
         "segments": segments,
         "segment_count": len(segments),
         "total_chars": total_chars,
-        "cpm": round(total_chars / active, 1) if active else 0,  # 上屏字/活跃分钟
+        "cpm": round(total_chars / active, 1) if active else None,  # 上屏字/活跃分钟
         "apps": dict(sorted(by_app.items(), key=lambda kv: kv[1], reverse=True)),
         "keys": keys,
     }

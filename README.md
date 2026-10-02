@@ -27,6 +27,12 @@
 - **按键节奏**在 lua 里按分钟聚合成 `{分钟, 各键次数}`，不存按键时间线——统计够用，
   隐私守得住。
 
+## 统计口径（v0.4.1）
+
+按键采集器位于输入处理链最前面，只观察并透传按键。大写、Shift 标点与组合键主键归到 ANSI 物理键；修饰键不随每次组合键重复计算。范围仅覆盖鼠须管收到的按键，不代表整台 Mac 的输入。
+
+v0.4.0 及更早的采集位置可能漏记字母和空格。升级后保留全部历史，并根据分钟桶的采集版本区分旧记录、当天混合记录和已校验记录。旧/混合记录不显示速度、活跃时间、退格占比与手指百分比；历史漏采无法补回。键盘热力图仍显示已收到的次数，并注明不完整。上屏字数来自独立的上屏记录，不受这次按键漏采影响。
+
 ## 快速开始
 
 ```bash
@@ -49,7 +55,7 @@ cd ~/keyboard
 | `kbd days` | 列出库里有数据的所有日期 |
 | `kbd week [--json] [--push-webhook URL]` | 最近 7 天周报，可推 Lark 机器人（只发聚合数字） |
 | `kbd heatmap [day]` | 导出键盘热力图 HTML（log 色阶，悬停看占比） |
-| `kbd ergo [day]` | 手/指负载均衡 + 按键熵（要不要换双拼的数据支撑） |
+| `kbd ergo [day]` | 按标准指法估算按键分布与按键熵（仅使用已校验的记录） |
 | `kbd record [-v] [--pynput]` | 前台采集（agent 已装时不用手动跑；--pynput 仅当还用别的输入法） |
 | `kbd ingest` | 手动补录一次 |
 | `kbd setup-ime` | 安装/更新鼠须管采集钩子并触发部署 |
@@ -61,7 +67,7 @@ cd ~/keyboard
 
 终端外的全局 `kbd` 命令由 `/opt/homebrew/bin/kbd` 包装脚本提供。
 
-独立安装版可从 [v0.4.0 下载页](https://github.com/impoorvme50/keytrack/releases/tag/v0.4.0) 获取（Apple 芯片，macOS 26 及以上）：将应用拖入「应用程序」，打开后点「完成本机安装」。界面和采集自带运行组件，不再依赖源码目录、Python 安装或 Homebrew；输入法需要已有鼠须管，可选 AI 沿用现有本机 Kev 模型。当前为本机自用/实验版，未做 Apple Developer ID 签名和公证。开发构建用 `./scripts/build-console.sh`，打包用 `./scripts/package-console.sh`。用法见 [输入控制台](docs/console.md)，版本变化见 [更新记录](CHANGELOG.md)。
+独立安装版可从 [v0.4.1 下载页](https://github.com/impoorvme50/keytrack/releases/tag/v0.4.1) 获取（Apple 芯片，macOS 26 及以上）：将应用拖入「应用程序」，打开后点「完成本机安装」。界面和采集自带运行组件，不再依赖源码目录、Python 安装或 Homebrew；输入法需要已有鼠须管，可选 AI 沿用现有本机 Kev 模型。当前为本机自用/实验版，未做 Apple Developer ID 签名和公证。开发构建用 `./scripts/build-console.sh`，打包用 `./scripts/package-console.sh`。用法见 [输入控制台](docs/console.md)，版本变化见 [更新记录](CHANGELOG.md)。
 
 ## 查询接口（做看板 / Swift 状态栏用）
 

@@ -1,4 +1,4 @@
--- keytrack_logger.lua — keytrack 的 RIME 采集钩子（v2）。
+-- keytrack_logger.lua — keytrack 的 RIME 采集钩子（v3）。
 -- 每次上屏（commit）往 ~/.keytrack/ime_commits.jsonl 追加一行：
 --     {"ts": 1753700000, "text": "上屏文字", "sch": "rime_ice"}
 -- 按键按分钟聚合成桶，分钟切换时往 ~/.keytrack/ime_keys.jsonl 写一行：
@@ -61,6 +61,7 @@ end
 -- ---- 按键分钟桶 ----
 
 local bucket_min = nil     -- 当前桶的分钟，形如 2026-07-28T15:04
+local bucket_version = 2
 local bucket = {}          -- 当前桶：键名 -> 次数
 
 local function flush_bucket()
@@ -70,18 +71,19 @@ local function flush_bucket()
     parts[#parts + 1] = string.format('"%s":%d', json_escape(k), n)
   end
   append_line(keys_path(), string.format(
-    '{"min":"%s","keys":{%s}}\n', bucket_min, table.concat(parts, ",")))
+    '{"min":"%s","capture_version":%d,"keys":{%s}}\n', bucket_min, bucket_version, table.concat(parts, ",")))
   bucket_min = nil
   bucket = {}
 end
 
-local function count_key(key)
+local function count_key(key, version)
   local repr = key:repr()  -- 形如 "a"、"space"、"Shift+Return"
   if not repr or repr == "" then return end
   local min = os.date("%Y-%m-%dT%H:%M")
-  if min ~= bucket_min then
+  if min ~= bucket_min or version ~= bucket_version then
     flush_bucket()         -- 跨分钟了，先把旧桶写出去
     bucket_min = min
+    bucket_version = version
   end
   bucket[repr] = (bucket[repr] or 0) + 1
 end
@@ -89,6 +91,13 @@ end
 -- ---- librime-lua 接口 ----
 
 function P.init(env)
+  -- Only certify buckets when this observer precedes every consuming processor.
+  env.capture_version = 2
+  pcall(function()
+    if env.engine.schema.config:get_string("engine/processors/@0") == "lua_processor@*keytrack_logger" then
+      env.capture_version = 3
+    end
+  end)
   local ctx = env.engine.context
   env.commit_conn = ctx.commit_notifier:connect(function(c)
     -- pcall：记录失败绝不能影响打字。
@@ -100,7 +109,7 @@ end
 
 function P.func(key, env)
   if not key:release() then  -- 只数按下，不数抬起
-    pcall(count_key, key)
+    pcall(count_key, key, env.capture_version)
   end
   return kNoop
 end

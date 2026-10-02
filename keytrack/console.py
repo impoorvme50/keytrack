@@ -20,6 +20,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from . import key_stats
 from . import agent, doctor, kev_rime_setup, kev_switch, layouts, rime_setup, storage, standalone
 
 PROJECT = Path(__file__).resolve().parent.parent
@@ -349,16 +350,17 @@ class ConsoleStore:
         day = date.fromisoformat(day_string)
         start = datetime.combine(day, datetime.min.time(), ZONE).timestamp()
         end = datetime.combine(day + timedelta(days=1), datetime.min.time(), ZONE).timestamp()
-        blank = {"day": day_string, "total_chars": 0, "segment_count": 0, "active_minutes": 0, "cpm": 0,
-                 "total_keys": 0, "correction_rate": 0, "apps": [], "hours": [], "trend": [],
+        blank = {"day": day_string, "total_chars": 0, "segment_count": 0, "active_minutes": None, "cpm": None,
+                 "total_keys": 0, "correction_rate": None, "apps": [], "hours": [], "trend": [],
                  "calendar": [], "key_frequency": {}, "fingers": [], "keyboard": layouts.ANSI_ROWS,
-                 "segments": None, "segment_limit": 500}
+                 "segments": None, "segment_limit": 500, "key_quality": {"status": "empty", "reliable": False, "message": "这一天还没有按键记录。", "scope": key_stats.SCOPE, "first_verified_minute": None, "mapped_keys": 0, "unmapped_keys": 0}}
         path = Path(self.db).resolve()
         if not path.exists():
             return blank
         conn = sqlite3.connect(path.as_uri() + "?mode=ro", uri=True, timeout=2)
         conn.row_factory = sqlite3.Row
         try:
+            conn.execute("BEGIN")
             summary = conn.execute("SELECT COUNT(*), COALESCE(SUM(key_count),0) FROM segments WHERE start_ts>=? AND start_ts<?", (start, end)).fetchone()
             counts = {row[0]: row[1] for row in conn.execute("SELECT key,count FROM key_counts WHERE day=?", (day_string,))}
             minutes = list(conn.execute("SELECT minute,count FROM key_minutes WHERE minute LIKE ? AND count>0", (day_string + "T%",)))
@@ -383,13 +385,15 @@ class ConsoleStore:
                 if physical:
                     normalized[physical] = normalized.get(physical, 0) + count
                     fingers[mapping[physical]] += count
-            deleted = sum(n for k, n in counts.items() if k.lower() in ("backspace", "delete"))
+            quality = key_stats.quality(conn, day_string, counts)
+            valid = quality["reliable"]
+            deleted = sum(n for k, n in counts.items() if layouts.norm_key(k) == "backspace")
             total = sum(counts.values())
-            blank.update(total_chars=summary[1], segment_count=summary[0], active_minutes=len(minutes),
-                         cpm=round(summary[1] / len(minutes), 1) if minutes else 0,
-                         total_keys=total, correction_rate=round(deleted / total * 100, 1) if total else 0,
-                         apps=apps, hours=hours, calendar=calendar, trend=calendar[-14:], key_frequency=normalized,
-                         fingers=[{"name": layouts.FINGER_NAMES[k], "count": v} for k, v in fingers.items()])
+            blank.update(total_chars=summary[1], segment_count=summary[0], active_minutes=len(minutes) if valid else None,
+                         cpm=round(summary[1] / len(minutes), 1) if minutes and valid else None,
+                         total_keys=total, correction_rate=round(deleted / total * 100, 1) if total and valid else None,
+                         key_quality=quality, apps=apps, hours=hours if valid else [], calendar=calendar, trend=calendar[-14:], key_frequency=normalized,
+                         fingers=[{"name": layouts.FINGER_NAMES[k], "count": v} for k, v in fingers.items()] if valid else [])
             if include_text:
                 blank["segments"] = [{"app": row[0], "time": datetime.fromtimestamp(row[1], ZONE).strftime("%H:%M"), "text": row[2]} for row in conn.execute("SELECT app,start_ts,text FROM segments WHERE start_ts>=? AND start_ts<? ORDER BY start_ts DESC LIMIT 500", (start, end))]
             return blank
@@ -509,8 +513,11 @@ def demo_store() -> tuple[ConsoleStore, tempfile.TemporaryDirectory]:
             for hour, app in ((9, "ZCode"), (11, "飞书"), (14, "邮件"), (16, "微信")):
                 text = "这是一段用于检查页面展示的示例文字，不是真实输入记录。" * (2 + (index * 13 + hour) % 9)
                 storage.insert_segment(conn, app, None, base + hour * 3600, base + hour * 3600 + 120, text, len(text))
-                storage.bump_key_minutes(conn, {f"{day}T{hour:02d}:{minute:02d}": 28 + minute % 13 for minute in range(20)})
-            storage.bump_key_counts(conn, day.isoformat(), {"a": 350, "e": 620, "i": 320, "n": 510, "o": 420, "space": 240, "BackSpace": 87, "s": 180, "t": 360, "h": 210})
+                from .ime_ingest import store_key_buckets
+                store_key_buckets(conn, [{"min": f"{day}T{hour:02d}:{minute:02d}", "capture_version": 3,
+                    "keys": {"a": 8, "e": 10, "i": 4, "n": 6, "o": 5, "space": 3, "BackSpace": 1,
+                             "comma": 1, "Super+Super_L": 1, "Super+a": 1, "Left": 1}}
+                    for minute in range(20)])
     store = ConsoleStore(root / "console", rime, str(db), demo=True)
     items = [{"code": "qreply", "category": "工作回复", "text": "收到，谢谢。我会核对后回复。"},
              {"code": "qsample", "category": "外贸", "text": "Thank you for your inquiry. We will confirm the sample details shortly."}]

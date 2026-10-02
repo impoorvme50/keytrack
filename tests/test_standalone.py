@@ -32,7 +32,7 @@ class StandaloneTests(unittest.TestCase):
             plist.write_bytes(plistlib.dumps({"ProgramArguments": [helper, "record"]}))
             custom = root / "rime_ice.custom.yaml"
             custom.write_text(kev_rime_setup.BEGIN + '\n"kev_rime/python": "/old/python"\n')
-            with patch.object(sys, "frozen", True, create=True), patch.object(sys, "executable", helper), patch.object(agent, "PLIST_PATH", str(plist)), patch.object(kev_rime_setup, "RIME_DIR", root):
+            with patch.object(rime_setup, "installation_ready", return_value=True), patch.object(sys, "frozen", True, create=True), patch.object(sys, "executable", helper), patch.object(agent, "PLIST_PATH", str(plist)), patch.object(kev_rime_setup, "RIME_DIR", root):
                 self.assertFalse(standalone.status()["configured"])
                 custom.write_text(kev_rime_setup.BEGIN + '\n"kev_rime/python": "' + helper + '"\n')
                 self.assertTrue(standalone.status()["configured"])

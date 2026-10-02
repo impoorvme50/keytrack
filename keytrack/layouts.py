@@ -5,7 +5,7 @@
 - RIME 风格（v2 lua 分钟桶）：X11 keysym，空格 "space"，回车 "Return"，退格 "BackSpace"
 
 norm_key() 把两套命名统一映射到布局里的物理键 id（小写），
-组合键（"Shift+Return"）和功能键不在布局上，返回 None 跳过。
+组合键只计实际按下的主键，不额外虚构修饰键；布局外功能键返回 None。
 """
 
 from __future__ import annotations
@@ -57,15 +57,30 @@ _ALIAS = {
 _LAYOUT_IDS = {k for row in ANSI_ROWS for k, *_ in row}
 
 
+# X11 keysym 和 Shift 后的符号都归到 ANSI 物理键。
+_SYMBOLS = dict(zip("~!@#$%^&*()_+{}|:\"<>?", "`1234567890-=[]\\;',./"))
+_ALIAS.update({
+    "grave": "`", "asciitilde": "`", "exclam": "1", "at": "2", "numbersign": "3",
+    "dollar": "4", "percent": "5", "asciicircum": "6", "ampersand": "7", "asterisk": "8",
+    "parenleft": "9", "parenright": "0", "minus": "-", "underscore": "-", "equal": "=", "plus": "=",
+    "bracketleft": "[", "braceleft": "[", "bracketright": "]", "braceright": "]", "backslash": "\\",
+    "bar": "\\", "semicolon": ";", "colon": ";", "apostrophe": "'", "quotedbl": "'",
+    "comma": ",", "less": ",", "period": ".", "greater": ".", "slash": "/", "question": "/",
+})
+_ALIAS = {k.lower(): v for k, v in _ALIAS.items()}
+
+
 def norm_key(name: str) -> str | None:
-    """把 DB 里的键名归一到布局物理键 id；布局外的键返回 None。"""
-    if not name:
+    """一次组合键事件只映射一次；独立修饰键事件仍按左右键计数。"""
+    if not isinstance(name, str) or not name:
         return None
-    if name in _ALIAS:
-        return _ALIAS[name]
-    low = name.lower()
+    # Literal '+' is the shifted '=' key, not a separator.
+    base = name if len(name) == 1 else name.rsplit("+", 1)[-1]
+    if not base and name.endswith("++"):
+        base = "+"
+    low = base.lower()
     if low in _ALIAS:
         return _ALIAS[low]
-    if len(name) == 1 and name in _LAYOUT_IDS:  # 字母/数字/标点原样
-        return name
-    return None  # 组合键、F 键、方向键等不在布局上
+    if base in _SYMBOLS:
+        return _SYMBOLS[base]
+    return low if low in _LAYOUT_IDS else None

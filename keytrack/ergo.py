@@ -13,7 +13,7 @@ from __future__ import annotations
 import math
 from datetime import date
 
-from . import storage
+from . import storage, key_stats
 from .layouts import ANSI_ROWS, FINGER_NAMES, LEFT_FINGERS, norm_key
 
 _KEY_FINGER = {k: f for row in ANSI_ROWS for k, _l, _w, f in row}
@@ -38,6 +38,8 @@ def analyze(day: date | None = None, db_path: str = storage.DEFAULT_DB_PATH) -> 
         else:
             rows = storage.key_counts_for_day(conn, day)
 
+        quality = key_stats.quality(conn, day.isoformat() if day else None)
+
     per_key: dict[str, int] = {}
     for r in rows:
         k = norm_key(r["key"])
@@ -55,14 +57,15 @@ def analyze(day: date | None = None, db_path: str = storage.DEFAULT_DB_PATH) -> 
 
     return {
         "total": total,
+        "key_quality": quality,
         "per_key": per_key,
-        "per_finger": per_finger,
+        "per_finger": per_finger if quality["reliable"] else {},
         "left": left,
         "right": right,
         "thumb": thumb,
-        "key_entropy": _entropy(list(per_key.values()), N_PHYSICAL_KEYS),
-        "finger_entropy": _entropy(list(per_finger.values()), 9),  # 8 手指 + 拇指
-        "hand_entropy": _entropy([left, right], 2),
+        "key_entropy": _entropy(list(per_key.values()), N_PHYSICAL_KEYS) if quality["reliable"] else None,
+        "finger_entropy": _entropy(list(per_finger.values()), 9) if quality["reliable"] else None,  # 8 手指 + 拇指
+        "hand_entropy": _entropy([left, right], 2) if quality["reliable"] else None,
     }
 
 
@@ -70,6 +73,10 @@ def show(day: date | None = None, db_path: str = storage.DEFAULT_DB_PATH) -> Non
     r = analyze(day, db_path)
     title = day.isoformat() if day else "累计"
     print(f"\n===== 手指负载与均衡性 · {title} =====\n")
+    print(r["key_quality"]["scope"])
+    if not r["key_quality"]["reliable"]:
+        print(r["key_quality"]["message"])
+        return
     if not r["total"]:
         print("（没有数据）\n")
         return
@@ -88,17 +95,4 @@ def show(day: date | None = None, db_path: str = storage.DEFAULT_DB_PATH) -> Non
     print(f"手指熵 {r['finger_entropy']:.2f}（1=九指完全均匀）")
     print(f"手掌熵 {r['hand_entropy']:.2f}（1=左右手各半）")
 
-    # 一句话点评
-    notes = []
-    if r["hand_entropy"] < 0.95:
-        heavy = "左" if r["left"] > r["right"] else "右"
-        notes.append(f"{heavy}手明显更累")
-    finger_avg = hand_total / 9
-    for f in order:
-        if r["per_finger"].get(f, 0) > finger_avg * 2 and f != "th":
-            notes.append(f"{FINGER_NAMES[f]}负载超标（>{finger_avg*2/hand_total*100:.0f}%）")
-    if r["key_entropy"] < 0.6:
-        notes.append("按键集中度偏高——换双拼/优化指法有实打实的收益空间")
-    if notes:
-        print("\n点评：" + "；".join(notes) + "。")
-    print()
+    print("按标准指法估算，不代表实际手指动作或疲劳程度。\n")

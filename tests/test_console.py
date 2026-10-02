@@ -114,6 +114,7 @@ class ConsoleTests(unittest.TestCase):
             storage.insert_segment(conn, "Example", None, start + 3600, start + 3601, "private sample", 14)
             storage.bump_key_counts(conn, today.isoformat(), {"a": 10, "BackSpace": 2})
             storage.bump_key_minutes(conn, {today.isoformat()+"T01:00":12})
+            conn.execute("INSERT INTO key_capture_minutes VALUES (?,?)", (today.isoformat()+"T01:00",12))
         path = Path(self.store.db)
         before = hashlib.sha256(path.read_bytes()).digest()
         report = self.store.report(today.isoformat())

@@ -45,6 +45,14 @@ ORDER BY start_ts;
 
 用途：活跃分钟数、平均/峰值击键每分钟、按小时分布（`substr(minute,12,2)` 分组）。
 
+### key_capture_minutes — 已校验的分钟桶来源（v0.4.1）
+
+`minute TEXT PRIMARY KEY, count INTEGER`：仅累加 `capture_version: 3` 的桶。采集器只有确认自己处于处理链第一个位置时才标记 v3。三张按键表在同一事务中更新。
+
+当天 `key_counts` 总数与 `key_minutes` 总数一致，且每一分钟的总数均等于 `key_capture_minutes` 对应数时，才计算派生指标。同一分钟可能混有旧/新来源，不能仅按升级时间判断完整性。新表为空或不存在时不追溯补填。
+
+`key_quality` 包含 `status`（`empty/legacy/mixed/verified`）、`reliable`、`first_verified_minute`、`mapped_keys`、`unmapped_keys`、范围与提示。不完整时 `active_minutes/avg_kpm/peak_kpm/correction_rate/cpm` 为 `null`，小时与手指分布隐藏；总次数和热力图为已观察到的记录。
+
 ## JSON 接口（`kbd today --json`）
 
 ```jsonc
@@ -74,4 +82,4 @@ Python 侧对应物：`keytrack/query.py` 的 `day_report()` / `segments_for_day
 吸入前的事件躺在 jsonl 里，由常驻 helper 或查询前补录搬走（rename 原子搬运）：
 
 - `~/.keytrack/ime_commits.jsonl`：`{"ts": 1785..., "text": "上屏文字", "sch": "rime_ice"}`
-- `~/.keytrack/ime_keys.jsonl`：`{"min": "2026-07-28T15:30", "keys": {"a": 3, "space": 1}}`
+- `~/.keytrack/ime_keys.jsonl`：`{"min": "2026-07-28T15:30", "capture_version": 3, "keys": {"a": 3, "space": 1}}`

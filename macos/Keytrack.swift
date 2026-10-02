@@ -155,11 +155,18 @@ struct DashboardView: View {
                 Button("今天") { model.changeDate(Date()) }
                 DatePicker("日期", selection: Binding(get: { model.selectedDate }, set: { model.changeDate($0) }), displayedComponents: .date).labelsHidden().frame(width: 125)
             }
+            Panel(title: report.key_quality.reliable ? "采集范围" : "按键统计待完善", caption: "") {
+                Text(report.key_quality.message).font(.callout)
+                Text(report.key_quality.scope).font(.caption).foregroundStyle(.secondary)
+                if let since = report.key_quality.first_verified_minute {
+                    Text("修复后采集始于 \(since.replacingOccurrences(of: "T", with: " "))；更早的漏采无法补回。").font(.caption).foregroundStyle(.secondary)
+                }
+            }
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 14) {
                 Metric(label: "上屏文字", value: report.total_chars.formatted(), unit: "字", note: "\(report.segment_count) 个输入片段", icon: "pencil")
-                Metric(label: "输入速度", value: String(format: "%.1f", report.cpm), unit: "字 / 分", note: "按活跃分钟计算", icon: "arrow.up.right")
-                Metric(label: "活跃时间", value: report.active_minutes.formatted(), unit: "分钟", note: "有按键记录的分钟数", icon: "clock")
-                Metric(label: "退格占比", value: String(format: "%.1f", report.correction_rate), unit: "%", note: "\(report.total_keys.formatted()) 次按键", icon: "delete.left")
+                Metric(label: "输入速度", value: report.cpm.map { String(format: "%.1f", $0) } ?? "—", unit: "字 / 分", note: "按活跃分钟计算", icon: "arrow.up.right")
+                Metric(label: "活跃时间", value: report.active_minutes.map { $0.formatted() } ?? "—", unit: "分钟", note: "有按键记录的分钟数", icon: "clock")
+                Metric(label: "退格占比", value: report.correction_rate.map { String(format: "%.1f", $0) } ?? "—", unit: "%", note: "\(report.total_keys.formatted()) 次按键", icon: "delete.left")
             }
             HStack(alignment: .top, spacing: 18) {
                 Panel(title: "最近两周", caption: "点击查看当天") {
@@ -198,6 +205,7 @@ struct DashboardView: View {
                     }
                 }
                 Panel(title: "一天的节奏", caption: "每小时的按键次数") {
+                    if report.hours.isEmpty { Text(report.key_quality.message).font(.caption).foregroundStyle(.secondary) }
                     HStack(alignment: .bottom, spacing: 4) {
                         ForEach(report.hours.indices, id: \.self) { hour in
                             VStack(spacing: 6) {
@@ -208,8 +216,14 @@ struct DashboardView: View {
                     }.frame(height: 105)
                 }
             }
-            Panel(title: "键盘热力图", caption: "悬停查看次数") { KeyboardHeatmap(report: report) }
-            Panel(title: "手指负载", caption: "按标准键盘指法估算") {
+            Panel(title: "键盘热力图", caption: "已映射 \(report.key_quality.mapped_keys) 次 · 布局外 \(report.key_quality.unmapped_keys) 次") {
+                KeyboardHeatmap(report: report)
+                Text(report.key_quality.reliable ? "ANSI 布局 · 悬停查看次数" : "仅展示已收到的按键；浅色不代表没有按过。").font(.caption).foregroundStyle(.secondary)
+            }
+            Panel(title: "按标准指法估算的按键分布", caption: "仅以布局内的按键为分母") {
+                if report.fingers.isEmpty || report.key_quality.mapped_keys == 0 {
+                    Text(report.key_quality.reliable ? "没有可映射到键盘布局的按键" : report.key_quality.message).font(.caption).foregroundStyle(.secondary)
+                }
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 9), spacing: 8) {
                     ForEach(report.fingers) { finger in
                         VStack(spacing: 7) {

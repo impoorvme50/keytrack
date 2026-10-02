@@ -22,6 +22,7 @@ RIME 侧的 lua 钩子（rime/keytrack_logger.lua）持续写两个文件：
 from __future__ import annotations
 
 import json
+import re
 import os
 import threading
 import time
@@ -137,28 +138,44 @@ def drain_key_buckets(path: str = KEYS_PATH) -> list[dict]:
     for obj in _drain_file(path):
         minute, keys = obj.get("min"), obj.get("keys")
         if isinstance(minute, str) and isinstance(keys, dict) and keys:
-            out.append({"min": minute, "keys": keys})
+            out.append({"min": minute, "keys": keys, "capture_version": obj.get("capture_version")})
     return out
 
 
 def store_key_buckets(conn, buckets: list[dict]) -> None:
-    """按键分钟桶 → key_counts（按天）+ key_minutes（按分钟），与 pynput 指标同表。"""
-    by_day: dict[str, dict[str, int]] = {}
-    by_minute: dict[str, int] = {}
+    """Counts, minute totals and provenance are committed in one transaction."""
+    by_day = {}
+    by_minute = {}
+    verified = {}
     for b in buckets:
-        day = b["min"][:10]
+        minute = b.get("min", "")
+        if not isinstance(minute, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d", minute):
+            continue
+        from datetime import datetime
+        try:
+            datetime.fromisoformat(minute)
+        except ValueError:
+            continue
+        keys = b.get("keys")
+        if not isinstance(keys, dict):
+            continue
         total = 0
-        day_counts = by_day.setdefault(day, {})
-        for key, n in b["keys"].items():
-            if isinstance(n, (int, float)) and n > 0:
-                n = int(n)
+        day_counts = by_day.setdefault(minute[:10], {})
+        for key, n in keys.items():
+            if isinstance(key, str) and key and type(n) is int and n > 0:
                 day_counts[key] = day_counts.get(key, 0) + n
                 total += n
         if total:
-            by_minute[b["min"]] = by_minute.get(b["min"], 0) + total
-    for day, counts in by_day.items():
-        storage.bump_key_counts(conn, day, counts)
-    storage.bump_key_minutes(conn, by_minute)
+            by_minute[minute] = by_minute.get(minute, 0) + total
+            if type(b.get("capture_version")) is int and b["capture_version"] == 3:
+                verified[minute] = verified.get(minute, 0) + total
+    with conn:
+        for day, counts in by_day.items():
+            storage.bump_key_counts(conn, day, counts, commit=False)
+        storage.bump_key_minutes(conn, by_minute, commit=False)
+        for minute, n in verified.items():
+            conn.execute("INSERT INTO key_capture_minutes (minute,count) VALUES (?,?) "
+                         "ON CONFLICT(minute) DO UPDATE SET count=count+excluded.count", (minute, n))
 
 
 class ImeIngester:

@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from datetime import datetime, date, timedelta
 
-from . import storage
+from . import storage, key_stats
+from .layouts import norm_key
 
 
 def _fmt_time(ts: float) -> str:
@@ -23,7 +24,7 @@ def _correction_stats(counts: list) -> tuple[int, float]:
     """改稿率：删除键（BackSpace/Delete，两套键名）占全部击键的比例。"""
     total = sum(r["count"] for r in counts)
     deleted = sum(
-        r["count"] for r in counts if r["key"].lower() in ("backspace", "delete")
+        r["count"] for r in counts if norm_key(r["key"]) == "backspace"
     )
     return deleted, (deleted / total if total else 0.0)
 
@@ -66,6 +67,7 @@ def show_day(day: date, db_path: str = storage.DEFAULT_DB_PATH, full: bool = Fal
         segments = storage.segments_for_day(conn, day)
         counts = storage.key_counts_for_day(conn, day)
         minutes = storage.key_minutes_for_day(conn, day)
+        quality = key_stats.quality(conn, day.isoformat())
 
     title = day.strftime("%Y-%m-%d (%a)")
     print(f"\n===== 今天输入了什么 · {title} =====\n")
@@ -91,7 +93,11 @@ def show_day(day: date, db_path: str = storage.DEFAULT_DB_PATH, full: bool = Fal
             print(f"    {body}")
             print()
 
-    _show_speed(minutes, counts, total_chars=sum(s["key_count"] for s in segments))
+    print(quality["scope"])
+    if quality["reliable"]:
+        _show_speed(minutes, counts, total_chars=sum(s["key_count"] for s in segments))
+    else:
+        print(quality["message"])
 
     if counts:
         print("-" * 60)
