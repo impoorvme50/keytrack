@@ -7,7 +7,11 @@ from pathlib import Path
 
 out = Path(sys.argv[1])
 out.mkdir(parents=True, exist_ok=True)
-notes = ["Keytrack 0.4.1 — bundled runtime components", "", "The native interface and local helper run on this Mac.", "No AIME source code is included in this bundle.", ""]
+notes = ["Keytrack 0.4.2 — bundled runtime components", "", "The native interface and local helper run on this Mac.", "No AIME or Qingjian source code is included in this bundle.", ""]
+prediction_licenses = Path(__file__).resolve().parent.parent / "data/prediction/licenses"
+if prediction_licenses.is_dir():
+    shutil.copytree(prediction_licenses, out / "PublicPrediction", dirs_exist_ok=True)
+    notes.append("Public next-word pairs: LCCC (MIT), segmented offline with jieba 0.42.1 (MIT); notices in PublicPrediction.")
 for name in ("pyobjc-core", "pyobjc-framework-Cocoa", "pyobjc-framework-Quartz", "pyinstaller"):
     dist = importlib.metadata.distribution(name)
     notes.append(f"{name} {dist.version}")

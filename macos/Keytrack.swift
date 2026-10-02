@@ -338,16 +338,46 @@ struct PhraseEditor: View {
 struct AppearanceView: View {
     @EnvironmentObject var model: ConsoleModel
     @State private var dark = false
+    @State private var fontSearch = ""
     var themes: [AppearanceTheme] { model.state?.appearance_themes ?? AppearanceTheme.legacy }
     var selectedTheme: AppearanceTheme? { themes.first { $0.id == model.preferences.theme } }
     private var palette: AppearancePalette { AppearancePalette(colors: dark ? (selectedTheme?.dark ?? [:]) : (selectedTheme?.light ?? [:]), dark: dark) }
     var candidateSpacing: CGFloat { model.preferences.density == "compact" ? 4 : 8 }
+    var baseline: FontAppearance? {
+        guard let original = model.state?.appearance_baseline else { return nil }
+        return model.preferences.theme == "existing" ? (dark ? original.dark : original.light) : original.style
+    }
+    var fontFace: String {
+        switch model.preferences.font_mode {
+        case "custom": return model.preferences.font_face
+        case "system": return ""
+        default: return baseline?.font_face ?? ""
+        }
+    }
+    var inlinePreedit: Bool {
+        switch model.preferences.preedit_mode {
+        case "inline": return true
+        case "candidate": return false
+        default: return baseline?.inline_preedit ?? true
+        }
+    }
+    var missingFonts: [String] { CandidateFonts.faces(fontFace).filter { CandidateFonts.resolve($0, size: 15) == nil } }
+    var fontMatches: [InstalledFont] { CandidateFonts.installed.filter { $0.matches(fontSearch.trimmingCharacters(in: .whitespacesAndNewlines)) } }
+    func previewFont(_ size: Int) -> Font { Font(CandidateFonts.preview(fontFace, size: CGFloat(size))) }
     var body: some View {
         PageHeading(title: "让候选窗更顺眼。", detail: "调整字体、布局与配色，保存前先看效果。")
         Panel(title: "候选窗预览", caption: selectedTheme == nil ? "仅布局示意 · 原有配色未读取" : "实际由鼠须管绘制") {
             Toggle("深色预览", isOn: $dark).toggleStyle(.switch).frame(maxWidth: .infinity, alignment: .trailing)
+            if inlinePreedit {
+                HStack(spacing: 7) {
+                    Text("正在输入").foregroundStyle(.secondary)
+                    Text("ni hao").font(previewFont(model.preferences.font_size)).underline()
+                    Spacer()
+                    Text("应用内行内拼音示意").font(.caption).foregroundStyle(.secondary)
+                }.padding(10).background(Color.secondary.opacity(0.06), in: RoundedRectangle(cornerRadius: 6))
+            }
             VStack(alignment: .leading, spacing: candidateSpacing) {
-                Text("ni hao").font(.system(size: CGFloat(model.preferences.font_size))).foregroundStyle(palette.color("text_color"))
+                if !inlinePreedit { Text("ni hao").font(previewFont(model.preferences.font_size)).foregroundStyle(palette.color("text_color")) }
                 if model.preferences.layout == "vertical" {
                     VStack(alignment: .leading, spacing: candidateSpacing) { candidates }
                 } else {
@@ -357,7 +387,8 @@ struct AppearanceView: View {
                 .background(palette.color("back_color"), in: RoundedRectangle(cornerRadius: 10))
                 .overlay(RoundedRectangle(cornerRadius: 10).stroke(palette.color("border_color")))
                 .accessibilityElement(children: .combine)
-                .accessibilityLabel("\(dark ? "深色" : "浅色")候选窗预览，\(selectedTheme?.name ?? "原有配色未读取")，\(model.preferences.layout == "vertical" ? "竖排" : "横排")，候选字号 \(model.preferences.font_size)，注释字号 \(model.preferences.comment_size)")
+                .accessibilityLabel("\(dark ? "深色" : "浅色")候选窗预览，\(selectedTheme?.name ?? "原有配色未读取")，\(model.preferences.layout == "vertical" ? "竖排" : "横排")，字体 \(fontFace.isEmpty ? "系统默认" : fontFace)，\(inlinePreedit ? "行内拼音" : "候选窗拼音")，候选字号 \(model.preferences.font_size)，注释字号 \(model.preferences.comment_size)")
+            Text("行内拼音由正在输入的应用绘制，可能使用应用自己的字体；候选字体与实际布局以鼠须管候选窗为准。").font(.caption).foregroundStyle(.secondary)
         }
         Panel(title: "配色方案") {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 172, maximum: 260), spacing: 12)], alignment: .leading, spacing: 12) {
@@ -367,24 +398,76 @@ struct AppearanceView: View {
             }
             Text("选择只更新预览，点击“保存并应用”后生效。新方案随系统切换浅色与深色。“保留当前”恢复首次保存前的原有配色，预览只展示布局。").font(.caption).foregroundStyle(.secondary)
         }
-        Panel(title: "字体与布局") {
+        Panel(title: "候选字体", caption: "编号与注释跟随") {
+            Picker("字体设置", selection: $model.preferences.font_mode) {
+                Text("保留原字体").tag("existing")
+                Text("系统默认").tag("system")
+                Text("自选字体").tag("custom")
+            }.pickerStyle(.segmented)
+                .onChange(of: model.preferences.font_mode) { _, value in
+                    if value == "custom" && model.preferences.font_face.isEmpty {
+                        model.preferences.font_face = CandidateFonts.installed.first(where: { $0.name == "PingFangSC-Regular" })?.name ?? CandidateFonts.installed.first?.name ?? "Helvetica"
+                    }
+                }
+            HStack {
+                Text(fontFace.isEmpty ? "系统默认字体" : fontFace).textSelection(.enabled)
+                Spacer()
+                Text("你好 · Keytrack 123").font(previewFont(18))
+            }
+            if !missingFonts.isEmpty {
+                Label("预览未找到：\(missingFonts.joined(separator: "、"))。使用其余已安装字体或系统回退。", systemImage: "exclamationmark.triangle")
+                    .font(.caption).foregroundStyle(.orange)
+            }
+            TextField("搜索字体名称", text: $fontSearch).textFieldStyle(.roundedBorder)
+                .accessibilityLabel("搜索已安装字体")
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 2) {
+                    ForEach(fontMatches) { item in
+                        Button {
+                            model.preferences.font_face = item.name
+                            model.preferences.font_mode = "custom"
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 3) {
+                                    Text(item.displayName).font(Font(item.sample)).lineLimit(1)
+                                    Text(item.name).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+                                }
+                                Spacer()
+                                Text("你好 Aa 123").font(Font(item.sample))
+                                Image(systemName: model.preferences.font_mode == "custom" && model.preferences.font_face == item.name ? "checkmark.circle.fill" : "circle")
+                                    .foregroundStyle(accent)
+                            }.padding(.horizontal, 9).padding(.vertical, 7)
+                                .contentShape(Rectangle())
+                        }.buttonStyle(.plain)
+                            .accessibilityLabel("字体 \(item.displayName)，\(item.name)")
+                            .accessibilityValue(model.preferences.font_mode == "custom" && model.preferences.font_face == item.name ? "已选中" : "未选中")
+                    }
+                    if fontMatches.isEmpty { Text("没有匹配的已安装字体").foregroundStyle(.secondary).padding(10) }
+                }
+            }.frame(height: 190)
+            Text("共 \(CandidateFonts.installed.count) 款已安装字体，匹配 \(fontMatches.count) 款。选择只更新预览；保留原字体可恢复保存前的设置。").font(.caption).foregroundStyle(.secondary)
+        }
+        Panel(title: "字号与布局") {
             Form {
                 Stepper("候选字号：\(model.preferences.font_size) pt", value: $model.preferences.font_size, in: 12...28)
                 Stepper("注释字号：\(model.preferences.comment_size) pt", value: $model.preferences.comment_size, in: 10...24)
                 Picker("排列方向", selection: $model.preferences.layout) { Text("横排").tag("horizontal"); Text("竖排").tag("vertical") }
                 Picker("候选间距", selection: $model.preferences.density) { Text("舒适").tag("comfortable"); Text("紧凑").tag("compact") }
+                Picker("拼音显示", selection: $model.preferences.preedit_mode) {
+                    Text("保留原设置").tag("existing"); Text("行内").tag("inline"); Text("候选窗").tag("candidate")
+                }
             }.formStyle(.grouped)
         }
     }
     @ViewBuilder var candidates: some View {
         ForEach(Array(["你好", "拟好", "你号", "你"].enumerated()), id: \.offset) { index, word in
             HStack(spacing: 8) {
-                Text("\(index + 1)").font(.system(size: CGFloat(max(11, model.preferences.font_size - 3))))
+                Text("\(index + 1)").font(previewFont(max(11, model.preferences.font_size - 3)))
                     .foregroundStyle(palette.color(index == 0 ? "hilited_label_color" : "label_color"))
-                Text(word).font(.system(size: CGFloat(model.preferences.font_size)))
+                Text(word).font(previewFont(model.preferences.font_size))
                     .foregroundStyle(palette.color(index == 0 ? "hilited_candidate_text_color" : "candidate_text_color"))
                 Text(index == 0 ? "✦ AI" : (index == 1 ? "同音" : ""))
-                    .font(.system(size: CGFloat(model.preferences.comment_size)))
+                    .font(previewFont(model.preferences.comment_size))
                     .foregroundStyle(palette.color(index == 0 ? "hilited_comment_text_color" : "comment_text_color"))
             }.padding(model.preferences.density == "compact" ? 7 : 11)
                 .fixedSize()

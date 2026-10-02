@@ -149,6 +149,154 @@ class ConsoleTests(unittest.TestCase):
         self.assertEqual(self.store.revision(), revision)
         self.assertEqual(self.store.backups(), [])
 
+    def test_font_and_preedit_start_in_preserve_mode_and_read_nested_theme(self):
+        custom = self.store.targets["squirrel.custom.yaml"]
+        original = '''patch:
+  style:
+    font_face: "Original Font"
+    inline_preedit: false
+    color_scheme: original
+  "preset_color_schemes/+":
+    original:
+      font_face: "Theme Font"
+      inline_preedit: true
+  unrelated: true
+'''
+        custom.write_text(original)
+        state = self.store.state()
+        self.assertEqual(state["settings"]["font_mode"], "existing")
+        self.assertEqual(state["settings"]["preedit_mode"], "existing")
+        self.assertEqual(state["appearance_baseline"]["style"], {"font_face": "Original Font", "inline_preedit": False})
+        self.assertEqual(state["appearance_baseline"]["light"], {"font_face": "Theme Font", "inline_preedit": True})
+        self.store.save_settings(state["settings"], state["revision"])
+        self.assertTrue(custom.read_text().startswith(original))
+        block = custom.read_text().split(console.BEGIN)[1]
+        self.assertNotIn('/font_face"', block)
+        self.assertNotIn('/inline_preedit"', block)
+
+    def test_selected_font_and_preedit_override_style_and_both_new_themes(self):
+        settings = dict(console.DEFAULTS, theme="mint", font_mode="custom", font_face="PingFangSC-Regular", preedit_mode="candidate")
+        self.store.save_settings(settings, self.store.revision())
+        actual = console.yaml_paths(self.store.targets["squirrel.custom.yaml"].read_text())
+        for prefix in ("style", "preset_color_schemes/keytrack_light", "preset_color_schemes/keytrack_dark"):
+            for field in ("font_face", "comment_font_face", "label_font_face"):
+                self.assertEqual(actual[f"{prefix}/{field}"], "PingFangSC-Regular")
+            self.assertIs(actual[f"{prefix}/inline_preedit"], False)
+
+    def test_original_theme_overrides_are_independent_and_restore_nested_values(self):
+        custom = self.store.targets["squirrel.custom.yaml"]
+        original = '''patch:
+  'style/color_scheme': original
+  'style/color_scheme_dark': original_dark
+  "preset_color_schemes/+":
+    original:
+      font_face: "Theme Font"
+      label_font_face: "Number Font"
+      inline_preedit: true
+    original_dark:
+      font_face: "Dark Font"
+      inline_preedit: false
+'''
+        custom.write_text(original)
+        saved = self.store.save_settings(dict(console.DEFAULTS, font_mode="system", preedit_mode="inline"), self.store.revision())
+        actual = console.yaml_paths(custom.read_text())
+        self.assertEqual(actual["preset_color_schemes/original/font_face"], "")
+        self.assertEqual(actual["preset_color_schemes/original_dark/label_font_face"], "")
+        self.assertTrue(actual["preset_color_schemes/original_dark/inline_preedit"])
+        self.store.save_settings(console.DEFAULTS, self.store.revision())
+        actual = console.yaml_paths(custom.read_text())
+        self.assertEqual(actual["preset_color_schemes/original/font_face"], "Theme Font")
+        self.assertEqual(actual["preset_color_schemes/original/label_font_face"], "Number Font")
+        self.assertFalse(actual["preset_color_schemes/original_dark/inline_preedit"])
+        custom.write_text(custom.read_text() + "# later unrelated edit\n")
+        self.store.restore(saved["backup"], self.store.revision())
+        self.assertIn("# later unrelated edit", custom.read_text())
+        self.assertEqual(console.yaml_paths(custom.read_text())["preset_color_schemes/original_dark/font_face"], "Dark Font")
+
+    def test_direct_font_and_preedit_originals_keep_comments_and_restore(self):
+        custom = self.store.targets["squirrel.custom.yaml"]
+        original = '''patch:
+  "style/font_face": "Original Font" # keep font note
+  style/label_font_face: 'Original Number'
+  'style/comment_font_face': 'Comment # Font'
+  "style/inline_preedit": false # keep pinyin note
+  unrelated: true
+'''
+        custom.write_text(original)
+        saved = self.store.save_settings(dict(console.DEFAULTS, font_mode="custom", font_face="Missing Font,Helvetica", preedit_mode="inline"), self.store.revision())
+        self.store.save_settings(console.DEFAULTS, self.store.revision())
+        self.assertIn('"Original Font" # keep font note', custom.read_text())
+        self.assertIn('false # keep pinyin note', custom.read_text())
+        self.assertEqual(console.yaml_paths(custom.read_text())["style/comment_font_face"], "Comment # Font")
+        custom.write_text(custom.read_text() + "# external edit\n")
+        self.store.restore(saved["backup"], self.store.revision())
+        actual = console.yaml_paths(custom.read_text())
+        self.assertEqual(actual["style/font_face"], "Original Font")
+        self.assertIs(actual["style/inline_preedit"], False)
+        self.assertIn("# external edit", custom.read_text())
+
+    def test_old_settings_and_old_clients_keep_new_appearance_choices(self):
+        self.store.targets["settings.json"].parent.mkdir(parents=True)
+        old = {key: value for key, value in console.DEFAULTS.items() if key not in ("font_mode", "font_face", "preedit_mode")}
+        self.store.targets["settings.json"].write_text(json.dumps(dict(old, theme="navy", font_size=20)))
+        settings = self.store.state()["settings"]
+        self.assertEqual(settings["theme"], "navy")
+        self.assertEqual(settings["font_size"], 20)
+        self.assertEqual(settings["font_mode"], "existing")
+        self.store.save_settings(dict(settings, font_mode="custom", font_face="Helvetica", preedit_mode="candidate"), self.store.revision())
+        self.store.save_settings(dict(old, theme="navy", font_size=21), self.store.revision())
+        actual = self.store.state()["settings"]
+        self.assertEqual((actual["font_mode"], actual["font_face"], actual["preedit_mode"]), ("custom", "Helvetica", "candidate"))
+
+    def test_invalid_font_and_preedit_rejected_without_writes(self):
+        revision = self.store.revision()
+        invalid = [{"font_mode": value} for value in (None, [], "other")]
+        invalid += [{"preedit_mode": value} for value in (True, [], "window")]
+        invalid += [{"font_mode": "custom", "font_face": value} for value in (None, [], "", " ", "x\npatch:", "x\x7f", "x" * 161, "x,", ",x", " x")]
+        for changes in invalid:
+            with self.subTest(changes=changes), self.assertRaises(ValueError):
+                self.store.save_settings(dict(console.DEFAULTS, **changes), revision)
+        self.assertEqual(self.store.revision(), revision)
+        self.assertEqual(self.store.backups(), [])
+
+    def test_font_text_is_a_quoted_scalar_and_missing_fonts_remain_allowed(self):
+        face = 'Missing "Font",Helvetica # fallback'
+        self.store.save_settings(dict(console.DEFAULTS, font_mode="custom", font_face=face), self.store.revision())
+        custom = self.store.targets["squirrel.custom.yaml"].read_text()
+        self.assertEqual(console.yaml_paths(custom)["style/font_face"], face)
+        self.assertEqual(self.store.state()["settings"]["font_face"], face)
+
+    def test_font_save_stale_revision_and_new_external_override_are_rejected(self):
+        self.store.save_settings(dict(console.DEFAULTS, font_mode="custom", font_face="Helvetica"), self.store.revision())
+        revision = self.store.revision()
+        custom = self.store.targets["squirrel.custom.yaml"]
+        custom.write_text(custom.read_text() + '  "style/font_face": "New External Font"\n')
+        before = custom.read_text()
+        with self.assertRaisesRegex(ValueError, "其他窗口"):
+            self.store.save_settings(self.store.state()["settings"], revision)
+        with self.assertRaisesRegex(ValueError, "已有设置占用"):
+            self.store.save_settings(self.store.state()["settings"], self.store.revision())
+        self.assertEqual(custom.read_text(), before)
+
+    def test_opaque_original_font_scalar_refused_without_writes(self):
+        custom = self.store.targets["squirrel.custom.yaml"]
+        for raw in ('[Helvetica, Avenir]', '*user_font', '!!str Helvetica', '|'):
+            custom.write_text(f'patch:\n  "style/font_face": {raw}\n')
+            before = self.store.revision()
+            with self.subTest(raw=raw), self.assertRaisesRegex(ValueError, "不是支持的标量"):
+                self.store.save_settings(dict(console.DEFAULTS, font_mode="custom", font_face="Helvetica"), before)
+            self.assertEqual(self.store.revision(), before)
+
+    def test_opaque_original_style_refused_instead_of_missing_theme_priority(self):
+        custom = self.store.targets["squirrel.custom.yaml"]
+        for line in ('style: {color_scheme: custom_theme, font_face: Avenir}',
+                     'style: *shared_style', '"style/color_scheme": *shared_scheme'):
+            custom.write_text(f'patch:\n  {line}\n')
+            before = self.store.revision()
+            with self.subTest(line=line), self.assertRaisesRegex(ValueError, "无法确认字体覆盖范围"):
+                self.store.save_settings(dict(console.DEFAULTS, font_mode="custom", font_face="Helvetica"), before)
+            self.assertEqual(self.store.revision(), before)
+
     def test_new_palette_backup_restore_keeps_phrases_prediction_and_external_edits(self):
         phrases = [{"code": "qexample", "text": "已有常用语", "category": "回复"}]
         self.store.save_phrases(phrases, self.store.revision())

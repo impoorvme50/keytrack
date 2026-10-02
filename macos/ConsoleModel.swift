@@ -17,11 +17,65 @@ struct Preferences: Codable, Equatable {
     var theme = "existing"
     var font_size = 16
     var comment_size = 14
+    var font_mode = "existing"
+    var font_face = ""
+    var preedit_mode = "existing"
     var layout = "horizontal"
     var density = "comfortable"
     var hotkey = "Control+Shift+k"
     var apps: [AppRule] = []
     var _original_schemes: [String: String]? = nil
+    enum CodingKeys: String, CodingKey {
+        case theme, font_size, comment_size, font_mode, font_face, preedit_mode
+        case layout, density, hotkey, apps, _original_schemes
+    }
+    init() {}
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        theme = try values.decodeIfPresent(String.self, forKey: .theme) ?? theme
+        font_size = try values.decodeIfPresent(Int.self, forKey: .font_size) ?? font_size
+        comment_size = try values.decodeIfPresent(Int.self, forKey: .comment_size) ?? comment_size
+        font_mode = try values.decodeIfPresent(String.self, forKey: .font_mode) ?? font_mode
+        font_face = try values.decodeIfPresent(String.self, forKey: .font_face) ?? font_face
+        preedit_mode = try values.decodeIfPresent(String.self, forKey: .preedit_mode) ?? preedit_mode
+        layout = try values.decodeIfPresent(String.self, forKey: .layout) ?? layout
+        density = try values.decodeIfPresent(String.self, forKey: .density) ?? density
+        hotkey = try values.decodeIfPresent(String.self, forKey: .hotkey) ?? hotkey
+        apps = try values.decodeIfPresent([AppRule].self, forKey: .apps) ?? apps
+        _original_schemes = try values.decodeIfPresent([String: String].self, forKey: ._original_schemes)
+    }
+}
+struct FontAppearance: Decodable { var font_face: String; var inline_preedit: Bool }
+struct AppearanceBaseline: Decodable { var style: FontAppearance; var light: FontAppearance; var dark: FontAppearance }
+struct InstalledFont: Identifiable {
+    var name: String
+    var displayName: String
+    var familyName: String
+    var id: String { name }
+    var sample: NSFont { NSFont(name: name, size: 15) ?? .systemFont(ofSize: 15) }
+    func matches(_ query: String) -> Bool {
+        query.isEmpty || [name, displayName, familyName].contains { $0.localizedStandardContains(query) }
+    }
+}
+enum CandidateFonts {
+    // Font discovery stays in AppKit; no subprocess, network, or backend queue.
+    static let installed: [InstalledFont] = NSFontManager.shared.availableFonts.compactMap { name in
+        guard !name.hasPrefix("."), let font = NSFont(name: name, size: 15) else { return nil }
+        return InstalledFont(name: font.fontName, displayName: font.displayName ?? name, familyName: font.familyName ?? name)
+    }.sorted { $0.displayName.localizedStandardCompare($1.displayName) == .orderedAscending }
+    static func resolve(_ name: String, size: CGFloat) -> NSFont? {
+        if let font = NSFont(name: name, size: size) { return font }
+        guard let match = installed.first(where: { item in
+            [item.name, item.displayName, item.familyName].contains { $0.caseInsensitiveCompare(name) == .orderedSame }
+        }) else { return nil }
+        return NSFont(name: match.name, size: size)
+    }
+    static func faces(_ value: String) -> [String] {
+        value.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+    }
+    static func preview(_ value: String, size: CGFloat) -> NSFont {
+        faces(value).compactMap { resolve($0, size: size) }.first ?? .systemFont(ofSize: size)
+    }
 }
 struct Recorder: Decodable { var running: Bool }
 struct ServiceState: Decodable { var kev_enabled: Bool; var recorder: Recorder; var demo: Bool }
@@ -78,6 +132,7 @@ struct ConsoleState: Decodable {
     var installation: Installation?
     var prediction: PredictionState
     var appearance_themes: [AppearanceTheme]?
+    var appearance_baseline: AppearanceBaseline?
 }
 struct DayTotal: Decodable, Identifiable { var day: String; var chars: Int; var id: String { day } }
 struct AppTotal: Decodable, Identifiable { var name: String; var chars: Int; var id: String { name } }

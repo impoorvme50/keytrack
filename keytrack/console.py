@@ -29,35 +29,146 @@ BEGIN = "# >>> keytrack-console (managed by kbd console)"
 END = "# <<< keytrack-console"
 THEMES = appearance.THEMES
 DEFAULTS = {"theme": "existing", "font_size": 16, "comment_size": 14,
+            "font_mode": "existing", "font_face": "", "preedit_mode": "existing",
             "layout": "horizontal", "density": "comfortable", "hotkey": "Control+Shift+k", "apps": []}
 HOTKEYS = ("Control+Shift+k", "Control+Alt+k", "Control+Alt+j")
 SCHEME_KEYS = ("style/color_scheme", "style/color_scheme_dark")
+APPEARANCE_FIELDS = ("font_face", "label_font_face", "comment_font_face", "inline_preedit")
+
+
+def yaml_scalar(raw: str):
+    """Read the small scalar subset we manage, without executing or rewriting YAML."""
+    match = re.fullmatch(r'''\s*("(?:\\.|[^"\\])*"|'(?:''|[^'])*'|[^#]*?)\s*(?:#.*)?''', raw)
+    if not match:
+        raise ValueError("字体或拼音配置不是支持的标量格式，请先检查文件")
+    text = match[1].strip()
+    if text.startswith('"'):
+        try:
+            return json.loads(text)
+        except ValueError as exc:
+            raise ValueError("字体或拼音配置使用了不支持的转义，请先检查文件") from exc
+    if text.startswith("'"):
+        return text[1:-1].replace("''", "'")
+    if text in ("true", "false"):
+        return text == "true"
+    if text in ("null", "~"):
+        return None
+    return text
+
+
+def yaml_paths(content: str) -> dict:
+    """Inspect ordinary nested/flat Rime settings; unhandled YAML stays untouched."""
+    values, stack = {}, []
+    for line in content.splitlines():
+        found = re.match(r'''^( *)("(?:\\.|[^"\\])*"|'(?:''|[^'])*'|[^:#][^:]*):(?:[ \t]+(.*)|[ \t]*)$''', line)
+        if not found:
+            continue
+        indent, key, raw = len(found[1]), found[2].strip(), found[3] or ""
+        while stack and stack[-1][0] >= indent:
+            stack.pop()
+        try:
+            key = yaml_scalar(key)
+        except ValueError:
+            continue
+        if not isinstance(key, str):
+            continue
+        path = (stack[-1][1] + "/" if stack else "") + key
+        # patch and the Rime merge operator are structural, not parts of a setting path.
+        normalized = "/".join(part for part in path.split("/") if part not in ("patch", "+"))
+        if not raw or raw.startswith("#"):
+            stack.append((indent, path))
+            continue
+        try:
+            value = yaml_scalar(raw)
+        except ValueError:
+            continue
+        if isinstance(value, (str, bool)):
+            values[normalized] = value
+    return values
+
+
+def outside_managed(content: str) -> str:
+    if BEGIN not in content and END not in content:
+        return content
+    if content.count(BEGIN) != 1 or content.count(END) != 1:
+        raise ValueError("配置管理标记不完整，请先检查文件")
+    start, stop = content.index(BEGIN), content.index(END)
+    if stop < start:
+        raise ValueError("配置管理标记顺序不正确，请先检查文件")
+    return content[:start] + content[stop + len(END):]
+
+
+def appearance_overrides(settings: dict) -> dict:
+    values = {}
+    if settings.get("font_mode", "existing") != "existing":
+        face = settings["font_face"] if settings["font_mode"] == "custom" else ""
+        values.update({field: face for field in APPEARANCE_FIELDS[:3]})
+    if settings.get("preedit_mode", "existing") != "existing":
+        values["inline_preedit"] = settings["preedit_mode"] == "inline"
+    schemes = ("keytrack_light", "keytrack_dark") if settings["theme"] != "existing" else settings.get("_appearance_schemes", [])
+    # Squirrel applies theme fields after global style fields, so set both levels.
+    return {f"{prefix}/{field}": value for prefix in ("style", *(f"preset_color_schemes/{name}" for name in schemes))
+            for field, value in values.items()}
+
+
+def adopt_appearance(content: str, keys: set[str], originals: dict, managed_keys: set[str] | None = None) -> tuple[str, dict]:
+    """Migrate only exact direct overrides; retain their original scalar and comments."""
+    outside_managed(content)  # Validate markers before inspecting any scalar.
+    migrated = dict(originals)
+    for key in sorted(keys):
+        escaped = re.escape(key)
+        spelling = f'(?:"{escaped}"|\'{escaped}\'|{escaped})'
+        # Exact two-space entries are direct patch keys. Nested style/theme fields
+        # are retained because a slash patch safely overrides their value.
+        begin, end = (content.index(BEGIN), content.index(END) + len(END)) if BEGIN in content else (-1, -1)
+        found = [match for match in re.finditer(r"^  " + spelling + r":[ \t]*(.*)(?:\n|$)", content, re.M)
+                 if not begin <= match.start() < end]
+        if len(found) > 1:
+            raise ValueError(f"已有重复设置 {key}，没有覆盖")
+        if found:
+            if found[0][1].lstrip().startswith(("!", "&", "*", "[", "{", "|", ">")):
+                raise ValueError(f"已有设置 {key} 不是支持的标量，未修改")
+            value = yaml_scalar(found[0][1])
+            expected = bool if key.endswith("/inline_preedit") else str
+            if type(value) is not expected:
+                raise ValueError(f"已有设置 {key} 不是支持的标量，未修改")
+            migrated.setdefault(key, found[0][0])
+            # Don't overwrite a user's newer direct edit once the key is managed.
+            if key in originals or key in (managed_keys or set()):
+                raise ValueError(f"已有设置占用 {key}，请刷新并检查外部修改")
+            content = content[:found[0].start()] + content[found[0].end():]
+    return content, migrated
 
 
 def original_schemes(content: str) -> dict:
-    values = {}
-    for key in SCHEME_KEYS:
-        found = re.search(r'^  (?:"' + re.escape(key) + r'"|' + re.escape(key) + r'):[ \t]*([\w-]+|"[\w-]+")[ \t]*(?:#.*)?$', content, re.M)
-        if found:
-            values[key] = found[1].strip('"')
-    return values
+    values = yaml_paths(outside_managed(content))
+    return {key: values[key] for key in SCHEME_KEYS if isinstance(values.get(key), str)
+            and re.fullmatch(r"[\w-]+", values[key])}
 
 
 def adopt_schemes(content: str) -> str:
     # These two explicit controls are migrated into our block, with originals in the backup.
-    outside = content.split(BEGIN, 1)[0] if BEGIN in content else content
-    tail = content[len(outside):]
     for key in SCHEME_KEYS:
-        outside = re.sub(r'^  (?:"' + re.escape(key) + r'"|' + re.escape(key) + r'):[ \t]*(?:[\w-]+|"[\w-]+")[ \t]*(?:#.*)?\n?', '', outside, flags=re.M)
-    return outside + tail
+        escaped = re.escape(key)
+        spelling = f'(?:"{escaped}"|\'{escaped}\'|{escaped})'
+        begin, end = (content.index(BEGIN), content.index(END) + len(END)) if BEGIN in content else (-1, -1)
+        matches = [match for match in re.finditer(r'^  ' + spelling + r''':[ \t]*(?:[\w-]+|"[\w-]+"|'[\w-]+')[ \t]*(?:#.*)?\n?''', content, re.M)
+                   if not begin <= match.start() < end]
+        for match in reversed(matches):
+            content = content[:match.start()] + content[match.end():]
+    return content
 
 
 def managed(content: str, entries: str | None) -> str:
     """Only update our block, preserving all user text, comments and unrelated patches."""
     block = f"{BEGIN}\n{entries}{END}\n" if entries else ""
+    outside = outside_managed(content)
+    for key in yaml_paths(entries or ""):
+        escaped = re.escape(key)
+        spelling = f'(?:"{escaped}"|\'{escaped}\'|{escaped})'
+        if re.search(r'^\s*' + spelling + r'\s*:', outside, re.M):
+            raise ValueError(f"已有设置占用 {key}，没有覆盖")
     if BEGIN in content or END in content:
-        if content.count(BEGIN) != 1 or content.count(END) != 1:
-            raise ValueError("配置管理标记不完整，请先检查文件")
         start = content.index(BEGIN)
         stop = content.index(END, start) + len(END)
         if stop < len(content) and content[stop] == "\n":
@@ -67,10 +178,6 @@ def managed(content: str, entries: str | None) -> str:
         return content
     if re.search(r"^patch:\s*\{", content, re.M):
         raise ValueError("当前配置使用行内 patch，请先改为分行格式")
-    for key in re.findall(r'^  "([^"\n]+)":', entries, re.M):
-        spelling = "(?:" + re.escape(json.dumps(key)) + "|" + re.escape(key) + ")"
-        if re.search(r'^\s*' + spelling + r'\s*:', content, re.M):
-            raise ValueError(f"已有设置占用 {key}，没有覆盖")
     lines = content.splitlines(keepends=True)
     index = next((i for i, line in enumerate(lines) if line.strip() == "patch:"), None)
     if index is None:
@@ -115,6 +222,11 @@ def appearance_patch(settings: dict) -> str:
     else:
         for key, value in settings.get("_original_schemes", {}).items():
             entries += scalar(key, value)
+    overrides = appearance_overrides(settings)
+    for key, line in settings.get("_original_appearance", {}).items():
+        if key not in overrides:
+            entries += line
+    entries += ''.join(scalar(key, value) for key, value in overrides.items())
     for app in settings["apps"]:
         entries += scalar(f"app_options/{app['bundle']}/ascii_mode", app["english"])
     return entries
@@ -131,6 +243,14 @@ def validate_settings(raw: object) -> dict:
         raise ValueError("外观选项不正确")
     if value["density"] not in ("compact", "comfortable") or value["hotkey"] not in HOTKEYS:
         raise ValueError("间距或快捷键选项不正确")
+    if value["font_mode"] not in ("existing", "system", "custom") or value["preedit_mode"] not in ("existing", "inline", "candidate"):
+        raise ValueError("字体或拼音显示选项不正确")
+    face = value["font_face"]
+    if (not isinstance(face, str) or len(face) > 160 or face != face.strip()
+            or any(ord(ch) < 32 or ord(ch) == 127 for ch in face)
+            or (value["font_mode"] == "custom" and not face)
+            or any(not part.strip() for part in face.split(",")) and bool(face)):
+        raise ValueError("字体名称须为 1–160 字，不能包含控制字符或空回退项")
     if not isinstance(value["apps"], list) or len(value["apps"]) > 30:
         raise ValueError("应用设置最多 30 项")
     seen = set()
@@ -221,6 +341,36 @@ class ConsoleStore:
     def prediction_state(self) -> dict:
         return dict(self._demo_prediction) if self.demo else prediction_setup.state(rime_dir=self.rime)
 
+    def appearance_source(self, settings: dict) -> dict:
+        paths = [] if self.demo else [Path(rime_setup.SQUIRREL_APP) / "Contents/SharedSupport/squirrel.yaml"]
+        paths.append(self.rime / "squirrel.yaml")
+        values = {}
+        for path in paths:
+            values.update(yaml_paths(read_text(path)))
+        values.update(yaml_paths(outside_managed(read_text(self.targets["squirrel.custom.yaml"]))))
+        values.update(settings.get("_original_schemes", {}))
+        for key, line in settings.get("_original_appearance", {}).items():
+            values.update(yaml_paths(line))
+        return values
+
+    def appearance_baseline(self, settings: dict) -> dict:
+        values = self.appearance_source(settings)
+        style = {"font_face": values.get("style/font_face", ""),
+                 "inline_preedit": values.get("style/inline_preedit", True)}
+        result = {"style": style}
+        for mode, key in (("light", SCHEME_KEYS[0]), ("dark", SCHEME_KEYS[1])):
+            name = values.get(key, values.get(SCHEME_KEYS[0], ""))
+            result[mode] = {field: values.get(f"preset_color_schemes/{name}/{field}", value)
+                            for field, value in style.items()}
+        # Unsupported scalar shapes are labelled unknown rather than advertised
+        # as an installed font or a confirmed input-method display setting.
+        for sample in result.values():
+            if not isinstance(sample["font_face"], str):
+                sample["font_face"] = ""
+            if type(sample["inline_preedit"]) is not bool:
+                sample["inline_preedit"] = True
+        return result
+
     def state(self) -> dict:
         settings = json.loads(read_text(self.targets["settings.json"]) or "null")
         if settings is None:
@@ -231,6 +381,10 @@ class ConsoleStore:
             font = re.search(r'(?m)^\s*font_point:\s*(\d+)', custom)
             if font:
                 settings["font_size"] = int(font.group(1))
+        else:
+            # Old clients/settings retain their choices while the new independent
+            # controls start in preserve mode. Never reinitialize old preferences.
+            settings = dict(DEFAULTS, **settings)
         phrases = json.loads(read_text(self.targets["phrases.json"]) or "[]")
         if self.demo:
             status = {"kev_enabled": False, "recorder": {"running": True}, "demo": True}
@@ -239,6 +393,7 @@ class ConsoleStore:
         prediction = self.prediction_state()
         return {"settings": settings, "phrases": phrases, "revision": self.revision(), "status": status,
                 "appearance_themes": appearance.catalog(),
+                "appearance_baseline": self.appearance_baseline(settings),
                 "prediction": prediction,
                 "today": datetime.now(ZONE).date().isoformat(), "deployment": self.deployment(),
                 "installation": {"packaged": False, "configured": True, "can_install": False} if self.demo else standalone.status()}
@@ -326,9 +481,27 @@ class ConsoleStore:
                 "message": "已保存并请求重新部署" if requested else "已保存，自动部署未成功，请重试部署"}
 
     def save_settings(self, raw: dict, revision: str) -> dict:
+        if revision != self.revision():
+            raise ValueError("设置已被其他窗口或编辑器修改，请刷新后再保存")
+        current = self.state()["settings"]
+        if isinstance(raw, dict):
+            raw = dict(raw)
+            for key in ("font_mode", "font_face", "preedit_mode"):
+                raw.setdefault(key, current[key])
         settings = validate_settings(raw)
-        settings["_original_schemes"] = self.state()["settings"].get("_original_schemes", {})
-        content = managed(adopt_schemes(read_text(self.targets["squirrel.custom.yaml"])), appearance_patch(settings))
+        settings["_original_schemes"] = current.get("_original_schemes", {})
+        source = self.appearance_source(current)
+        if (settings["theme"] == "existing" and (settings["font_mode"] != "existing" or settings["preedit_mode"] != "existing")
+                and ("style" in source or any(key in source and (not isinstance(source[key], str)
+                     or not re.fullmatch(r"[\w-]{1,128}", source[key])) for key in SCHEME_KEYS))):
+            raise ValueError("原配色使用了不支持的 style 格式，无法确认字体覆盖范围；请先检查配置")
+        settings["_appearance_schemes"] = sorted({source[key] for key in SCHEME_KEYS if isinstance(source.get(key), str)
+                                                 and re.fullmatch(r"[\w-]{1,128}", source[key])})
+        content, originals = adopt_appearance(read_text(self.targets["squirrel.custom.yaml"]),
+                                             set(appearance_overrides(settings)), current.get("_original_appearance", {}),
+                                             set(appearance_overrides(current)))
+        settings["_original_appearance"] = originals
+        content = managed(adopt_schemes(content), appearance_patch(settings))
         custom = read_text(self.targets["rime_ice.custom.yaml"])
         if kev_rime_setup.BEGIN not in custom:
             raise ValueError("请先安装 Kev 钩子，再设置快捷键")
@@ -368,6 +541,9 @@ class ConsoleStore:
                     entries = previous.split(BEGIN + "\n", 1)[1].split(END, 1)[0]
                 elif key == "squirrel.custom.yaml":
                     entries = ''.join(scalar(k, v) for k, v in original_schemes(previous).items()) or None
+                    original_keys = set(self.state()["settings"].get("_original_appearance", {}))
+                    _, originals = adopt_appearance(previous, original_keys, {})
+                    entries = (entries or "") + ''.join(originals.values()) or None
                 value = managed(read_text(path), entries)
                 if key == "rime_ice.custom.yaml":
                     # Restore only the managed Kev hotkey, never unrelated configuration.
