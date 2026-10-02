@@ -11,6 +11,9 @@
     python kbd.py days              # 列出库里有数据的所有日期
     python kbd.py ingest            # 手动吸入一次待收事件（补录）
     python kbd.py status            # 常驻 helper / 待收事件状态
+    python kbd.py install-kev-agent /path/to/Kev  # 安装可开关的 Kev 0.8B 服务
+    python kbd.py setup-kev-rime     # 安装雾凇拼音候选建议钩子
+    python kbd.py kev on|off|status  # 开关 Kev 候选建议
 """
 
 from __future__ import annotations
@@ -18,13 +21,19 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from pathlib import Path
 
 from keytrack import (
     agent,
+    console,
+    doctor,
     ax_capture,
     ergo,
     heatmap,
     ime_ingest,
+    kev_rime_setup,
+    kev_switch,
+    kev_service,
     query,
     rime_setup,
     runner,
@@ -80,9 +89,24 @@ def main(argv: list[str] | None = None) -> int:
     p_week.add_argument("--push-webhook", metavar="URL", help="推送到 Lark 自定义机器人 webhook")
 
     sub.add_parser("setup-ime", help="安装/更新鼠须管的 keytrack 采集钩子并触发部署")
+    sub.add_parser("setup-kev-rime", help="安装 Kev 按需候选建议（仅雾凇拼音）")
+    p_kev = sub.add_parser("kev", help="开关 Kev 候选建议（默认关闭）")
+    p_kev.add_argument("action", choices=("on", "off", "toggle", "status"))
+    p_kev_agent = sub.add_parser("install-kev-agent", help="安装可随 Kev 开关启停的本机 0.8B 服务")
+    p_kev_agent.add_argument("repo", help="Kev 仓库本机路径（需已有 .venv）")
+    sub.add_parser("uninstall-kev-agent", help="停止并卸载 Kev 0.8B 服务")
     sub.add_parser("install-agent", help="安装 launchd 常驻 helper（登录即自动采集）")
     sub.add_parser("uninstall-agent", help="卸载常驻 helper")
     sub.add_parser("status", help="常驻 helper 与待收事件状态")
+    sub.add_parser("ui", help="打开 Keytrack 本地控制台窗口")
+    p_console = sub.add_parser("console", help="启动本地输入控制台")
+    p_console.add_argument("--port", type=int, default=0, help="本机端口，缺省自动选择")
+    p_console.add_argument("--no-open", action="store_true", help="不自动打开浏览器")
+    p_console.add_argument("--demo", action="store_true", help="用隔离测试数据验证界面")
+    p_native = sub.add_parser("console-native", help=argparse.SUPPRESS)
+    p_native.add_argument("--demo", action="store_true")
+    p_doctor = sub.add_parser("doctor", help="只读检查输入法钩子、部署与本机 Kev 服务")
+    p_doctor.add_argument("--json", action="store_true", help="JSON 输出")
     sub.add_parser("probe", help="实时探测辅助功能能读到哪个应用的输入内容（诊断用）")
 
     args = parser.parse_args(argv)
@@ -117,12 +141,29 @@ def main(argv: list[str] | None = None) -> int:
             print("已推送到 Lark。" if ok else "推送失败（见上方原因）。")
     elif args.cmd == "setup-ime":
         return 0 if rime_setup.setup() else 1
+    elif args.cmd == "setup-kev-rime":
+        return 0 if kev_rime_setup.setup() else 1
+    elif args.cmd == "kev":
+        return 0 if kev_switch.command(args.action) else 1
+    elif args.cmd == "install-kev-agent":
+        return 0 if kev_service.install(Path(args.repo)) else 1
+    elif args.cmd == "uninstall-kev-agent":
+        kev_switch.set_enabled(False)
+        return 0 if kev_service.uninstall() else 1
     elif args.cmd == "install-agent":
         return 0 if agent.install() else 1
     elif args.cmd == "uninstall-agent":
         return 0 if agent.uninstall() else 1
     elif args.cmd == "status":
         agent.status()
+    elif args.cmd == "ui":
+        return 0 if console.launch() else 1
+    elif args.cmd == "console":
+        console.serve(args.port, args.db, args.demo, not args.no_open)
+    elif args.cmd == "console-native":
+        console.native_serve(args.db, args.demo)
+    elif args.cmd == "doctor":
+        return 0 if doctor.command(args.json) else 1
     elif args.cmd == "probe":
         ax_capture.probe()
     return 0

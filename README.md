@@ -54,15 +54,44 @@ cd ~/keyboard
 | `kbd ingest` | 手动补录一次 |
 | `kbd setup-ime` | 安装/更新鼠须管采集钩子并触发部署 |
 | `kbd install-agent` / `uninstall-agent` / `status` | 常驻 helper 管理 |
+| `kbd doctor [--json]` | 只读检查实际服务状态、Lua 安装版本、部署钩子与本机模型接口 |
+| `kbd ui` | 打开 SwiftUI 原生输入控制台：统计、常用语、外观、AI 开关和备份 |
+| `kbd console [--demo] [--no-open]` | 在浏览器打开本地控制台；演示模式使用独立的自造数据 |
 | `kbd probe` | 探测辅助功能可读性（诊断遗留） |
 
 终端外的全局 `kbd` 命令由 `/opt/homebrew/bin/kbd` 包装脚本提供。
+
+独立安装版可从 [v0.4.0 下载页](https://github.com/impoorvme50/keytrack/releases/tag/v0.4.0) 获取（Apple 芯片，macOS 26 及以上）：将应用拖入「应用程序」，打开后点「完成本机安装」。界面和采集自带运行组件，不再依赖源码目录、Python 安装或 Homebrew；输入法需要已有鼠须管，可选 AI 沿用现有本机 Kev 模型。当前为本机自用/实验版，未做 Apple Developer ID 签名和公证。开发构建用 `./scripts/build-console.sh`，打包用 `./scripts/package-console.sh`。用法见 [输入控制台](docs/console.md)，版本变化见 [更新记录](CHANGELOG.md)。
 
 ## 查询接口（做看板 / Swift 状态栏用）
 
 1. **CLI JSON**：`kbd today --json` —— 结构见 `keytrack/query.py:day_report`
 2. **Python API**：`from keytrack import query; query.day_report(date)`
 3. **直接读 SQLite**（Swift 推荐 GRDB / SQLite.swift）：schema 见 [docs/SCHEMA.md](docs/SCHEMA.md)
+
+## Kev 候选建议（实验，默认关闭）
+
+[Kev](https://github.com/jaredpalmer/kev) 是本地决策模型：它可以从给定候选中选择，不能生成新的候选。先在 `127.0.0.1:8009` 启动 Kev 服务，再安装只针对雾凇拼音的候选建议钩子：
+
+```bash
+.venv/bin/python kbd.py install-kev-agent /path/to/Kev  # 安装可开关的 0.8B 服务
+.venv/bin/python kbd.py setup-kev-rime
+.venv/bin/python kbd.py kev on       # 开启；需要时在候选菜单按 Control+Shift+k
+.venv/bin/python kbd.py kev off      # 关闭；无需重新部署输入法
+.venv/bin/python kbd.py kev status   # 查看当前状态，也可用 kev toggle 切换
+```
+
+`install-kev-agent` 安装只监听本机回环地址的 Kev 0.8B 服务，使用 bf16；本机实测运行时 RSS 约 1.6 GB。默认安装后不启动。`kev off` 会关闭输入法建议，并禁用本项目的 Kev 常驻服务（下次登录也不会自启）；`kev on` 会恢复启动。如果 Kev 是用其他命令手动启动的，需自行停止。彻底移除登录服务用 `.venv/bin/python kbd.py uninstall-kev-agent`。
+
+开启后，**平时输入不会调用 Kev**，候选顺序和按键行为保持原样。需要建议时，在拼音候选菜单按 `Control+Shift+k`：鼠须管会把当前拼音、本会话短期语境和前五个候选送到本机 Kev，最多等待 2.5 秒。模型返回后，建议项会显示 `✦ AI`；把握不足的建议显示 `✦ AI ?`，保持原顺序。只有判断概率至少 0.90、领先第二名至少 0.30 时，才把第 2–5 项建议提升到首位。此时再按一次 `Control+Shift+k` 可撤销建议。空格、标点、退格和其他普通按键始终只需按一次。模型不可用时，首项显示 `AI 暂不可用`，候选保持原样；可再次按快捷键重试。
+
+语境只在当前 Rime 会话内存中保留最近 160 个字符，连续上屏的短词会拼成前文；停顿 60 秒，或按退格、光标移动、回车、快捷命令等编辑键后清空。它不读取历史输入日志，也不能确认鼠标移动后的真实光标位置。相同拼音、语境和候选的成功结果最多缓存 30 秒，最多 8 条；再次触发可省去模型请求，失败结果不缓存。首次或不同请求仍会同步等待模型。
+
+安装脚本会备份有改动的 Lua 脚本和 `rime_ice.custom.yaml`，不会改动其他输入方案或 keytrack 采集钩子。请求和响应只在本机 `~/.keytrack/kev-rime/` 的私有目录短暂保存；开关状态保存在该目录的 `enabled` 文件中。关闭状态下 `Control+Shift+k` 也不由 Kev 拦截。
+
+遇到没有建议或感觉服务没运行时，用 `kbd doctor` 检查；它区分实际进程、已加载的服务、已安装的脚本和模型接口，不读取输入内容。`--json` 便于脚本使用，出现错误返回非零退出码。AIME 参考与本轮边界见 [对照记录](docs/aime-reference.md)。
+
+Kev 当前模型主要用英文任务训练，中文五候选判断效果仍属实验性质；高门槛也不能保证推荐正确。开关变更在下一次开始拼音组合时生效。
 
 ## 已知边界
 

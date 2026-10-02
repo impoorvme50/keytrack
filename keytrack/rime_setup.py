@@ -106,7 +106,7 @@ def redeploy() -> bool:
     if not os.path.exists(SQUIRREL_BIN):
         return False
     try:
-        result = subprocess.run([SQUIRREL_BIN, "--reload"], check=False, timeout=30)
+        result = subprocess.run([SQUIRREL_BIN, "--reload"], check=False, timeout=30, capture_output=True)
         return result.returncode == 0
     except Exception:
         return False

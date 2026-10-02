@@ -9,3 +9,9 @@ __pycache__/
 # 历史参考材料，不上传（本地保留，可随时删）
 vendor/
 patches/
+
+# Private Gmail classification data (never commit email content)
+.local/
+
+# Local macOS companion app build
+dist/

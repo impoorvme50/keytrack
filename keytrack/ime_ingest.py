@@ -51,28 +51,38 @@ def _frontmost_app() -> str:
     无缓存、不需要 NSRunLoop、不需要任何权限，长驻后台进程也拿到实时结果。
     （NSWorkspace.frontmostApplication 在没有 runloop 的常驻进程里会返回
     过期值——实测锁屏一次后就一直停在 loginwindow，这个坑踩过。）
+
+    本函数跑在没有 runloop 的采集线程里，两个分支拿到的都是自动释放对象：
+    必须套 autorelease_pool，否则每次采样都滞留一批窗口描述（曾 7 天累积
+    到 9 GB）。返回前把 owner/name 转成原生 str，避免带出池外后引用已被
+    释放的 NSString。
     """
     try:
         import Quartz
+        import objc
 
-        windows = Quartz.CGWindowListCopyWindowInfo(
-            Quartz.kCGWindowListOptionOnScreenOnly, Quartz.kCGNullWindowID
-        )
-        for w in windows:
-            if w.get("kCGWindowLayer", 99) == 0 and w.get("kCGWindowAlpha", 0) > 0:
-                owner = w.get("kCGWindowOwnerName") or ""
-                if owner and owner not in _NON_TYPABLE_OWNERS:
-                    return owner
-        return "Unknown"  # 只剩被排除的进程（锁屏等）
+        with objc.autorelease_pool():
+            windows = Quartz.CGWindowListCopyWindowInfo(
+                Quartz.kCGWindowListOptionOnScreenOnly, Quartz.kCGNullWindowID
+            )
+            for w in windows:
+                if w.get("kCGWindowLayer", 99) == 0 and w.get("kCGWindowAlpha", 0) > 0:
+                    owner = w.get("kCGWindowOwnerName") or ""
+                    if owner and owner not in _NON_TYPABLE_OWNERS:
+                        return str(owner)
+            return "Unknown"  # 只剩被排除的进程（锁屏等）
     except Exception:
         pass
     # 兜底：NSWorkspace（长驻进程里可能过期，但聊胜于无）
     try:
         from AppKit import NSWorkspace
+        import objc
 
-        app = NSWorkspace.sharedWorkspace().frontmostApplication()
-        name = (app.localizedName() if app else None) or "Unknown"
-        return "Unknown" if name in _NON_TYPABLE_OWNERS else name
+        with objc.autorelease_pool():
+            app = NSWorkspace.sharedWorkspace().frontmostApplication()
+            raw_name = app.localizedName() if app else None
+            name = str(raw_name) if raw_name else "Unknown"
+            return "Unknown" if name in _NON_TYPABLE_OWNERS else name
     except Exception:
         return "Unknown"
 

@@ -29,6 +29,19 @@ def connect(db_path: str = DEFAULT_DB_PATH) -> Iterator[sqlite3.Connection]:
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     try:
+        # WAL 允许采集写入时继续查询。模式保存在数据库里，已启用时不必
+        # 每次连接都重新设置；旧库只读或暂时被锁住时保留原模式。
+        if conn.execute("PRAGMA journal_mode").fetchone()[0] != "wal":
+            try:
+                conn.execute("PRAGMA journal_mode=WAL")
+            except sqlite3.OperationalError as exc:
+                code = getattr(exc, "sqlite_errorcode", 0) & 0xFF
+                if code not in (
+                    sqlite3.SQLITE_READONLY,
+                    sqlite3.SQLITE_BUSY,
+                    sqlite3.SQLITE_LOCKED,
+                ):
+                    raise
         _init_schema(conn)
         yield conn
         conn.commit()

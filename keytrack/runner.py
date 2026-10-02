@@ -13,7 +13,6 @@ import time
 
 from . import storage
 from .ime_ingest import ImeIngester, COMMITS_PATH, KEYS_PATH
-from .metrics import MetricsRecorder
 
 
 def run(
@@ -28,8 +27,9 @@ def run(
     print(f"          {KEYS_PATH}")
     print("  若一直没有内容：确认当前输入法是鼠须管，并已运行 `kbd setup-ime`")
 
-    met: MetricsRecorder | None = None
+    met = None
     if pynput:
+        from .metrics import MetricsRecorder
         met = MetricsRecorder(db_path=db_path, verbose=verbose)
         met.start_async()
         print("· pynput 系统级按键监听已开启（需输入监控权限）")

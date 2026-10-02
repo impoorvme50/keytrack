@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import os
 import plistlib
+import re
 import subprocess
 import sys
 
@@ -19,15 +20,16 @@ LOG_DIR = os.path.expanduser("~/.keytrack/logs")
 
 def _plist() -> dict:
     project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    bundled = bool(getattr(sys, "frozen", False))
     return {
         "Label": LABEL,
-        "ProgramArguments": [
+        "ProgramArguments": [sys.executable, "record"] if bundled else [
             os.path.join(project_dir, ".venv/bin/python"),
             "-u",
             os.path.join(project_dir, "kbd.py"),
             "record",
         ],
-        "WorkingDirectory": project_dir,
+        "WorkingDirectory": os.path.dirname(sys.executable) if bundled else project_dir,
         "RunAtLoad": True,
         "KeepAlive": True,
         "ThrottleInterval": 10,
@@ -75,12 +77,31 @@ def uninstall(verbose: bool = True) -> bool:
     return True
 
 
+def service_status(label: str = LABEL) -> dict:
+    """Query the user's service domain; a loaded job is not necessarily running."""
+    try:
+        result = subprocess.run(
+            ["launchctl", "print", f"gui/{os.getuid()}/{label}"],
+            capture_output=True, text=True, timeout=2,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return {"loaded": False, "running": False, "state": "unknown", "pid": None}
+    if result.returncode != 0:
+        absent = "Could not find service" in result.stderr
+        return {"loaded": False, "running": False,
+                "state": "absent" if absent else "unknown", "pid": None}
+    state = re.search(r"^\s*state = (.+)$", result.stdout, re.M)
+    pid = re.search(r"^\s*pid = (\d+)$", result.stdout, re.M)
+    value = state.group(1).strip() if state else "unknown"
+    return {"loaded": True, "running": value == "running" and pid is not None,
+            "state": value, "pid": int(pid.group(1)) if pid else None}
+
+
 def status() -> None:
-    loaded = subprocess.run(
-        ["launchctl", "list"], capture_output=True, text=True
-    ).stdout
-    running = LABEL in loaded
-    print(f"常驻 helper：{'运行中' if running else '未运行'}（plist {'已装' if os.path.exists(PLIST_PATH) else '未装'}）")
+    info = service_status()
+    state = ("运行中" if info["running"] else "状态无法读取" if info["state"] == "unknown"
+             else "已加载，未运行" if info["loaded"] else "未运行")
+    print(f"常驻 helper：{state}（plist {'已装' if os.path.exists(PLIST_PATH) else '未装'}）")
     from .ime_ingest import COMMITS_PATH, KEYS_PATH
 
     for path in (COMMITS_PATH, KEYS_PATH):
