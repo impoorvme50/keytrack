@@ -1,5 +1,6 @@
 """Exercise the frozen helper from an arbitrary directory with only system PATH."""
 import json
+import hashlib
 import os
 import select
 import signal
@@ -28,6 +29,15 @@ with tempfile.TemporaryDirectory(prefix="keytrack-package-check-") as temporary:
     try:
         state = request({"action": "state"})
         assert state["status"]["demo"]
+        assert state["prediction"]["enabled"] is False
+        assert state["prediction"]["max_candidates"] == 3
+        request({"action": "prediction", "enabled": True, "max_candidates": 4})
+        prediction = request({"action": "state"})
+        assert prediction["prediction"]["enabled"] is True
+        assert prediction["prediction"]["max_candidates"] == 4
+        assert prediction["status"]["kev_enabled"] == state["status"]["kev_enabled"]
+        request({"action": "prediction", "enabled": False, "max_candidates": 3})
+        state = request({"action": "state"})
         original_phrases = state["phrases"]
         assert request({"action": "report", "day": state["today"]})["segments"] is None
         phrases = [{"code": "qpackage", "category": "测试", "text": '独立安装\n多行 "内容"'}]
@@ -48,9 +58,53 @@ with tempfile.TemporaryDirectory(prefix="keytrack-package-check-") as temporary:
         process.wait(timeout=10)
         errors = process.stderr.read()
         assert process.returncode == 0, errors
-    # The ordinary recorder must ingest using bundled PyObjC and SQLite, too.
+    # Install the bundled prediction resources without touching the real Rime
+    # configuration or reloading the desktop input method.
+    rime = home / "Library/Rime"
+    (rime / "build").mkdir(parents=True)
+    daily = rime / "build/rime_ice.schema.yaml"
+    daily.write_text('schema:\n  schema_id: rime_ice\n  name: "包内安装测试"\n'
+                     'engine:\n  processors:\n    - lua_processor@*keytrack_logger\n    - lua_processor@*kev_hotkey\n'
+                     '    - ascii_composer\n    - key_binder\n'
+                     '  translators:\n    - table_translator\n'
+                     '  filters:\n    - uniquifier\n'
+                     'switches:\n  - name: ascii_mode\n    reset: 0')
+    daily_custom = rime / "rime_ice.custom.yaml"
+    daily_custom.write_text("# original daily configuration\npatch:\n  unrelated: true\n")
+    before_daily = daily.read_bytes(), daily_custom.read_bytes()
     data = home / ".keytrack"
-    data.mkdir()
+    enabled = data / "kev-rime/enabled"
+    enabled.parent.mkdir(parents=True)
+    enabled.write_text("1\n")
+    def install_prediction(*options):
+        outcome = subprocess.run([str(helper), "setup-prediction", "--no-deploy", *options],
+                                 cwd=root, env=env, capture_output=True, text=True, timeout=15)
+        assert outcome.returncode == 0, outcome.stdout + outcome.stderr
+    install_prediction()
+    assert before_daily == (daily.read_bytes(), daily_custom.read_bytes())
+    source_db = helper.parent / "_internal/data/prediction/keytrack-predict.db"
+    assert (rime / "keytrack-predict.db").read_bytes() == source_db.read_bytes()
+    assert (data / "prediction/control").read_text() == "enabled=0\nmax_candidates=3\nmax_iterations=1\n"
+    assert enabled.read_text() == "1\n"
+    managed = [rime / "default.custom.yaml", rime / "rime_ice_predict.schema.yaml", rime / "keytrack-predict.db",
+               rime / "lua/prediction_guard.lua", rime / "lua/prediction_filter.lua"]
+    before_managed = {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in managed}
+    before_backups = sorted(str(path.relative_to(data)) for path in (data / "prediction/backups").rglob("*") if path.is_file())
+    install_prediction()
+    assert before_managed == {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in managed}
+    assert before_backups == sorted(str(path.relative_to(data)) for path in (data / "prediction/backups").rglob("*") if path.is_file())
+    fixture_db = helper.parent / "_internal/data/prediction/keytrack-predict-fixture.db"
+    install_prediction("--db-file", str(fixture_db))
+    assert (rime / "keytrack-predict.db").read_bytes() == fixture_db.read_bytes()
+    custom_installed = {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in managed}
+    custom_backups = sorted(str(path.relative_to(data)) for path in (data / "prediction/backups").rglob("*") if path.is_file())
+    install_prediction()
+    assert custom_installed == {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in managed}
+    assert custom_backups == sorted(str(path.relative_to(data)) for path in (data / "prediction/backups").rglob("*") if path.is_file())
+    assert (rime / "keytrack-predict.db").read_bytes() == fixture_db.read_bytes()
+    assert enabled.read_text() == "1\n"
+    # The ordinary recorder must ingest using bundled PyObjC and SQLite, too.
+    data.mkdir(exist_ok=True)
     import datetime
     now = datetime.datetime.now().timestamp()
     recorder = subprocess.Popen([str(helper), "record"], cwd=root, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -87,4 +141,4 @@ with tempfile.TemporaryDirectory(prefix="keytrack-package-check-") as temporary:
     invalid.write_text("{}")
     bridge = subprocess.run([str(helper), str(app / "Contents/Resources/keytrack-runtime/_internal/rime/kev_bridge.marker"), str(invalid), str(root / "response")], cwd=root, env=env, capture_output=True, text=True, timeout=10)
     assert bridge.returncode == 1 and "Kev Rime bridge:" in bridge.stderr, bridge.stderr
-print("Package checks passed: isolated runtime, read-only statistics, save/restore, recorder and bridge dispatch.")
+print("Package checks passed: isolated runtime, prediction install/reinstall/library replacement, private settings, read-only statistics, save/restore, recorder and bridge dispatch.")

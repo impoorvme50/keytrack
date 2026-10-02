@@ -34,6 +34,7 @@ from keytrack import (
     kev_rime_setup,
     kev_switch,
     kev_service,
+    prediction_setup,
     query,
     rime_setup,
     runner,
@@ -90,6 +91,10 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("setup-ime", help="安装/更新鼠须管的 keytrack 采集钩子并触发部署")
     sub.add_parser("setup-kev-rime", help="安装 Kev 按需候选建议（仅雾凇拼音）")
+    p_predict_setup = sub.add_parser("setup-prediction", help="备份并安装独立的本地接词实验方案（默认关闭）")
+    p_predict_setup.add_argument("--db-file", type=Path, help="替换为 build-predict-db.py 生成的接词库")
+    p_prediction = sub.add_parser("prediction", help="控制本地接词联想，与 Kev 分开")
+    p_prediction.add_argument("action", choices=("on", "off", "toggle", "status", "rollback"))
     p_kev = sub.add_parser("kev", help="开关 Kev 候选建议（默认关闭）")
     p_kev.add_argument("action", choices=("on", "off", "toggle", "status"))
     p_kev_agent = sub.add_parser("install-kev-agent", help="安装可随 Kev 开关启停的本机 0.8B 服务")
@@ -143,6 +148,10 @@ def main(argv: list[str] | None = None) -> int:
         return 0 if rime_setup.setup() else 1
     elif args.cmd == "setup-kev-rime":
         return 0 if kev_rime_setup.setup() else 1
+    elif args.cmd == "setup-prediction":
+        return 0 if prediction_setup.setup(db_file=args.db_file) else 1
+    elif args.cmd == "prediction":
+        return 0 if prediction_setup.command(args.action) else 1
     elif args.cmd == "kev":
         return 0 if kev_switch.command(args.action) else 1
     elif args.cmd == "install-kev-agent":

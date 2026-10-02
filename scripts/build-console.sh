@@ -18,6 +18,7 @@ print '正在打包应用内运行组件…'
 if ! .venv/bin/python -m PyInstaller --noconfirm --clean --onedir \
     --name keytrack-helper --paths "$project_dir" --target-architecture arm64 \
     --exclude-module pynput --exclude-module _lzma --add-data "$project_dir/rime:rime" \
+    --add-data "$project_dir/data/prediction:data/prediction" \
     --distpath "$build_dir/runtime" --workpath "$build_dir/work" --specpath "$build_dir" \
     scripts/frozen-entry.py > "$build_dir/runtime-build.log" 2>&1; then
   tail -60 "$build_dir/runtime-build.log"

@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from keytrack import agent, console, kev_rime_setup, rime_setup, standalone
+from keytrack import agent, console, kev_rime_setup, prediction_setup, rime_setup, standalone
 
 
 class StandaloneTests(unittest.TestCase):
@@ -24,7 +24,7 @@ class StandaloneTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "应用程序"):
                 standalone.install(None)
 
-    def test_configured_checks_both_recorder_and_existing_bridge(self):
+    def test_configured_checks_recorder_and_bridge_independently_of_prediction(self):
         with tempfile.TemporaryDirectory() as root:
             root = Path(root)
             helper = "/Applications/Keytrack.app/Contents/Resources/keytrack-runtime/keytrack-helper"
@@ -32,10 +32,13 @@ class StandaloneTests(unittest.TestCase):
             plist.write_bytes(plistlib.dumps({"ProgramArguments": [helper, "record"]}))
             custom = root / "rime_ice.custom.yaml"
             custom.write_text(kev_rime_setup.BEGIN + '\n"kev_rime/python": "/old/python"\n')
-            with patch.object(rime_setup, "installation_ready", return_value=True), patch.object(sys, "frozen", True, create=True), patch.object(sys, "executable", helper), patch.object(agent, "PLIST_PATH", str(plist)), patch.object(kev_rime_setup, "RIME_DIR", root):
+            with patch.object(rime_setup, "installation_ready", return_value=True), patch.object(prediction_setup, "state", return_value={"installed": True}) as prediction, patch.object(sys, "frozen", True, create=True), patch.object(sys, "executable", helper), patch.object(agent, "PLIST_PATH", str(plist)), patch.object(kev_rime_setup, "RIME_DIR", root):
                 self.assertFalse(standalone.status()["configured"])
                 custom.write_text(kev_rime_setup.BEGIN + '\n"kev_rime/python": "' + helper + '"\n')
                 self.assertTrue(standalone.status()["configured"])
+                prediction.return_value = {"installed": False}
+                self.assertTrue(standalone.status()["configured"])
+                prediction.assert_not_called()
 
     def test_install_backs_up_service_and_all_custom_schemas(self):
         with tempfile.TemporaryDirectory() as root:
@@ -47,13 +50,14 @@ class StandaloneTests(unittest.TestCase):
             (store.rime / "rime_ice.custom.yaml").write_text(kev_rime_setup.BEGIN + "\n")
             plist = root / "agent.plist"
             plist.write_bytes(b"previous service")
-            with patch.object(standalone, "status", return_value={"can_install": True}), patch.object(agent, "PLIST_PATH", str(plist)), patch.object(rime_setup, "RIME_DIR", str(store.rime)), patch.object(kev_rime_setup, "RIME_DIR", store.rime), patch.object(rime_setup, "setup", return_value=True), patch.object(kev_rime_setup, "setup", return_value=True) as kev, patch.object(agent, "install", return_value=True):
+            with patch.object(standalone, "status", return_value={"can_install": True}), patch.object(agent, "PLIST_PATH", str(plist)), patch.object(rime_setup, "RIME_DIR", str(store.rime)), patch.object(kev_rime_setup, "RIME_DIR", store.rime), patch.object(rime_setup, "setup", return_value=True), patch.object(kev_rime_setup, "setup", return_value=True) as kev, patch.object(prediction_setup, "setup", return_value=True) as prediction, patch.object(agent, "install", return_value=True):
                 result = standalone.install(store)
             snapshot = store.root / "backups" / (result["backup"] + "-installation")
             self.assertEqual((snapshot / plist.name).read_bytes(), b"previous service")
             self.assertEqual((snapshot / "other.custom.yaml").read_text(), "patch:\n  keep: true\n")
             self.assertEqual((snapshot / plist.name).stat().st_mode & 0o777, 0o600)
             kev.assert_called_once_with(verbose=False)
+            prediction.assert_called_once_with(verbose=False, rime_dir=store.rime)
 
     def test_demo_rejects_install(self):
         with tempfile.TemporaryDirectory() as root:

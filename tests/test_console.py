@@ -9,7 +9,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
-from keytrack import console, kev_rime_setup, storage
+from keytrack import console, kev_rime_setup, prediction_setup, storage
 
 
 class ConsoleTests(unittest.TestCase):
@@ -149,9 +149,65 @@ class ConsoleTests(unittest.TestCase):
             console.native_request(self.store, {"action": "phrases", "phrases": [], "revision": state["revision"]})
 
     def test_native_bridge_rejects_unknown_actions_and_bad_switches(self):
-        for payload in ({"action": "unknown"}, {"action": "kev", "enabled": "on"}, [], None):
+        for payload in ({"action": "unknown"}, {"action": "kev", "enabled": "on"},
+                        {"action": "prediction", "enabled": "on"},
+                        {"action": "prediction", "enabled": True, "max_candidates": True},
+                        {"action": "prediction", "enabled": True, "max_iterations": 2}, [], None):
             with self.assertRaises(ValueError):
                 console.native_request(self.store, payload)
+
+    def test_demo_prediction_controls_are_independent_of_kev(self):
+        initial = console.native_request(self.store, {"action": "state"})
+        self.assertEqual(initial["prediction"]["max_candidates"], 3)
+        self.assertEqual(initial["prediction"]["max_iterations"], 1)
+        self.assertFalse(initial["prediction"]["enabled"])
+        with patch.object(console.kev_switch, "command") as kev, patch.object(prediction_setup, "set_settings") as prediction:
+            console.native_request(self.store, {"action": "prediction", "enabled": True, "max_candidates": 4})
+            current = console.native_request(self.store, {"action": "state"})
+            kev.assert_not_called()
+            prediction.assert_not_called()
+        self.assertTrue(current["prediction"]["enabled"])
+        self.assertEqual(current["prediction"]["max_candidates"], 4)
+        self.assertFalse(current["status"]["kev_enabled"])
+        console.native_request(self.store, {"action": "prediction", "enabled": False, "max_candidates": 4})
+        self.assertFalse(self.store.state()["prediction"]["enabled"])
+
+    def test_live_prediction_dispatch_uses_store_rime_and_does_not_touch_kev(self):
+        self.store.demo = False
+        with patch.object(prediction_setup, "set_settings", return_value={"message": "saved"}) as prediction, patch.object(console.kev_switch, "command") as kev:
+            result = console.native_request(self.store, {"action": "prediction", "enabled": True, "max_candidates": 3})
+        self.assertEqual(result["message"], "saved")
+        prediction.assert_called_once_with(enabled=True, max_candidates=3, max_iterations=1, rime_dir=self.rime)
+        kev.assert_not_called()
+
+    def test_prediction_is_in_revision_and_backup_restore_without_kev_changes(self):
+        revision = self.store.revision()
+        backup = self.store.backup("prediction baseline")
+        self.store.save_prediction({"enabled": True, "max_candidates": 5})
+        self.assertNotEqual(revision, self.store.revision())
+        with self.assertRaisesRegex(ValueError, "其他窗口"):
+            self.store.save_phrases([], revision)
+        with patch.object(console.kev_switch, "command") as kev:
+            self.store.restore(backup, self.store.revision())
+            kev.assert_not_called()
+        current = self.store.state()["prediction"]
+        self.assertFalse(current["enabled"])
+        self.assertEqual(current["max_candidates"], 3)
+        restored_snapshot = json.loads((self.store.root / "backups" / (self.store.backups()[0]["id"] + ".json")).read_text())
+        self.assertTrue(restored_snapshot["prediction"]["enabled"])
+
+    def test_hotkey_and_first_phrase_propagate_to_experiment_and_restore_scoped(self):
+        source = self.rime / f"{prediction_setup.SCHEMA}.schema.yaml"
+        source.write_text(prediction_setup.HEADER + '\nengine:\n  translators:\n    - table_translator\nkev_rime:\n  hotkey: "Control+Shift+k"\n')
+        saved = self.store.save_settings(dict(console.DEFAULTS, hotkey="Control+Alt+j"), self.store.revision())
+        self.assertIn('hotkey: "Control+Alt+j"', source.read_text())
+        self.store.save_phrases([{"code": "qexperiment", "text": "实验短语"}], self.store.revision())
+        self.assertIn("lua_translator@*keytrack_phrases", source.read_text())
+        source.write_text(source.read_text() + "# later experiment comment\n")
+        self.store.restore(saved["backup"], self.store.revision())
+        self.assertIn('hotkey: "Control+Shift+k"', source.read_text())
+        self.assertIn("# later experiment comment", source.read_text())
+        self.assertTrue(list((self.rime.parent / "prediction-state/backups").glob("*-console/*.schema.yaml")))
 
 
 class ProtocolTests(unittest.TestCase):

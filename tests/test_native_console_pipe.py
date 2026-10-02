@@ -55,3 +55,15 @@ class NativePipeTests(unittest.TestCase):
         result = self.request({"action": "kev", "enabled": True})
         self.assertIn("演示", result["message"])
         self.assertFalse(self.request({"action": "state"})["status"]["kev_enabled"])
+
+    def test_prediction_round_trip_does_not_toggle_kev_or_break_pipe(self):
+        original = self.request({"action": "state"})
+        self.assertFalse(original["prediction"]["enabled"])
+        self.request({"action": "prediction", "enabled": True, "max_candidates": 5, "max_iterations": 1})
+        current = self.request({"action": "state"})
+        self.assertTrue(current["prediction"]["enabled"])
+        self.assertEqual(current["prediction"]["max_candidates"], 5)
+        self.assertEqual(current["status"]["kev_enabled"], original["status"]["kev_enabled"])
+        self.request({"action": "prediction", "enabled": False})
+        self.assertFalse(self.request({"action": "state"})["prediction"]["enabled"])
+        self.assertIsNone(self.request({"action": "report", "day": current["today"]})["segments"])

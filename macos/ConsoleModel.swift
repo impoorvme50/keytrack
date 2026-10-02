@@ -27,6 +27,14 @@ struct Recorder: Decodable { var running: Bool }
 struct ServiceState: Decodable { var kev_enabled: Bool; var recorder: Recorder; var demo: Bool }
 struct Deployment: Decodable { var pending: Bool; var message: String }
 struct Installation: Decodable { var packaged: Bool; var configured: Bool; var can_install: Bool }
+struct PredictionState: Decodable {
+    var enabled: Bool
+    var installed: Bool
+    var max_candidates: Int
+    var max_iterations: Int
+    var schema_id: String
+    var schema_name: String?
+}
 struct ConsoleState: Decodable {
     var settings: Preferences
     var phrases: [Phrase]
@@ -35,6 +43,7 @@ struct ConsoleState: Decodable {
     var today: String
     var deployment: Deployment
     var installation: Installation?
+    var prediction: PredictionState
 }
 struct DayTotal: Decodable, Identifiable { var day: String; var chars: Int; var id: String { day } }
 struct AppTotal: Decodable, Identifiable { var name: String; var chars: Int; var id: String { name } }
@@ -234,6 +243,12 @@ final class NativeBridge: @unchecked Sendable {
             let result: Outcome = try await self.bridge.request(name, payload)
             try await self.reload(); self.notice = result.message
         }
+    }
+    func updatePrediction(enabled: Bool? = nil, candidates: Int? = nil) {
+        guard let prediction = state?.prediction else { return }
+        action("prediction", fields: ["enabled": enabled ?? prediction.enabled,
+                                     "max_candidates": candidates ?? prediction.max_candidates,
+                                     "max_iterations": 1])
     }
 }
 private enum NativePayload: Encodable {

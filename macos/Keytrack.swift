@@ -48,7 +48,7 @@ struct ConsoleView: View {
                     Label("仅在本机", systemImage: "lock.shield").foregroundStyle(accent)
                     Text("SwiftUI 原生界面").foregroundStyle(.secondary)
                     if let state = model.state {
-                        Text(state.status.demo ? "演示数据 · 本机配置未改动" : "采集\(state.status.recorder.running ? "运行中" : "未运行") · AI \(state.status.kev_enabled ? "开启" : "关闭")")
+                        Text(state.status.demo ? "演示数据 · 本机配置未改动" : "采集\(state.status.recorder.running ? "运行中" : "未运行") · Kev \(state.status.kev_enabled ? "开启" : "关闭")")
                             .foregroundStyle(.secondary)
                     }
                 }.font(.caption).padding(20)
@@ -377,9 +377,25 @@ struct AppearanceView: View {
 struct InputSettingsView: View {
     @EnvironmentObject var model: ConsoleModel
     var body: some View {
-        PageHeading(title: "输入习惯，由你决定。", detail: "AI 按需调用，日常输入继续交给鼠须管。")
-        Panel(title: "AI 候选建议") {
-            Toggle("开启 Kev 建议", isOn: Binding(get: { model.state?.status.kev_enabled ?? false }, set: { model.action("kev", fields: ["enabled": $0]) })).toggleStyle(.switch)
+        PageHeading(title: "输入习惯，由你决定。", detail: "本地联想与 Kev 候选建议分别控制，日常输入继续交给鼠须管。")
+        Panel(title: "本地接词联想", caption: "实验版 · 默认关闭") {
+            if model.state?.prediction.installed == false {
+                HStack {
+                    Text("先安装独立测试方案，原“雾凇拼音”方案继续保留。").font(.caption).foregroundStyle(.secondary)
+                    Spacer()
+                    Button("安装联想实验方案") { model.action("prediction_install") }.buttonStyle(.borderedProminent)
+                }
+            }
+            Toggle("开启本地接词联想", isOn: Binding(get: { model.state?.prediction.enabled ?? false }, set: { model.updatePrediction(enabled: $0) })).toggleStyle(.switch)
+                .disabled(model.state?.prediction.installed != true)
+            Text("先切换到“\(model.state?.prediction.schema_name ?? "雾凇拼音 · 接词实验")”方案。上屏后显示带“联想”标记的接词，不等待模型推理。").font(.caption).foregroundStyle(.secondary)
+            Stepper("联想候选：\(model.state?.prediction.max_candidates ?? 3) 个", value: Binding(get: { model.state?.prediction.max_candidates ?? 3 }, set: { model.updatePrediction(candidates: $0) }), in: 1...5).disabled(model.state?.prediction.installed != true)
+            LabeledContent("连续联想", value: "最多 1 轮")
+            Text("字母开始新拼音；Escape 或第一次退格退出联想，第二次退格正常删除。数字键、Tab 或点击选择；空格退出并输入空格，连续空格不选接词。标点照常输入。").font(.caption).foregroundStyle(.secondary)
+            Text("随时关闭此开关，或切回原“雾凇拼音”方案。设置从下一次输入生效；修改前会备份。").font(.caption).foregroundStyle(.secondary)
+        }
+        Panel(title: "Kev 候选建议") {
+            Toggle("开启 Kev 候选建议", isOn: Binding(get: { model.state?.status.kev_enabled ?? false }, set: { model.action("kev", fields: ["enabled": $0]) })).toggleStyle(.switch)
             Text("开启后也只在按快捷键时请求模型；再次按可撤销。").font(.caption).foregroundStyle(.secondary)
             Divider()
             Picker("调用快捷键", selection: $model.preferences.hotkey) { Text("⌃ ⇧ K").tag("Control+Shift+k"); Text("⌃ ⌥ K").tag("Control+Alt+k"); Text("⌃ ⌥ J").tag("Control+Alt+j") }.frame(maxWidth: 400)
@@ -427,6 +443,6 @@ struct BackupsView: View {
         .alert("恢复这份备份？", isPresented: Binding(get: { restore != nil }, set: { if !$0 { restore = nil } })) {
             Button("取消", role: .cancel) { restore = nil }
             Button("备份当前并恢复") { if let backup = restore { model.action("restore", fields: ["id": backup.id]) }; restore = nil }
-        } message: { Text("恢复控制台管理的外观、快捷键和常用语。当前版本会先备份，其他配置保留。") }
+        } message: { Text("恢复控制台管理的外观、快捷键、常用语和本地联想设置。当前版本会先备份，其他配置保留。") }
     }
 }

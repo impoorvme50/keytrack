@@ -6,7 +6,7 @@ import shutil
 import sys
 from pathlib import Path
 
-from . import agent, kev_rime_setup, rime_setup
+from . import agent, kev_rime_setup, prediction_setup, rime_setup
 
 
 def app_bundle() -> Path | None:
@@ -56,6 +56,8 @@ def install(store) -> dict:
         if custom.exists() and kev_rime_setup.BEGIN in custom.read_text():
             if not kev_rime_setup.setup(verbose=False):
                 raise ValueError("候选建议桥接未迁移，原配置已备份，请重试")
+        if not prediction_setup.setup(verbose=False, rime_dir=rime):
+            raise ValueError("本地联想实验方案未安装，原配置已备份，请查看诊断后重试")
         if not agent.install(verbose=False):
             raise ValueError("后台采集服务未启动，原配置已备份，请重试")
     return {"message": "本机安装已完成，后台功能已使用应用内运行程序", "backup": backup}

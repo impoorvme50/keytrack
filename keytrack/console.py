@@ -21,7 +21,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from . import key_stats
-from . import agent, doctor, kev_rime_setup, kev_switch, layouts, rime_setup, storage, standalone
+from . import agent, doctor, kev_rime_setup, kev_switch, layouts, prediction_setup, rime_setup, storage, standalone
 
 PROJECT = Path(__file__).resolve().parent.parent
 ZONE = ZoneInfo("Asia/Shanghai")
@@ -218,6 +218,9 @@ class ConsoleStore:
         self.rime = rime_dir or Path(rime_setup.RIME_DIR)
         self.db, self.demo = db, demo
         self.lock = threading.RLock()
+        self._demo_prediction = {"enabled": False, "installed": True, "max_candidates": 3,
+                                 "max_iterations": 1, "schema_id": "rime_ice_predict",
+                                 "schema_name": prediction_setup.TITLE}
         self.targets = {"settings.json": self.root / "settings.json", "phrases.json": self.root / "phrases.json",
                         "squirrel.custom.yaml": self.rime / "squirrel.custom.yaml",
                         "rime_ice.custom.yaml": self.rime / "rime_ice.custom.yaml",
@@ -225,7 +228,13 @@ class ConsoleStore:
 
     def revision(self) -> str:
         payload = "\0".join(key + "\0" + read_text(path) for key, path in self.targets.items())
+        control = json.dumps(self._demo_prediction, sort_keys=True) if self.demo else read_text(prediction_setup.settings_path(self.rime))
+        payload += "\0prediction\0" + control
+        payload += "\0prediction_schema\0" + read_text(self.rime / f"{prediction_setup.SCHEMA}.schema.yaml")
         return hashlib.sha256(payload.encode()).hexdigest()
+
+    def prediction_state(self) -> dict:
+        return dict(self._demo_prediction) if self.demo else prediction_setup.state(rime_dir=self.rime)
 
     def state(self) -> dict:
         settings = json.loads(read_text(self.targets["settings.json"]) or "null")
@@ -242,9 +251,28 @@ class ConsoleStore:
             status = {"kev_enabled": False, "recorder": {"running": True}, "demo": True}
         else:
             status = {"kev_enabled": kev_switch.is_enabled(), "recorder": agent.service_status(), "demo": False}
+        prediction = self.prediction_state()
         return {"settings": settings, "phrases": phrases, "revision": self.revision(), "status": status,
+                "prediction": prediction,
                 "today": datetime.now(ZONE).date().isoformat(), "deployment": self.deployment(),
                 "installation": {"packaged": False, "configured": True, "can_install": False} if self.demo else standalone.status()}
+
+    def save_prediction(self, request: dict) -> dict:
+        """This independent switch never changes Kev or starts its model service."""
+        enabled = request.get("enabled")
+        candidates = request.get("max_candidates", 3)
+        iterations = request.get("max_iterations", 1)
+        if type(enabled) is not bool:
+            raise ValueError("联想开关状态不正确")
+        if type(candidates) is not int or not 1 <= candidates <= 5:
+            raise ValueError("联想候选须为 1–5 个")
+        if type(iterations) is not int or iterations != 1:
+            raise ValueError("实验版连续联想最多一轮")
+        if self.demo:
+            self._demo_prediction.update(enabled=enabled, max_candidates=candidates, max_iterations=iterations)
+            return {"message": "演示：本地接词联想已开启" if enabled else "演示：本地接词联想已关闭"}
+        return prediction_setup.set_settings(enabled=enabled, max_candidates=candidates,
+                                             max_iterations=iterations, rime_dir=self.rime)
 
     def deployment(self) -> dict:
         pending = False
@@ -255,6 +283,11 @@ class ConsoleStore:
             if BEGIN not in read_text(source):
                 continue
             if not built.exists() or built.stat().st_mtime < source.stat().st_mtime:
+                pending = True
+        prediction = self.rime / f"{prediction_setup.SCHEMA}.schema.yaml"
+        prediction_built = self.rime / "build" / prediction.name
+        if read_text(prediction).startswith(prediction_setup.HEADER):
+            if not prediction_built.exists() or prediction_built.stat().st_mtime < prediction.stat().st_mtime:
                 pending = True
         return {"pending": pending, "message": "等待重新部署" if pending else "已部署的配置可用"}
 
@@ -271,24 +304,34 @@ class ConsoleStore:
     def backup(self, reason: str) -> str:
         now = datetime.now(ZONE)
         identifier = now.strftime("%Y%m%d-%H%M%S-%f") + "-" + secrets.token_hex(2)
+        prediction = self.prediction_state()
         snapshot = {"created": now.isoformat(), "reason": reason,
-                    "files": {key: read_text(path) for key, path in self.targets.items()}}
+                    "files": {key: read_text(path) for key, path in self.targets.items()},
+                    "prediction": {key: prediction[key]
+                                   for key in ("enabled", "max_candidates", "max_iterations")}}
         atomic(self.root / "backups" / f"{identifier}.json", json.dumps(snapshot, ensure_ascii=False, indent=2))
         return identifier
 
-    def commit(self, changes: dict[Path, str], reason: str, revision: str) -> dict:
+    def commit(self, changes: dict[Path, str], reason: str, revision: str, prediction: dict | None = None) -> dict:
         if revision != self.revision():
             raise ValueError("设置已被其他窗口或编辑器修改，请刷新后再保存")
         previous = {path: read_text(path) for path in changes}
+        previous_prediction = self.prediction_state() if prediction is not None else None
         identifier = self.backup(reason)
         written = []
+        prediction_changed = False
         try:
             for path, content in changes.items():
                 if read_text(path) != previous[path]:
                     raise ValueError("文件在保存过程中发生变化，操作已停止")
                 atomic(path, content)
                 written.append(path)
+            if prediction is not None:
+                self.save_prediction(prediction)
+                prediction_changed = True
         except Exception:
+            if prediction_changed:
+                self.save_prediction(previous_prediction)
             for path in reversed(written):
                 atomic(path, previous[path])
             raise
@@ -307,9 +350,11 @@ class ConsoleStore:
         fragment = custom[begin:end]
         fragment = re.sub(r'("kev_rime/hotkey":\s*)"[^"\n]*"', lambda m: m[1] + json.dumps(settings["hotkey"]), fragment)
         custom = custom[:begin] + fragment + custom[end:]
-        return self.commit({self.targets["settings.json"]: json.dumps(settings, ensure_ascii=False, indent=2),
-                            self.targets["squirrel.custom.yaml"]: content,
-                            self.targets["rime_ice.custom.yaml"]: custom}, "更新外观与输入设置", revision)
+        changes = {self.targets["settings.json"]: json.dumps(settings, ensure_ascii=False, indent=2),
+                   self.targets["squirrel.custom.yaml"]: content,
+                   self.targets["rime_ice.custom.yaml"]: custom}
+        changes.update(prediction_setup.console_schema_changes(self.rime, hotkey=settings["hotkey"]))
+        return self.commit(changes, "更新外观与输入设置", revision)
 
     def save_phrases(self, raw, revision: str) -> dict:
         items = validate_phrases(raw)
@@ -319,6 +364,7 @@ class ConsoleStore:
                    self.targets["keytrack_phrases_data.lua"]: phrase_lua(items),
                    self.rime / "lua/keytrack_phrases.lua": (PROJECT / "rime/keytrack_phrases.lua").read_text(),
                    self.targets["rime_ice.custom.yaml"]: custom}
+        changes.update(prediction_setup.console_schema_changes(self.rime, phrases=True))
         return self.commit(changes, "更新常用语", revision)
 
     def restore(self, identifier: str, revision: str) -> dict:
@@ -327,6 +373,7 @@ class ConsoleStore:
         snapshot = json.loads((self.root / "backups" / f"{identifier}.json").read_text())
         files = snapshot["files"]
         changes = {}
+        restored_hotkey = None
         for key, path in self.targets.items():
             previous = files.get(key, "")
             if key.endswith("custom.yaml"):
@@ -340,11 +387,14 @@ class ConsoleStore:
                     # Restore only the managed Kev hotkey, never unrelated configuration.
                     previous_hotkey = re.search(r'"kev_rime/hotkey":\s*"([^"\n]+)"', previous)
                     if previous_hotkey:
+                        restored_hotkey = previous_hotkey[1]
                         value = re.sub(r'("kev_rime/hotkey":\s*)"[^"\n]*"', lambda m: m[1] + json.dumps(previous_hotkey[1]), value)
             else:
                 value = previous or ("[]" if key == "phrases.json" else "null" if key == "settings.json" else "return {}\n")
             changes[path] = value
-        return self.commit(changes, "恢复控制台配置", revision)
+        changes.update(prediction_setup.console_schema_changes(self.rime, hotkey=restored_hotkey,
+                       phrases="keytrack_phrases" in files.get("rime_ice.custom.yaml", "")))
+        return self.commit(changes, "恢复控制台配置", revision, prediction=snapshot.get("prediction"))
 
     def report(self, day_string: str, include_text=False) -> dict:
         day = date.fromisoformat(day_string)
@@ -578,6 +628,14 @@ def native_request(store: ConsoleStore, request: dict) -> dict:
             return store.save_settings(request.get("settings"), request.get("revision"))
         if action == "phrases":
             return store.save_phrases(request.get("phrases"), request.get("revision"))
+        if action == "prediction":
+            return store.save_prediction(request)
+        if action == "prediction_install":
+            if store.demo:
+                raise ValueError("演示模式不会安装实际联想方案")
+            if not prediction_setup.setup(verbose=False, rime_dir=store.rime):
+                raise ValueError("本地联想安装未完成，请查看诊断后重试")
+            return {"message": "本地联想实验方案已安装，开关仍保持当前设置"}
         if action == "restore":
             return store.restore(request.get("id", ""), request.get("revision"))
         if action == "backup":
