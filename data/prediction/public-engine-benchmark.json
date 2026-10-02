@@ -1,0 +1,59 @@
+{
+  "result": "PASS",
+  "isolation": "private HOME / synthetic translations",
+  "environment": {
+    "architecture": "arm64",
+    "macos": "27.2",
+    "device": "Mac17,4",
+    "squirrel": "1.1.2",
+    "librime": "1.16.0",
+    "collector": "unmodified production keytrack_logger.lua"
+  },
+  "db": "keytrack-predict-public.db",
+  "db_sha256": "dfe7f736d05fe0c551d8e88f8649b3e76849d1885203dc5dd3d96692317a605d",
+  "source_sha256": "b1709b748ec1824c194e430b80b80d1fcf724835f34f0c1f703a36ee4415fbcd",
+  "cold_schema_select_ms": 1.3411,
+  "cold_samples": 1,
+  "cold_scope": "first schema selection in fresh process; OS file cache uncontrolled",
+  "groups": {
+    "matched": {
+      "unique_keys": 100,
+      "commit_process_key_ms": {
+        "samples": 1000,
+        "median": 0.1579,
+        "p95": 0.1709,
+        "p99": 0.1858,
+        "max": 0.2437
+      },
+      "get_context_ms": {
+        "samples": 1000,
+        "median": 0.0056,
+        "p95": 0.009,
+        "p99": 0.0095,
+        "max": 0.014
+      },
+      "warmup": 100
+    },
+    "unmatched": {
+      "unique_keys": 1,
+      "commit_process_key_ms": {
+        "samples": 1000,
+        "median": 0.0787,
+        "p95": 0.0879,
+        "p99": 0.1027,
+        "max": 0.2048
+      },
+      "get_context_ms": {
+        "samples": 1000,
+        "median": 0.0017,
+        "p95": 0.0018,
+        "p99": 0.002,
+        "max": 0.0063
+      },
+      "warmup": 20
+    }
+  },
+  "candidate_window_ms": null,
+  "scope": "commit key processing including collectors/observers/lookup; get_context includes Python decoding and free_context, measured separately",
+  "budget_pass": true
+}

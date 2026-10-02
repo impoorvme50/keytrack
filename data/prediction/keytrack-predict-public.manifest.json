@@ -1,0 +1,26 @@
+{
+  "format": "Rime::Predict/1.0",
+  "license": "MIT",
+  "sources": [
+    {
+      "file": "data/prediction/public.ngram.tsv",
+      "sha256": "b1709b748ec1824c194e430b80b80d1fcf724835f34f0c1f703a36ee4415fbcd"
+    }
+  ],
+  "upstream_revisions": {
+    "predict": "920bd41ebf6f9bf6855d14fbe80212e54e749791",
+    "librime": "a251145d3aafa33871824a40bbec04c966bd8b56",
+    "darts": "87b71afd6cf784953e3c08f24c64203397f3b724",
+    "marisa": "3e87d53b78e15f2f43783d5e376561a8c9722051"
+  },
+  "preprocessed_sha256": "63e874151a65763a88cb76fb032dd0249a56db4587696a04f981d9a850f8c2e2",
+  "contexts": 10060,
+  "records": 35222,
+  "max_candidates_in_data": 8,
+  "db_sha256": "dfe7f736d05fe0c551d8e88f8649b3e76849d1885203dc5dd3d96692317a605d",
+  "db_bytes": 498340,
+  "build_architecture": "arm64",
+  "librime_sha256": "abb06aa5b3f53de375bc401512b49a7a31b7ed5ee62b2ef7a438512abee5958f",
+  "librime_version": "1.16.0",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.23.3)"
+}
