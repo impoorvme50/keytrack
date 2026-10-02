@@ -1,0 +1,16 @@
+{
+  "dataset_id": "keytrack-next-word-v1",
+  "schema_version": 1,
+  "file": "evaluation-v1.json",
+  "sha256": "517b33578b18546c4136432f7a2065b3e81df4f7abbff597a92edaf4338e4048",
+  "samples": 200,
+  "situations": 10,
+  "kind_counts": {
+    "word": 80,
+    "phrase": 80,
+    "unmatched": 20,
+    "boundary": 20
+  },
+  "frozen_before_first_evaluation": true,
+  "license": "MIT"
+}
