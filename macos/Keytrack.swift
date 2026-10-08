@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import Charts
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
@@ -10,7 +11,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var model = ConsoleModel()
     var body: some Scene {
-        WindowGroup(CommandLine.arguments.contains("--demo") ? "Keytrack · 原生演示" : "Keytrack · 输入控制台") {
+        WindowGroup(CommandLine.arguments.contains("--demo") ? "Keytrack · 演示" : "Keytrack · 输入控制台") {
             ConsoleView().environmentObject(model).frame(minWidth: 860, minHeight: 620)
         }
         .defaultSize(width: 1190, height: 820)
@@ -46,9 +47,8 @@ struct ConsoleView: View {
                 }.listStyle(.sidebar)
                 VStack(alignment: .leading, spacing: 7) {
                     Label("仅在本机", systemImage: "lock.shield").foregroundStyle(accent)
-                    Text("SwiftUI 原生界面").foregroundStyle(.secondary)
                     if let state = model.state {
-                        Text(state.status.demo ? "演示数据 · 本机配置未改动" : "采集\(state.status.recorder.running ? "运行中" : "未运行") · Kev \(state.status.kev_enabled ? "开启" : "关闭")")
+                        Text(state.status.demo ? "演示数据" : "输入记录\(state.status.recorder.running ? "开启" : "未运行") · AI \(state.status.kev_enabled ? "开启" : "关闭")")
                             .foregroundStyle(.secondary)
                     }
                 }.font(.caption).padding(20)
@@ -72,7 +72,7 @@ struct ConsoleView: View {
                     }
                 }
                 if model.state?.status.demo == true {
-                    Label("演示模式 · 所有保存操作只修改自造测试数据", systemImage: "info.circle")
+                    Label("演示模式 · 保存操作仅影响示例数据", systemImage: "info.circle")
                         .font(.caption).frame(maxWidth: .infinity, alignment: .leading).padding(12)
                         .background(Color.orange.opacity(0.10))
                 }
@@ -89,7 +89,7 @@ struct ConsoleView: View {
                             case .backups: BackupsView()
                             }
                         }.padding(28).frame(maxWidth: 1250, alignment: .leading).frame(maxWidth: .infinity)
-                    }.background(pageBackground)
+                    }.id(model.screen).background(pageBackground)
                 }
                 if !model.notice.isEmpty {
                     HStack { Image(systemName: "checkmark.circle"); Text(model.notice); Spacer(); Button { model.notice = "" } label: { Image(systemName: "xmark") }.buttonStyle(.plain) }
@@ -99,7 +99,7 @@ struct ConsoleView: View {
                 .toolbar {
                     ToolbarItemGroup {
                         if model.busy { ProgressView().controlSize(.small) }
-                        if model.state?.deployment.pending == true { Label("等待部署", systemImage: "clock").font(.caption).foregroundStyle(.orange) }
+                        if model.state?.deployment.pending == true { Label("设置待生效", systemImage: "clock").font(.caption).foregroundStyle(.orange) }
                         if model.dirty {
                             Button("放弃修改") { model.discard() }
                             Button("保存并应用") { model.save() }.buttonStyle(.borderedProminent)
@@ -147,84 +147,93 @@ struct Metric: View {
 }
 struct DashboardView: View {
     @EnvironmentObject var model: ConsoleModel
+    @State private var width: CGFloat = 900
+    private var pairedLayout: AnyLayout {
+        width < 820 ? AnyLayout(VStackLayout(alignment: .leading, spacing: 18)) : AnyLayout(HStackLayout(alignment: .top, spacing: 18))
+    }
     var body: some View {
         if let report = model.report {
+            VStack(alignment: .leading, spacing: 22) {
             HStack {
-                PageHeading(title: "你的输入，一目了然。", detail: "回看输入节奏，找到更舒服的工作习惯。")
+                PageHeading(title: "输入看板", detail: "查看当天的输入量与按键分布。")
                 Spacer()
                 Button("今天") { model.changeDate(Date()) }
                 DatePicker("日期", selection: Binding(get: { model.selectedDate }, set: { model.changeDate($0) }), displayedComponents: .date).labelsHidden().frame(width: 125)
             }
-            Panel(title: report.key_quality.reliable ? "采集范围" : "按键统计待完善", caption: "") {
-                Text(report.key_quality.message).font(.callout)
-                Text(report.key_quality.scope).font(.caption).foregroundStyle(.secondary)
-                if let since = report.key_quality.first_verified_minute {
-                    Text("修复后采集始于 \(since.replacingOccurrences(of: "T", with: " "))；更早的漏采无法补回。").font(.caption).foregroundStyle(.secondary)
-                }
+            if let notice = report.keyStatisticsNotice {
+                Label(notice, systemImage: "exclamationmark.triangle").font(.callout).foregroundStyle(.orange)
             }
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 14) {
-                Metric(label: "上屏文字", value: report.total_chars.formatted(), unit: "字", note: "\(report.segment_count) 个输入片段", icon: "pencil")
-                Metric(label: "输入速度", value: report.cpm.map { String(format: "%.1f", $0) } ?? "—", unit: "字 / 分", note: "按活跃分钟计算", icon: "arrow.up.right")
-                Metric(label: "活跃时间", value: report.active_minutes.map { $0.formatted() } ?? "—", unit: "分钟", note: "有按键记录的分钟数", icon: "clock")
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: width < 740 ? 2 : 4), spacing: 14) {
+                Metric(label: "输入字数", value: report.total_chars.formatted(), unit: "字", note: "\(report.segment_count) 条输入记录", icon: "pencil")
+                Metric(label: "平均输入量", value: report.cpm.map { String(format: "%.1f", $0) } ?? "—", unit: "字 / 分", note: "仅计算有按键的分钟", icon: "arrow.up.right")
+                Metric(label: "输入活跃时间", value: report.active_minutes.map { $0.formatted() } ?? "—", unit: "分钟", note: "有按键记录的分钟数", icon: "clock")
                 Metric(label: "退格占比", value: report.correction_rate.map { String(format: "%.1f", $0) } ?? "—", unit: "%", note: "\(report.total_keys.formatted()) 次按键", icon: "delete.left")
             }
-            HStack(alignment: .top, spacing: 18) {
+            DisclosureGroup("统计说明") {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("只统计通过鼠须管输入的文字和按键，不含粘贴、其他输入法及安全输入。组合键按一次计数。")
+                    Text("平均输入量按有按键记录的分钟计算，不是打字测速；输入活跃时间不代表工作时长。")
+                    Text("手指使用按标准指法估算，不代表实际手指动作；比例仅计算键盘布局内的按键。")
+                    Text("键盘布局内 \(report.key_quality.mapped_keys.formatted()) 次 · 布局外 \(report.key_quality.unmapped_keys.formatted()) 次")
+                    if let since = report.key_quality.first_verified_minute {
+                        Text("最早经校验的按键记录：\(since.replacingOccurrences(of: "T", with: " "))。更早的漏记无法补回。")
+                    }
+                }.font(.caption).foregroundStyle(.secondary).padding(.top, 8)
+            }.font(.caption).foregroundStyle(.secondary)
+            pairedLayout {
                 Panel(title: "最近两周", caption: "点击查看当天") {
                     HStack(alignment: .bottom, spacing: 7) {
                         ForEach(report.trend) { item in
                             VStack(spacing: 8) {
                                 Button { if let date = ConsoleModel.dayFormat.date(from: item.day) { model.changeDate(date) } } label: {
                                     RoundedRectangle(cornerRadius: 4).fill(accent.opacity(item.day == report.day ? 1 : 0.35))
-                                        .frame(height: max(3, Double(item.chars) / Double(max(1, report.trend.map(\.chars).max() ?? 1)) * 108))
-                                        .frame(maxHeight: 108, alignment: .bottom)
+                                        .frame(height: item.chars == 0 ? 0 : max(1, Double(item.chars) / Double(max(1, report.trend.map(\.chars).max() ?? 1)) * 108))
+                                        .frame(height: 108, alignment: .bottom).contentShape(Rectangle())
                                 }.buttonStyle(.plain).help("\(item.day) · \(item.chars) 字").accessibilityLabel("\(item.day) \(item.chars) 字")
-                                Text(String(item.day.suffix(5))).font(.system(size: 9)).foregroundStyle(.secondary)
+                                Text(String(item.day.suffix(5))).font(.system(size: 10)).foregroundStyle(.secondary)
                             }
                         }
                     }.frame(height: 130)
-                    Text("输入法上屏记录，不包含粘贴和其他输入法的文字。").font(.caption2).foregroundStyle(.secondary)
+                    Text("每日输入字数 · 悬停查看数量").font(.caption).foregroundStyle(.secondary)
                 }.frame(maxWidth: .infinity)
                 Panel(title: "在哪里输入", caption: report.day) {
                     if report.apps.isEmpty { Text("这一天还没有输入记录").foregroundStyle(.secondary) }
+                    VStack(spacing: 12) {
                     ForEach(Array(report.apps.prefix(6))) { app in
                         VStack(spacing: 5) {
                             HStack { Text(app.name); Spacer(); Text("\(app.chars.formatted()) 字").foregroundStyle(.secondary) }.font(.caption)
                             ProgressView(value: Double(app.chars), total: Double(max(1, report.apps.first?.chars ?? 1))).tint(accent)
                         }
                     }
-                }.frame(width: 280)
-            }
-            HStack(alignment: .top, spacing: 18) {
-                Panel(title: "输入日历", caption: "最近 91 天") {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 13), spacing: 6) {
-                        ForEach(report.calendar) { item in
-                            Button { if let date = ConsoleModel.dayFormat.date(from: item.day) { model.changeDate(date) } } label: {
-                                RoundedRectangle(cornerRadius: 3).fill(accent.opacity(item.chars == 0 ? 0.06 : 0.16 + 0.7 * sqrt(Double(item.chars) / Double(max(1, report.calendar.map(\.chars).max() ?? 1))))).frame(height: 17)
-                            }.buttonStyle(.plain).help("\(item.day) · \(item.chars) 字").accessibilityLabel("\(item.day) \(item.chars) 字")
-                        }
                     }
-                }
-                Panel(title: "一天的节奏", caption: "每小时的按键次数") {
-                    if report.hours.isEmpty { Text(report.key_quality.message).font(.caption).foregroundStyle(.secondary) }
-                    HStack(alignment: .bottom, spacing: 4) {
-                        ForEach(report.hours.indices, id: \.self) { hour in
-                            VStack(spacing: 6) {
-                                RoundedRectangle(cornerRadius: 3).fill(accent.opacity(0.4)).frame(height: max(3, Double(report.hours[hour]) / Double(max(1, report.hours.max() ?? 1)) * 83)).frame(maxHeight: 83, alignment: .bottom)
-                                Text(hour % 6 == 0 ? "\(hour)时" : " ").font(.system(size: 8)).foregroundStyle(.secondary)
-                            }.help("\(hour):00 · \(report.hours[hour]) 次")
+                }.frame(width: width < 820 ? nil : 280)
+            }
+            pairedLayout {
+                Panel(title: "输入日历", caption: "最近 91 天") {
+                    InputCalendarView(report: report)
+                    HStack(spacing: 5) {
+                        Text("少")
+                        ForEach([0.06, 0.25, 0.55, 0.86], id: \.self) { opacity in
+                            RoundedRectangle(cornerRadius: 2).fill(accent.opacity(opacity)).frame(width: 13, height: 13)
                         }
-                    }.frame(height: 105)
+                        Text("多"); Spacer(); Text("点击查看当天")
+                    }.font(.caption).foregroundStyle(.secondary)
+                }
+                Panel(title: "每小时按键", caption: "所选日期 · 次 / 小时") {
+                    HourlyActivityChart(report: report).id(report.day)
                 }
             }
-            Panel(title: "键盘热力图", caption: "已映射 \(report.key_quality.mapped_keys) 次 · 布局外 \(report.key_quality.unmapped_keys) 次") {
+            Panel(title: "键盘热力图", caption: "悬停查看次数") {
                 KeyboardHeatmap(report: report)
-                Text(report.key_quality.reliable ? "ANSI 布局 · 悬停查看次数" : "仅展示已收到的按键；浅色不代表没有按过。").font(.caption).foregroundStyle(.secondary)
+                if !report.key_quality.reliable && report.total_keys > 0 {
+                    Text("仅显示已记录的按键；浅色不代表没有按过。").font(.caption).foregroundStyle(.secondary)
+                }
             }
-            Panel(title: "按标准指法估算的按键分布", caption: "仅以布局内的按键为分母") {
+            Panel(title: "手指使用估算", caption: "按标准指法分配按键") {
                 if report.fingers.isEmpty || report.key_quality.mapped_keys == 0 {
                     Text(report.key_quality.reliable ? "没有可映射到键盘布局的按键" : report.key_quality.message).font(.caption).foregroundStyle(.secondary)
                 }
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 9), spacing: 8) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 78))], spacing: 8) {
                     ForEach(report.fingers) { finger in
                         VStack(spacing: 7) {
                             Text(finger.name).font(.system(size: 10)).foregroundStyle(.secondary)
@@ -233,8 +242,8 @@ struct DashboardView: View {
                     }
                 }
             }
-            Panel(title: "当天输入回看", caption: "默认折叠") {
-                HStack { Text("主动展开后，才读取当天原文。").font(.caption).foregroundStyle(.secondary); Spacer(); Button(model.showText ? "收起原文" : "展开输入原文") { model.toggleText() } }
+            Panel(title: "输入记录") {
+                HStack { Text("点击展开后，才读取当天输入的文字。").font(.caption).foregroundStyle(.secondary); Spacer(); Button(model.showText ? "收起原文" : "查看原文") { model.toggleText() } }
                 if model.showText {
                     if report.segment_count > report.segment_limit { Text("仅显示最近 \(report.segment_limit) 个片段。").font(.caption).foregroundStyle(.secondary) }
                     ForEach(Array((report.segments ?? []).enumerated()), id: \.offset) { _, item in
@@ -247,6 +256,102 @@ struct DashboardView: View {
                     if (report.segments ?? []).isEmpty { Text("这一天没有上屏文字").foregroundStyle(.secondary) }
                 }
             }
+            }.onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
+        }
+    }
+}
+struct InputCalendarView: View {
+    @EnvironmentObject var model: ConsoleModel
+    var report: Report
+    private var offset: Int {
+        guard let first = report.calendar.first, let date = ConsoleModel.dayFormat.date(from: first.day) else { return 0 }
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+        return (calendar.component(.weekday, from: date) + 5) % 7
+    }
+    var body: some View {
+        GeometryReader { geometry in
+            let columns = max(1, (offset + report.calendar.count + 6) / 7)
+            let cellWidth = max(4, (geometry.size.width - 18 - CGFloat(columns - 1) * 5) / CGFloat(columns))
+            HStack(alignment: .top, spacing: 6) {
+                VStack(spacing: 6) {
+                    ForEach(["一", "二", "三", "四", "五", "六", "日"], id: \.self) { day in
+                        Text(day).font(.system(size: 9)).foregroundStyle(.secondary).frame(width: 12, height: 17)
+                    }
+                }
+                LazyHGrid(rows: Array(repeating: GridItem(.fixed(17), spacing: 6), count: 7), spacing: 5) {
+                    ForEach(0..<(offset + report.calendar.count), id: \.self) { index in
+                        if index < offset {
+                            Color.clear.frame(width: cellWidth, height: 17)
+                        } else {
+                            let item = report.calendar[index - offset]
+                            Button { if let date = ConsoleModel.dayFormat.date(from: item.day) { model.changeDate(date) } } label: {
+                                RoundedRectangle(cornerRadius: 3)
+                                    .fill(accent.opacity(item.chars == 0 ? 0.06 : 0.16 + 0.7 * sqrt(Double(item.chars) / Double(max(1, report.calendar.map(\.chars).max() ?? 1)))))
+                                    .frame(width: cellWidth, height: 17)
+                                    .overlay(RoundedRectangle(cornerRadius: 3).stroke(item.day == report.day ? accent : .clear, lineWidth: 1.5))
+                            }.buttonStyle(.plain).help("\(item.day) · \(item.chars.formatted()) 字")
+                                .accessibilityLabel("\(item.day) \(item.chars) 字")
+                        }
+                    }
+                }
+            }
+        }.frame(height: 155)
+    }
+}
+struct HourlyActivityChart: View {
+    var report: Report
+    @State private var selected: Double?
+    private var selectedHour: Int? {
+        guard let selected, selected >= 0, selected < Double(report.hours.count) else { return nil }
+        return Int(selected)
+    }
+    var body: some View {
+        if report.hours.isEmpty || report.hours.allSatisfy({ $0 == 0 }) {
+            Text(report.hourlyEmptyMessage).font(.callout).foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, minHeight: 130, alignment: .center)
+        } else {
+            VStack(alignment: .leading, spacing: 10) {
+                Chart(report.hours.indices, id: \.self) { hour in
+                    BarMark(x: .value("小时", Double(hour) + 0.5), y: .value("按键次数", report.hours[hour]), width: .fixed(10))
+                        .foregroundStyle(accent.opacity(selectedHour == hour ? 1 : 0.5))
+                        .accessibilityLabel("\(hour)时至\(hour + 1)时")
+                        .accessibilityValue("\(report.hours[hour]) 次按键")
+                }
+                .chartXScale(domain: 0.0...24.0)
+                .chartYScale(domain: 0...max(1, report.hours.max() ?? 1))
+                .chartXAxis {
+                    AxisMarks(values: [0.0, 6.0, 12.0, 18.0, 24.0]) { value in
+                        AxisTick()
+                        AxisValueLabel(anchor: value.as(Double.self) == 24 ? .topTrailing : .topLeading) {
+                            if let hour = value.as(Double.self) { Text("\(Int(hour))时") }
+                        }
+                    }
+                }
+                .chartYAxis { AxisMarks(position: .leading) }
+                .chartXSelection(value: $selected)
+                .chartOverlay { proxy in
+                    GeometryReader { geometry in
+                        Color.clear.contentShape(Rectangle()).onContinuousHover { phase in
+                            switch phase {
+                            case .active(let location):
+                                if let frame = proxy.plotFrame {
+                                    selected = proxy.value(atX: location.x - geometry[frame].origin.x, as: Double.self)
+                                }
+                            case .ended: selected = nil
+                            }
+                        }
+                    }
+                }
+                .frame(height: 150)
+                if let hour = selectedHour {
+                    Text("\(hour):00–\(hour + 1):00 · \(report.hours[hour].formatted()) 次按键")
+                        .font(.caption).foregroundStyle(accent)
+                } else {
+                    Text("共 \(report.hours.reduce(0, +).formatted()) 次按键 · 悬停查看每小时次数")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }.onChange(of: report.day) { _, _ in selected = nil }
         }
     }
 }
@@ -279,10 +384,20 @@ struct PhrasesView: View {
     @State private var category = ""
     @State private var editor: Phrase?
     @State private var originalCode: String?
+    @State private var expandedPhrases: Set<String> = []
     var categories: [String] { Array(Set(model.phrases.map(\.category))).sorted() }
     var filtered: [Phrase] { model.phrases.filter { (category.isEmpty || $0.category == category) && (query.isEmpty || ($0.code + $0.category + $0.text).localizedCaseInsensitiveContains(query)) } }
     var body: some View {
-        HStack { PageHeading(title: "把重复输入，变成一个短编码。", detail: "常用回复、签名和地址，按分类整理。"); Spacer(); Button { originalCode = nil; editor = Phrase(code: "", category: "常用语", text: "") } label: { Label("添加", systemImage: "plus") } }
+        HStack {
+            PageHeading(title: "常用语", detail: "用短编码输入常用回复、签名和地址。")
+            Spacer()
+            Button("导入") { model.importPhrases() }.disabled(model.busy)
+            Menu("导出") {
+                Button("JSON 文件") { model.exportPhrases(format: "json") }
+                Button("TSV 表格") { model.exportPhrases(format: "tsv") }
+            }.disabled(model.busy || model.phrases.isEmpty)
+            Button { originalCode = nil; editor = Phrase(code: "", category: "常用语", text: "") } label: { Label("添加", systemImage: "plus") }
+        }
         Text("输入完整短编码后，用空格上屏。支持多行内容。").font(.caption).foregroundStyle(.secondary)
         HStack {
             TextField("搜索内容、分类或编码", text: $query).textFieldStyle(.roundedBorder)
@@ -292,8 +407,13 @@ struct PhrasesView: View {
         if filtered.isEmpty { Panel(title: model.phrases.isEmpty ? "添加第一条常用语" : "没有匹配的常用语") { Text("保存并应用后，短编码会接入雾凇拼音。").foregroundStyle(.secondary) } }
         ForEach(filtered) { item in
             Panel(title: item.category, caption: item.code) {
-                Text(item.text).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
+                Text(item.text).lineLimit(expandedPhrases.contains(item.code) || (item.text.count <= 80 && !item.text.contains("\n")) ? nil : 3).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
                 HStack {
+                    if item.text.count > 80 || item.text.contains("\n") {
+                        Button(expandedPhrases.contains(item.code) ? "收起全文" : "展开全文") {
+                            if expandedPhrases.contains(item.code) { expandedPhrases.remove(item.code) } else { expandedPhrases.insert(item.code) }
+                        }.font(.caption)
+                    }
                     Spacer()
                     Button("复制") { NSPasteboard.general.clearContents(); NSPasteboard.general.setString(item.text, forType: .string); model.notice = "已复制常用语" }
                     Button("编辑") { originalCode = item.code; editor = item }
@@ -302,6 +422,57 @@ struct PhrasesView: View {
             }
         }
         .sheet(item: $editor) { item in PhraseEditor(initial: item, originalCode: originalCode).environmentObject(model) }
+        .sheet(isPresented: $model.showPhraseImport, onDismiss: { model.clearPhraseImport() }) {
+            PhraseImportPreview().environmentObject(model)
+        }
+    }
+}
+struct PhraseImportPreview: View {
+    @EnvironmentObject var model: ConsoleModel
+    @State private var expanded: Set<String> = []
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("确认要导入的常用语").font(.title2.bold())
+            if let report = model.phraseImport {
+                Text("新增 \(report.counts["new"] ?? 0) · 重复 \(report.counts["duplicate"] ?? 0) · 冲突 \(report.counts["conflict"] ?? 0) · 无效 \(report.counts["invalid"] ?? 0)")
+                    .font(.callout).foregroundStyle(.secondary)
+                HStack {
+                    Button("勾选可新增项") {
+                        model.importSelected = Set(report.rows.filter { $0.status == "new" }.prefix(max(0, 300 - model.phrases.count)).map(\.id))
+                    }
+                    Button("清除勾选") { model.importSelected = [] }
+                    Spacer()
+                    Text("已选 \(model.importSelected.count) 条").font(.caption)
+                }
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 10) {
+                        ForEach(report.rows) { row in
+                            HStack(alignment: .top, spacing: 12) {
+                                Toggle("导入 \(row.code)", isOn: Binding(get: { model.importSelected.contains(row.id) }, set: { selected in
+                                    if selected { model.importSelected.insert(row.id) } else { model.importSelected.remove(row.id) }
+                                })).labelsHidden().toggleStyle(.checkbox).disabled(row.status != "new")
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("\(row.code) · \(row.category)").font(.callout.weight(.medium))
+                                    Text(row.text).lineLimit(expanded.contains(row.id) ? nil : 4).textSelection(.enabled)
+                                    Button(expanded.contains(row.id) ? "收起全文" : "展开全文") {
+                                        if expanded.contains(row.id) { expanded.remove(row.id) } else { expanded.insert(row.id) }
+                                    }.font(.caption)
+                                    Text(row.message).font(.caption).foregroundStyle(row.status == "conflict" || row.status == "invalid" ? Color.orange : .secondary)
+                                }.frame(maxWidth: .infinity, alignment: .leading)
+                            }.padding(12).background(Color.secondary.opacity(0.05), in: RoundedRectangle(cornerRadius: 8))
+                        }
+                    }
+                }.frame(minHeight: 250, maxHeight: 410)
+            }
+            Text("重复和冲突不会覆盖现有条目。加入列表后，点击“保存并应用”才会生效。")
+                .font(.caption).foregroundStyle(.secondary)
+            HStack {
+                Spacer()
+                Button("取消") { model.clearPhraseImport() }.keyboardShortcut(.cancelAction)
+                Button("加入所选条目") { model.addImportedPhrases() }.buttonStyle(.borderedProminent)
+                    .disabled(!model.importCanAdd).keyboardShortcut(.defaultAction)
+            }
+        }.padding(24).frame(width: 600)
     }
 }
 struct PhraseDiscoveryView: View {
@@ -311,10 +482,12 @@ struct PhraseDiscoveryView: View {
         Panel(title: "发现重复表达", caption: "仅在本机分析") {
             DisclosureGroup("查看分析选项", isExpanded: $expanded) {
                 VStack(alignment: .leading, spacing: 14) {
-                    Text("仅在点击“分析已有历史”后读取所选范围的历史。候选需至少出现 3 次、来自 2 个独立记录批次；分析不会自动加入常用语。")
+                    Text("点击分析后才读取所选范围的历史；结果由你选择，不会自动加入常用语。")
                         .font(.caption).foregroundStyle(.secondary)
-                    Text("记录批次按应用、窗口标题及至少 30 分钟的间隔估算，不代表可靠的输入会话。")
-                        .font(.caption).foregroundStyle(.secondary)
+                    DisclosureGroup("如何筛选建议") {
+                        Text("建议需至少出现 3 次、来自 2 个独立记录批次。批次按应用、窗口标题及至少 30 分钟的间隔估算，不代表实际输入会话。")
+                            .font(.caption).foregroundStyle(.secondary).padding(.top, 6)
+                    }.font(.caption)
                     HStack {
                         Picker("分析范围", selection: $model.discoveryDays) {
                             Text("最近 7 天").tag(7); Text("最近 30 天").tag(30); Text("最近 90 天").tag(90)
@@ -460,15 +633,15 @@ struct AppearanceView: View {
     var fontMatches: [InstalledFont] { CandidateFonts.installed.filter { $0.matches(fontSearch.trimmingCharacters(in: .whitespacesAndNewlines)) } }
     func previewFont(_ size: Int) -> Font { Font(CandidateFonts.preview(fontFace, size: CGFloat(size))) }
     var body: some View {
-        PageHeading(title: "让候选窗更顺眼。", detail: "调整字体、布局与配色，保存前先看效果。")
-        Panel(title: "候选窗预览", caption: selectedTheme == nil ? "仅布局示意 · 原有配色未读取" : "实际由鼠须管绘制") {
+        PageHeading(title: "候选外观", detail: "预览字体、布局与配色，保存并应用后生效。")
+        Panel(title: "候选窗预览", caption: selectedTheme == nil ? "原有配色仅作示意" : "设置预览") {
             Toggle("深色预览", isOn: $dark).toggleStyle(.switch).frame(maxWidth: .infinity, alignment: .trailing)
             if inlinePreedit {
                 HStack(spacing: 7) {
                     Text("正在输入").foregroundStyle(.secondary)
                     Text("ni hao").font(previewFont(model.preferences.font_size)).underline()
                     Spacer()
-                    Text("应用内行内拼音示意").font(.caption).foregroundStyle(.secondary)
+                    Text("行内拼音示意").font(.caption).foregroundStyle(.secondary)
                 }.padding(10).background(Color.secondary.opacity(0.06), in: RoundedRectangle(cornerRadius: 6))
             }
             VStack(alignment: .leading, spacing: candidateSpacing) {
@@ -483,7 +656,7 @@ struct AppearanceView: View {
                 .overlay(RoundedRectangle(cornerRadius: 10).stroke(palette.color("border_color")))
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel("\(dark ? "深色" : "浅色")候选窗预览，\(selectedTheme?.name ?? "原有配色未读取")，\(model.preferences.layout == "vertical" ? "竖排" : "横排")，字体 \(fontFace.isEmpty ? "系统默认" : fontFace)，\(inlinePreedit ? "行内拼音" : "候选窗拼音")，候选字号 \(model.preferences.font_size)，注释字号 \(model.preferences.comment_size)")
-            Text("行内拼音由正在输入的应用绘制，可能使用应用自己的字体；候选字体与实际布局以鼠须管候选窗为准。").font(.caption).foregroundStyle(.secondary)
+            Text("预览供参考，实际显示以鼠须管候选窗为准。行内拼音可能使用当前应用的字体。").font(.caption).foregroundStyle(.secondary)
         }
         Panel(title: "配色方案") {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 172, maximum: 260), spacing: 12)], alignment: .leading, spacing: 12) {
@@ -491,7 +664,7 @@ struct AppearanceView: View {
                     AppearanceThemeCard(theme: theme, selected: model.preferences.theme == theme.id) { model.preferences.theme = theme.id }
                 }
             }
-            Text("选择只更新预览，点击“保存并应用”后生效。新方案随系统切换浅色与深色。“保留当前”恢复首次保存前的原有配色，预览只展示布局。").font(.caption).foregroundStyle(.secondary)
+            Text("配色随系统切换浅色与深色。“保留当前”恢复首次保存前的配色。").font(.caption).foregroundStyle(.secondary)
         }
         Panel(title: "候选字体", caption: "编号与注释跟随") {
             Picker("字体设置", selection: $model.preferences.font_mode) {
@@ -513,6 +686,7 @@ struct AppearanceView: View {
                 Label("预览未找到：\(missingFonts.joined(separator: "、"))。使用其余已安装字体或系统回退。", systemImage: "exclamationmark.triangle")
                     .font(.caption).foregroundStyle(.orange)
             }
+            if model.preferences.font_mode == "custom" {
             TextField("搜索字体名称", text: $fontSearch).textFieldStyle(.roundedBorder)
                 .accessibilityLabel("搜索已安装字体")
             ScrollView {
@@ -540,7 +714,8 @@ struct AppearanceView: View {
                     if fontMatches.isEmpty { Text("没有匹配的已安装字体").foregroundStyle(.secondary).padding(10) }
                 }
             }.frame(height: 190)
-            Text("共 \(CandidateFonts.installed.count) 款已安装字体，匹配 \(fontMatches.count) 款。选择只更新预览；保留原字体可恢复保存前的设置。").font(.caption).foregroundStyle(.secondary)
+            Text("共 \(CandidateFonts.installed.count) 款字体，匹配 \(fontMatches.count) 款。").font(.caption).foregroundStyle(.secondary)
+            }
         }
         Panel(title: "字号与布局") {
             Form {
@@ -561,7 +736,7 @@ struct AppearanceView: View {
                     .foregroundStyle(palette.color(index == 0 ? "hilited_label_color" : "label_color"))
                 Text(word).font(previewFont(model.preferences.font_size))
                     .foregroundStyle(palette.color(index == 0 ? "hilited_candidate_text_color" : "candidate_text_color"))
-                Text(index == 0 ? "✦ AI" : (index == 1 ? "同音" : ""))
+                Text(index == 0 ? "问候" : (index == 1 ? "同音" : ""))
                     .font(previewFont(model.preferences.comment_size))
                     .foregroundStyle(palette.color(index == 0 ? "hilited_comment_text_color" : "comment_text_color"))
             }.padding(model.preferences.density == "compact" ? 7 : 11)
@@ -637,47 +812,76 @@ private struct AppearanceThemeCard: View {
 }
 struct InputSettingsView: View {
     @EnvironmentObject var model: ConsoleModel
+    @State private var showGlossary = false
     var body: some View {
-        PageHeading(title: "输入习惯，由你决定。", detail: "本地联想与 Kev 候选建议分别控制，日常输入继续交给鼠须管。")
-        Panel(title: "本地接词联想", caption: "实验版 · 默认关闭") {
+        PageHeading(title: "输入设置", detail: "设置补全、联想、AI 建议与应用默认语言。")
+        if model.dirty {
+            Label("请先保存或放弃修改，再切换立即生效的开关。", systemImage: "info.circle").font(.caption).foregroundStyle(.secondary)
+        }
+        Panel(title: "补全与 Emoji", caption: "保存后生效") {
+            Picker("英文补全", selection: $model.preferences.english_completion) {
+                Text("保留原设置").tag("existing"); Text("开启").tag("on"); Text("关闭").tag("off")
+            }.disabled(model.state?.input_tools?["english_completion"]?.available != true)
+            Picker("中英词补全", selection: $model.preferences.mixed_completion) {
+                Text("保留原设置").tag("existing"); Text("开启").tag("on"); Text("关闭").tag("off")
+            }.disabled(model.state?.input_tools?["mixed_completion"]?.available != true)
+            Picker("Emoji 初始状态", selection: $model.preferences.emoji_default) {
+                Text("保留原设置").tag("existing"); Text("开启").tag("on"); Text("关闭").tag("off")
+            }.disabled(model.state?.input_tools?["emoji_default"]?.available != true)
+            Text("Emoji 决定输入方案启动时的状态，输入时仍可在方案菜单切换。")
+                .font(.caption).foregroundStyle(.secondary)
+            DisclosureGroup("快捷输入示例") {
+                Text("rq 日期 · sj 时间 · xq 星期 · nl 农历 · uuid 标识；cC 后接算式可计算。")
+                    .font(.caption).foregroundStyle(.secondary).textSelection(.enabled).padding(.top, 6)
+            }.font(.caption)
+        }
+        Panel(title: "本地接词联想", caption: "实验版 · 立即生效") {
             if model.state?.prediction.installed == false {
                 HStack {
                     Text("先安装独立测试方案，原“雾凇拼音”方案继续保留。").font(.caption).foregroundStyle(.secondary)
                     Spacer()
-                    Button("安装联想实验方案") { model.action("prediction_install") }.buttonStyle(.borderedProminent)
+                    Button("安装联想实验方案") { model.action("prediction_install") }.buttonStyle(.borderedProminent).disabled(model.dirty)
                 }
             }
             Toggle("开启本地接词联想", isOn: Binding(get: { model.state?.prediction.enabled ?? false }, set: { model.updatePrediction(enabled: $0) })).toggleStyle(.switch)
-                .disabled(model.state?.prediction.installed != true)
+                .disabled(model.state?.prediction.installed != true || model.dirty)
             Text("先切换到“\(model.state?.prediction.schema_name ?? "雾凇拼音 · 接词实验")”方案。上屏后显示带“联想”标记的接词，不等待模型推理。").font(.caption).foregroundStyle(.secondary)
-            Stepper("联想候选：\(model.state?.prediction.max_candidates ?? 3) 个", value: Binding(get: { model.state?.prediction.max_candidates ?? 3 }, set: { model.updatePrediction(candidates: $0) }), in: 1...5).disabled(model.state?.prediction.installed != true)
+            Stepper("联想候选：\(model.state?.prediction.max_candidates ?? 3) 个", value: Binding(get: { model.state?.prediction.max_candidates ?? 3 }, set: { model.updatePrediction(candidates: $0) }), in: 1...5).disabled(model.state?.prediction.installed != true || model.dirty)
             LabeledContent("连续联想", value: "最多 1 轮")
-            Text("字母开始新拼音；Escape 或第一次退格退出联想，第二次退格正常删除。数字键、Tab 或点击选择；空格退出并输入空格，连续空格不选接词。标点照常输入。").font(.caption).foregroundStyle(.secondary)
-            Text("随时关闭此开关，或切回原“雾凇拼音”方案。设置从下一次输入生效；修改前会备份。").font(.caption).foregroundStyle(.secondary)
+            Text("空格退出联想并输入空格；随时关闭开关或切回原方案。").font(.caption).foregroundStyle(.secondary)
+            DisclosureGroup("联想操作说明") {
+                Text("字母开始新拼音；Escape 或第一次退格退出联想，第二次退格正常删除。数字键、Tab 或点击选择；连续空格不选接词，标点照常输入。开关与候选数量从下一次输入生效，修改前会备份。")
+                    .font(.caption).foregroundStyle(.secondary).padding(.top, 6)
+            }.font(.caption)
         }
-        Panel(title: "Kev 候选建议") {
-            Toggle("开启 Kev 候选建议", isOn: Binding(get: { model.state?.status.kev_enabled ?? false }, set: { model.action("kev", fields: ["enabled": $0]) })).toggleStyle(.switch)
-            Text("开启后也只在按快捷键时请求模型；再次按可撤销。").font(.caption).foregroundStyle(.secondary)
+        Panel(title: "AI 候选建议", caption: "开关立即生效") {
+            Toggle("开启 Kev 候选建议", isOn: Binding(get: { model.state?.status.kev_enabled ?? false }, set: { model.action("kev", fields: ["enabled": $0]) })).toggleStyle(.switch).disabled(model.dirty)
+            Text("AI 在本机运行，仅按快捷键时请求建议；再次按可撤销。").font(.caption).foregroundStyle(.secondary)
             Divider()
             Picker("调用快捷键", selection: $model.preferences.hotkey) { Text("⌃ ⇧ K").tag("Control+Shift+k"); Text("⌃ ⌥ K").tag("Control+Alt+k"); Text("⌃ ⌥ J").tag("Control+Alt+j") }.frame(maxWidth: 400)
-            Text("修改快捷键后，保存并重新部署生效。").font(.caption).foregroundStyle(.secondary)
-            LabeledContent("模型位置", value: "127.0.0.1:8009")
+            Text("快捷键修改后，点击“保存并应用”生效。").font(.caption).foregroundStyle(.secondary)
         }
-        Panel(title: "候选释义", caption: "默认关闭") {
+        Panel(title: "候选释义", caption: "保存后生效") {
             Picker("释义语言", selection: $model.preferences.gloss_language) {
                 Text("关闭").tag("off"); Text("英文").tag("en"); Text("日文").tag("ja")
             }.frame(maxWidth: 400)
                 .disabled(model.state?.glossary == nil)
                 .accessibilityLabel("候选释义语言")
-            Text("仅使用本地入门词表，未收录的词不显示释义。选择后点击“保存并应用”生效。")
+            Text("使用本地词表，支持工作术语和个人修订。未收录的词不显示释义。选择后点击“保存并应用”生效。")
                 .font(.caption).foregroundStyle(.secondary)
             if let glossary = model.state?.glossary {
-                Text("入门词表 · \(glossary.count) 条").font(.caption).foregroundStyle(.secondary)
+                HStack {
+                    Text("内置 \((glossary.base_count ?? 120) + (glossary.term_count ?? 0)) 条 · 个人修订 \(model.preferences.gloss_overrides.count) 条").font(.caption).foregroundStyle(.secondary)
+                    Spacer()
+                    Button("管理释义词表") { showGlossary = true }.disabled(glossary.entries == nil)
+                }
                 if model.preferences.gloss_language != "off" {
                     ForEach(Array(glossary.examples.prefix(3))) { example in
+                        let comment = example.comment(for: model.preferences.gloss_language)
+                        let marker = example.original_comment + " · "
                         HStack(alignment: .top, spacing: 16) {
                             Text(example.text).font(.callout.weight(.medium)).frame(width: 70, alignment: .leading)
-                            Text(example.comment(for: model.preferences.gloss_language))
+                            Text(!example.original_comment.isEmpty && comment.hasPrefix(marker) ? String(comment.dropFirst(marker.count)) : comment)
                                 .textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }.padding(.vertical, 4)
@@ -690,47 +894,195 @@ struct InputSettingsView: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
         }
-        Panel(title: "应用默认中英文") {
-            Text("使用应用标识，例如 com.apple.Terminal。未在这里管理的原有设置会保留。").font(.caption).foregroundStyle(.secondary)
+        Panel(title: "应用默认语言", caption: "保存后生效") {
+            Text("为不同应用选择默认中文或英文；原有的其他应用设置会保留。").font(.caption).foregroundStyle(.secondary)
             ForEach(model.preferences.apps.indices, id: \.self) { index in
-                HStack {
-                    TextField("应用标识", text: $model.preferences.apps[index].bundle).textFieldStyle(.roundedBorder)
-                    Picker("默认语言", selection: $model.preferences.apps[index].english) { Text("默认中文").tag(false); Text("默认英文").tag(true) }.labelsHidden().frame(width: 135)
-                    Button { model.preferences.apps.remove(at: index) } label: { Image(systemName: "minus.circle") }.accessibilityLabel("移除应用规则")
-                }
+                AppLanguageRuleRow(rule: $model.preferences.apps[index]) { model.preferences.apps.remove(at: index) }
             }
-            Button { model.preferences.apps.append(AppRule(bundle: "", english: true)) } label: { Label("添加应用", systemImage: "plus") }
+            HStack {
+                Button("选择应用") { model.chooseApplication() }.disabled(model.preferences.apps.count >= 30)
+                Button("手动添加") { model.preferences.apps.append(AppRule(bundle: "", english: true)) }.disabled(model.preferences.apps.count >= 30)
+            }
         }
+        .sheet(isPresented: $showGlossary) { GlossaryManager().environmentObject(model) }
+    }
+}
+struct AppLanguageRuleRow: View {
+    @Binding var rule: AppRule
+    var remove: () -> Void
+    @State private var editingIdentifier: Bool
+    init(rule: Binding<AppRule>, remove: @escaping () -> Void) {
+        _rule = rule
+        self.remove = remove
+        _editingIdentifier = State(initialValue: rule.wrappedValue.bundle.isEmpty)
+    }
+    private var applicationName: String {
+        NSWorkspace.shared.urlForApplication(withBundleIdentifier: rule.bundle)?.deletingPathExtension().lastPathComponent ?? "手动添加的应用"
+    }
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(applicationName).lineLimit(1)
+                Spacer()
+                Picker("默认语言", selection: $rule.english) { Text("默认中文").tag(false); Text("默认英文").tag(true) }.labelsHidden().frame(width: 135)
+                Button(action: remove) { Image(systemName: "minus.circle") }.accessibilityLabel("移除应用规则")
+            }
+            DisclosureGroup("编辑应用标识", isExpanded: $editingIdentifier) {
+                TextField("应用标识，例如 com.apple.Safari", text: $rule.bundle).textFieldStyle(.roundedBorder).padding(.top, 6)
+            }.font(.caption).foregroundStyle(.secondary)
+        }
+    }
+}
+struct GlossaryManager: View {
+    @EnvironmentObject var model: ConsoleModel
+    @Environment(\.dismiss) var dismiss
+    @State private var search = ""
+    @State private var editing: GlossaryEntry?
+    private var entries: [GlossaryEntry] {
+        var items = Dictionary(uniqueKeysWithValues: (model.state?.glossary?.entries ?? []).map { ($0.word, $0) })
+        for item in model.state?.settings.gloss_overrides ?? [] { items.removeValue(forKey: item.word) }
+        // Restoring an override also restores the bundled entry supplied separately.
+        for item in model.state?.glossary?.bundled_entries ?? [] { items[item.word] = item }
+        for item in model.preferences.gloss_overrides { items[item.word] = item }
+        return items.values.filter { search.isEmpty || ($0.word + $0.en + $0.ja + $0.reading).localizedCaseInsensitiveContains(search) }.sorted { $0.word < $1.word }
+    }
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text("本地释义词表").font(.title2.bold())
+                Spacer()
+                Button("新增词条") { editing = GlossaryEntry(word: "", en: "", ja: "") }
+            }
+            TextField("搜索中文、英文或日文", text: $search).textFieldStyle(.roundedBorder)
+            Text("个人修订 \(model.preferences.gloss_overrides.count) / 300。修改进入草稿，保存并应用后生效。")
+                .font(.caption).foregroundStyle(.secondary)
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 12) {
+                    ForEach(entries) { item in
+                        HStack(alignment: .top) {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(item.word).font(.headline)
+                                Text("EN: \(item.en)")
+                                Text("日: \(item.ja)\(item.reading.isEmpty ? "" : "（" + item.reading + "）")")
+                            }.textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
+                            VStack {
+                                Button("修订") { editing = item }
+                                if model.preferences.gloss_overrides.contains(where: { $0.word == item.word }) {
+                                    Button("撤销个人修订") { model.preferences.gloss_overrides.removeAll { $0.word == item.word } }
+                                }
+                            }
+                        }.padding(12).background(Color.secondary.opacity(0.05), in: RoundedRectangle(cornerRadius: 8))
+                    }
+                }
+            }.frame(height: 400)
+            HStack { Spacer(); Button("完成") { dismiss() }.keyboardShortcut(.defaultAction) }
+        }.padding(24).frame(width: 650)
+            .sheet(item: $editing) { item in GlossaryEditor(initial: item).environmentObject(model) }
+    }
+}
+struct GlossaryEditor: View {
+    @EnvironmentObject var model: ConsoleModel
+    @Environment(\.dismiss) var dismiss
+    @State var item: GlossaryEntry
+    var originalWord: String
+    @State private var error = ""
+    init(initial: GlossaryEntry) { _item = State(initialValue: initial); originalWord = initial.word }
+    var body: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            Text(originalWord.isEmpty ? "新增释义" : "修订释义").font(.title2.bold())
+            Form {
+                TextField("中文词", text: $item.word).disabled(!originalWord.isEmpty)
+                TextField("英文", text: $item.en)
+                TextField("日文", text: $item.ja)
+                TextField("日文读音（可选）", text: $item.reading)
+            }
+            Text("中文词为 1–8 个汉字；英文、日文和读音各最多 80 字符，使用简短单行释义。")
+                .font(.caption).foregroundStyle(.secondary)
+            if !error.isEmpty { Text(error).font(.caption).foregroundStyle(.red) }
+            HStack {
+                Spacer(); Button("取消") { dismiss() }.keyboardShortcut(.cancelAction)
+                Button("加入草稿") { submit() }.buttonStyle(.borderedProminent).keyboardShortcut(.defaultAction)
+            }
+        }.padding(24).frame(width: 500)
+    }
+    func submit() {
+        guard (1...8).contains(item.word.unicodeScalars.count), item.word.unicodeScalars.allSatisfy({ (0x3400...0x9FFF).contains($0.value) }) else { error = "中文词须为 1–8 个汉字。"; return }
+        let values = [item.en, item.ja, item.reading]
+        guard !item.en.isEmpty, !item.ja.isEmpty, values.allSatisfy({ value in
+            value.unicodeScalars.count <= 80 && value == value.trimmingCharacters(in: .whitespacesAndNewlines) &&
+            !value.unicodeScalars.contains { $0.value < 32 || (127...159).contains($0.value) || $0.value == 0x2028 || $0.value == 0x2029 }
+        }) else { error = "英文和日文必填，最多 80 字符；请去除换行与首尾空白。"; return }
+        if let index = model.preferences.gloss_overrides.firstIndex(where: { $0.word == item.word }) {
+            model.preferences.gloss_overrides[index] = item
+        } else {
+            guard model.preferences.gloss_overrides.count < 300 else { error = "个人修订最多 300 条。"; return }
+            model.preferences.gloss_overrides.append(item)
+        }
+        model.preferences.gloss_overrides.sort { $0.word < $1.word }
+        dismiss()
     }
 }
 struct BackupsView: View {
     @EnvironmentObject var model: ConsoleModel
     @State private var restore: Backup?
+    @State private var showDiagnostics = false
+    @State private var showAllBackups = false
     var body: some View {
         HStack {
-            PageHeading(title: "设置有备份，状态看得清。", detail: "保存前自动保留版本，也可以随时手动备份。")
-            Spacer(); Button("重新部署") { model.action("redeploy") }; Button("立即备份") { model.action("backup") }
+            PageHeading(title: "备份与状态", detail: "保存前自动备份，也可以手动保留当前设置。")
+            Spacer(); Button("立即备份") { model.action("backup") }
         }
-        Panel(title: "当前诊断") {
-            ForEach(model.checks.indices, id: \.self) { index in
-                let check = model.checks[index]
-                Label(check.message, systemImage: check.level == "ok" ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
-                    .font(.callout).foregroundStyle(check.level == "ok" ? accent : .orange)
+        Panel(title: "当前状态") {
+            if model.checks.isEmpty { ProgressView("正在检查…") }
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 170))], alignment: .leading, spacing: 14) {
+                ForEach(HealthPresentation.summaries(model.checks, kevEnabled: model.state?.status.kev_enabled == true)) { summary in
+                    VStack(alignment: .leading, spacing: 8) {
+                        CheckIndicator(level: summary.level, text: summary.title)
+                        Text(summary.message).font(.caption).foregroundStyle(.secondary)
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
+            DisclosureGroup("检查详情", isExpanded: $showDiagnostics) {
+                VStack(alignment: .leading, spacing: 12) {
+                    ForEach(model.checks.indices, id: \.self) { index in
+                        let check = model.checks[index]
+                        CheckIndicator(level: check.level, text: check.message).font(.caption)
+                    }
+                    Text("这些检查确认安装与服务状态；实际建议效果可在输入时查看。")
+                        .font(.caption).foregroundStyle(.secondary)
+                    Button("重新应用设置") { model.action("redeploy") }
+                }.padding(.top, 10)
+            }
+            .font(.caption)
+            .onChange(of: model.checks.map(\.level), initial: true) { _, levels in
+                if levels.contains(where: { $0 != "ok" }) { showDiagnostics = true }
             }
         }
-        Panel(title: "本机配置备份", caption: "最近 50 份 · 不含输入历史") {
+        Panel(title: "设置备份", caption: "不含输入历史") {
             if model.backups.isEmpty { Text("第一次保存设置时会自动创建备份。").foregroundStyle(.secondary) }
-            ForEach(model.backups) { backup in
+            ForEach(Array(showAllBackups ? model.backups : Array(model.backups.prefix(5)))) { backup in
                 HStack {
                     VStack(alignment: .leading, spacing: 6) { Text(backup.reason); Text(backup.created.replacingOccurrences(of: "T", with: " ").prefix(19)).font(.caption).foregroundStyle(.secondary) }
                     Spacer(); Button("恢复这个版本") { restore = backup }
                 }
                 Divider()
             }
+            if model.backups.count > 5 {
+                Button(showAllBackups ? "收起较早备份" : "查看全部 \(model.backups.count) 份备份") { showAllBackups.toggle() }
+                    .font(.caption)
+            }
         }
         .alert("恢复这份备份？", isPresented: Binding(get: { restore != nil }, set: { if !$0 { restore = nil } })) {
             Button("取消", role: .cancel) { restore = nil }
             Button("备份当前并恢复") { if let backup = restore { model.action("restore", fields: ["id": backup.id]) }; restore = nil }
         } message: { Text("恢复控制台管理的外观、候选释义、快捷键、常用语和本地联想设置。当前版本会先备份，其他配置保留。") }
+    }
+}
+struct CheckIndicator: View {
+    var level: String
+    var text: String
+    var body: some View {
+        Label(text, systemImage: level == "ok" ? "checkmark.circle.fill" : (level == "error" ? "xmark.circle.fill" : "exclamationmark.triangle.fill"))
+            .foregroundStyle(level == "ok" ? accent : (level == "error" ? Color.red : Color.orange))
     }
 }

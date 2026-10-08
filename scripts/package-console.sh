@@ -7,6 +7,7 @@ app_path="$project_dir/dist/Keytrack.app"
 codesign --verify --deep --strict "$app_path"
 version=$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' "$app_path/Contents/Info.plist")
 stage_dir=$(mktemp -d "$project_dir/dist/.dmg-stage.XXXXXX")
+trap 'rm -rf -- "$stage_dir"' EXIT
 cp -R "$app_path" "$stage_dir/Keytrack.app"
 cp LICENSE "$stage_dir/LICENSE.txt"
 ln -s /Applications "$stage_dir/Applications"

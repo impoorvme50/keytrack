@@ -22,7 +22,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from . import key_stats
-from . import agent, annotations, appearance, doctor, kev_rime_setup, kev_switch, layouts, phrase_discovery, prediction_setup, rime_setup, storage, standalone
+from . import agent, annotations, appearance, doctor, input_tools, kev_rime_setup, kev_switch, layouts, phrase_discovery, phrase_exchange, prediction_setup, rime_setup, storage, standalone
 
 PROJECT = Path(__file__).resolve().parent.parent
 ZONE = ZoneInfo("Asia/Shanghai")
@@ -30,7 +30,8 @@ BEGIN = "# >>> keytrack-console (managed by kbd console)"
 END = "# <<< keytrack-console"
 THEMES = appearance.THEMES
 DEFAULTS = {"theme": "existing", "font_size": 16, "comment_size": 14,
-            "font_mode": "existing", "font_face": "", "preedit_mode": "existing", "gloss_language": "off",
+            "font_mode": "existing", "font_face": "", "preedit_mode": "existing", "gloss_language": "off", "gloss_overrides": [],
+            "english_completion": "existing", "mixed_completion": "existing", "emoji_default": "existing",
             "layout": "horizontal", "density": "comfortable", "hotkey": "Control+Shift+k", "apps": []}
 HOTKEYS = ("Control+Shift+k", "Control+Alt+k", "Control+Alt+j")
 SCHEME_KEYS = ("style/color_scheme", "style/color_scheme_dark")
@@ -246,6 +247,8 @@ def validate_settings(raw: object) -> dict:
         raise ValueError("间距或快捷键选项不正确")
     if value["gloss_language"] not in annotations.LANGUAGES:
         raise ValueError("候选释义选项不正确")
+    value["gloss_overrides"] = annotations.validate_overrides(value["gloss_overrides"])
+    input_tools.validate(value)
     if value["font_mode"] not in ("existing", "system", "custom") or value["preedit_mode"] not in ("existing", "inline", "candidate"):
         raise ValueError("字体或拼音显示选项不正确")
     face = value["font_face"]
@@ -335,11 +338,16 @@ class ConsoleStore:
                         "rime_ice.custom.yaml": self.rime / "rime_ice.custom.yaml",
                         "keytrack_phrases_data.lua": self.rime / "lua/keytrack_phrases_data.lua"}
         self.targets["annotations.control"] = annotations.settings_path(self.rime)
+        self.targets["glossary-overrides.json"] = self.root / "glossary-overrides.json"
         for name in (*annotations.SHARED_FILES, *annotations.FILTER_FILES):
             self.targets["annotations/" + name] = self.rime / "lua" / name
 
     def target_text(self, key: str, path: Path) -> str:
-        return annotations.read_managed(path, 64 if key == "annotations.control" else 2_000_000) if key.startswith("annotations") else read_text(path)
+        return annotations.read_managed(path, 64 if key == "annotations.control" else 2_000_000) if key.startswith("annotations") or key == "glossary-overrides.json" else read_text(path)
+
+    def gloss_overrides(self) -> list[dict]:
+        path = self.targets["glossary-overrides.json"]
+        return annotations.validate_overrides(json.loads(self.target_text("glossary-overrides.json", path) or "[]"))
 
     def revision(self) -> str:
         payload = "\0".join(key + "\0" + self.target_text(key, path) for key, path in self.targets.items())
@@ -397,6 +405,7 @@ class ConsoleStore:
             # controls start in preserve mode. Never reinitialize old preferences.
             settings = dict(DEFAULTS, **settings)
         settings["gloss_language"] = annotations.language(self.rime)
+        settings["gloss_overrides"] = self.gloss_overrides()
         phrases = json.loads(read_text(self.targets["phrases.json"]) or "[]")
         if self.demo:
             status = {"kev_enabled": False, "recorder": {"running": True}, "demo": True}
@@ -406,7 +415,8 @@ class ConsoleStore:
         result = {"settings": settings, "phrases": phrases, "revision": revision, "status": status,
                   "appearance_themes": appearance.catalog(),
                   "appearance_baseline": self.appearance_baseline(settings),
-                  "glossary": annotations.catalog(),
+                  "glossary": annotations.catalog(settings["gloss_overrides"]),
+                  "input_tools": input_tools.catalog(self.rime, self.demo),
                   "prediction": prediction,
                   "today": datetime.now(ZONE).date().isoformat(), "deployment": self.deployment(),
                   "installation": {"packaged": False, "configured": True, "can_install": False} if self.demo else standalone.status()}
@@ -506,7 +516,7 @@ class ConsoleStore:
         current = self.state()["settings"]
         if isinstance(raw, dict):
             raw = dict(raw)
-            for key in ("font_mode", "font_face", "preedit_mode", "gloss_language"):
+            for key in ("font_mode", "font_face", "preedit_mode", "gloss_language", "gloss_overrides", *input_tools.FIELDS):
                 raw.setdefault(key, current[key])
         settings = validate_settings(raw)
         settings["_original_schemes"] = current.get("_original_schemes", {})
@@ -529,11 +539,24 @@ class ConsoleStore:
         fragment = custom[begin:end]
         fragment = re.sub(r'("kev_rime/hotkey":\s*)"[^"\n]*"', lambda m: m[1] + json.dumps(settings["hotkey"]), fragment)
         custom = custom[:begin] + fragment + custom[end:]
-        changes = {self.targets["settings.json"]: json.dumps(settings, ensure_ascii=False, indent=2),
+        custom = input_tools.custom_patch(custom, settings, input_tools.source(self.rime, self.demo))
+        schema_changes = prediction_setup.console_schema_changes(self.rime, hotkey=settings["hotkey"], gloss_language=settings["gloss_language"])
+        schema = self.rime / f"{prediction_setup.SCHEMA}.schema.yaml"
+        originals = current.get("_tools_snapshot_originals", {})
+        if schema.exists():
+            updated, originals = input_tools.snapshot_patch(schema_changes.get(schema, read_text(schema)), settings, originals)
+            if updated != read_text(schema):
+                schema_changes[schema] = updated
+        settings["_tools_snapshot_originals"] = originals
+        persisted = {key: value for key, value in settings.items() if key != "gloss_overrides"}
+        changes = {self.targets["settings.json"]: json.dumps(persisted, ensure_ascii=False, indent=2),
                    self.targets["squirrel.custom.yaml"]: content,
                    self.targets["rime_ice.custom.yaml"]: custom}
-        changes.update(annotations.console_changes(self.rime, settings["gloss_language"], custom=custom))
-        changes.update(prediction_setup.console_schema_changes(self.rime, hotkey=settings["hotkey"], gloss_language=settings["gloss_language"]))
+        if settings["gloss_overrides"] != current["gloss_overrides"]:
+            changes[self.targets["glossary-overrides.json"]] = json.dumps(settings["gloss_overrides"], ensure_ascii=False, indent=2) + "\n"
+        changes.update(annotations.console_changes(self.rime, settings["gloss_language"], custom=custom,
+                       overrides=settings["gloss_overrides"], previous_overrides=current["gloss_overrides"]))
+        changes.update(schema_changes)
         return self.commit(changes, "更新外观与输入设置", revision)
 
     def discovery_rejected(self) -> set[str]:
@@ -607,6 +630,9 @@ class ConsoleStore:
             raise ValueError("备份编号不正确")
         snapshot = json.loads((self.root / "backups" / f"{identifier}.json").read_text())
         files = snapshot["files"]
+        current = self.state()["settings"]
+        restored = dict(DEFAULTS, **(json.loads(files.get("settings.json", "") or "null") or {}))
+        restored_overrides = annotations.validate_overrides(json.loads(files.get("glossary-overrides.json", "") or "[]"))
         changes = {}
         restored_hotkey = None
         restored_language = re.fullmatch(r"language=(off|en|ja)\n", files.get("annotations.control", ""))
@@ -637,12 +663,22 @@ class ConsoleStore:
                         restored_hotkey = previous_hotkey[1]
                         value = re.sub(r'("kev_rime/hotkey":\s*)"[^"\n]*"', lambda m: m[1] + json.dumps(previous_hotkey[1]), value)
             else:
-                value = previous or ("[]" if key == "phrases.json" else "null" if key == "settings.json" else "return {}\n")
+                value = previous or ("[]" if key in ("phrases.json", "glossary-overrides.json") else "null" if key == "settings.json" else "return {}\n")
             changes[path] = value
         daily = self.targets["rime_ice.custom.yaml"]
+        changes[daily] = input_tools.custom_patch(changes[daily], restored, input_tools.source(self.rime, self.demo))
         changes[daily] = annotations.render_patch(changes[daily], restored_language)
-        changes.update(prediction_setup.console_schema_changes(self.rime, hotkey=restored_hotkey,
-                       phrases="keytrack_phrases" in files.get("rime_ice.custom.yaml", ""), gloss_language=restored_language))
+        changes.update(annotations.console_changes(self.rime, restored_language, custom=changes[daily],
+                       overrides=restored_overrides, previous_overrides=current["gloss_overrides"]))
+        schema_changes = prediction_setup.console_schema_changes(self.rime, hotkey=restored_hotkey,
+                       phrases="keytrack_phrases" in files.get("rime_ice.custom.yaml", ""), gloss_language=restored_language)
+        schema = self.rime / f"{prediction_setup.SCHEMA}.schema.yaml"
+        if schema.exists():
+            updated, _ = input_tools.snapshot_patch(schema_changes.get(schema, read_text(schema)), restored,
+                                                   current.get("_tools_snapshot_originals", {}))
+            if updated != read_text(schema):
+                schema_changes[schema] = updated
+        changes.update(schema_changes)
         return self.commit(changes, "恢复控制台配置", revision, prediction=snapshot.get("prediction"))
 
     def report(self, day_string: str, include_text=False) -> dict:
@@ -856,6 +892,8 @@ def serve(port=0, db=storage.DEFAULT_DB_PATH, demo=False, open_browser=True):
 
 def launch() -> bool:
     bundle = standalone.app_bundle() if getattr(sys, "frozen", False) else PROJECT / "dist/Keytrack.app"
+    if not getattr(sys, "frozen", False) and not bundle.exists():
+        bundle = Path("/Applications/Keytrack.app")
     if bundle is None or not bundle.exists():
         print("请先运行 scripts/build-console.sh 构建 Keytrack 窗口。")
         return False
@@ -884,6 +922,10 @@ def native_request(store: ConsoleStore, request: dict) -> dict:
             return store.save_settings(request.get("settings"), request.get("revision"))
         if action == "phrases":
             return store.save_phrases(request.get("phrases"), request.get("revision"))
+        if action == "phrase_import_preview":
+            return phrase_exchange.preview(request.get("content"), request.get("format"), request.get("existing"))
+        if action == "phrase_export":
+            return {"content": phrase_exchange.export_phrases(request.get("phrases"), request.get("format", "json"))}
         if action == "phrase_discovery":
             return store.discover_phrases(request.get("days", 30))
         if action == "phrase_discovery_reject":
@@ -919,11 +961,11 @@ def native_serve(db=storage.DEFAULT_DB_PATH, demo=False):
     store, cleanup = demo_store() if demo else (ConsoleStore(db=db), None)
     try:
         while True:
-            line = sys.stdin.buffer.readline(2_000_002)
+            line = sys.stdin.buffer.readline(4_500_002)
             if not line:
                 break
             try:
-                if len(line) > 2_000_000 or not line.endswith(b"\n"):
+                if len(line) > 4_500_000 or not line.endswith(b"\n"):
                     raise ValueError("请求过大或不完整")
                 with contextlib.redirect_stdout(io.StringIO()):
                     result = native_request(store, json.loads(line))
@@ -931,7 +973,7 @@ def native_serve(db=storage.DEFAULT_DB_PATH, demo=False):
             except (ValueError, OSError, sqlite3.Error, KeyError, TypeError) as exc:
                 response = {"ok": False, "error": str(exc) if isinstance(exc, ValueError) else "操作未完成，请检查配置和文件权限"}
             print(json.dumps(response, ensure_ascii=False), flush=True)
-            if len(line) > 2_000_000 or not line.endswith(b"\n"):
+            if len(line) > 4_500_000 or not line.endswith(b"\n"):
                 break
     finally:
         if cleanup:

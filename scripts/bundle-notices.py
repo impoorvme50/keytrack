@@ -1,5 +1,6 @@
 """Copy redistribution notices for the components included in the helper."""
 import importlib.metadata
+import json
 import shutil
 import sys
 import sysconfig
@@ -7,8 +8,13 @@ from pathlib import Path
 
 out = Path(sys.argv[1])
 out.mkdir(parents=True, exist_ok=True)
-notes = ["Keytrack 0.4.4 — bundled runtime components", "", "The native interface and local helper run on this Mac.", "No AIME or Qingjian source code is included in this bundle.", ""]
-notes.append("Local candidate glosses: 120 original introductory Chinese-English-Japanese entries, MIT (project LICENSE.txt); metadata in data/annotations.")
+version = sys.argv[2] if len(sys.argv) > 2 else "development"
+notes = [f"Keytrack {version} — bundled runtime components", "", "The native interface and local helper run on this Mac.", "No AIME or Qingjian source code is included in this bundle.", ""]
+annotations_dir = Path(__file__).resolve().parent.parent / "data/annotations"
+base_count = len(json.loads((annotations_dir / "glossary-v1.json").read_text())["entries"])
+term_count = len(json.loads((annotations_dir / "work-terms-v1.json").read_text())["entries"])
+notes.append(f"Local candidate glosses: {base_count + term_count} original Chinese-English-Japanese entries "
+             f"({base_count} introductory entries + {term_count} work terms), MIT (project LICENSE.txt); metadata in data/annotations.")
 prediction_licenses = Path(__file__).resolve().parent.parent / "data/prediction/licenses"
 if prediction_licenses.is_dir():
     shutil.copytree(prediction_licenses, out / "PublicPrediction", dirs_exist_ok=True)

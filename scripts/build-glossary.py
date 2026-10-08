@@ -16,4 +16,6 @@ if args.check:
         raise SystemExit("Glossary output differs; run scripts/build-glossary.py")
 else:
     target.write_text(expected)
-print("Original local glossary: 120 bilingual entries, source hash and Lua output verified")
+catalog = annotations.catalog()
+print(f"Original local glossary: {catalog['count']} bilingual entries "
+      f"({catalog['base_count']} starter + {catalog['term_count']} work terms), source hashes and Lua output verified")

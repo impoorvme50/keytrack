@@ -1,12 +1,68 @@
 import Foundation
 import AppKit
 import SwiftUI
+import UniformTypeIdentifiers
+import Darwin
 
 struct Phrase: Codable, Equatable, Identifiable {
     var code: String
     var category: String
     var text: String
     var id: String { code }
+}
+struct PhraseImportRow: Decodable, Identifiable {
+    var id: String
+    var code: String
+    var text: String
+    var category: String
+    var status: String
+    var message: String
+}
+struct PhraseImportReport: Decodable {
+    var rows: [PhraseImportRow]
+    var counts: [String: Int]
+}
+struct PhraseExport: Decodable { var content: String }
+enum PhraseImportSelection {
+    static func additions(_ report: PhraseImportReport, selected: Set<String>, existing: [Phrase]) throws -> [Phrase] {
+        let rows = report.rows.filter { selected.contains($0.id) }
+        guard !rows.isEmpty, rows.count == selected.count, rows.allSatisfy({ $0.status == "new" }) else {
+            throw LocalError(message: "请选择可新增的常用语。")
+        }
+        guard existing.count + rows.count <= 300 else { throw LocalError(message: "常用语最多 300 条，请减少勾选数量。") }
+        let codes = rows.map(\.code)
+        let texts = rows.map(\.text)
+        let existingCodes = Set(existing.map(\.code))
+        let existingTexts = Set(existing.map(\.text))
+        guard Set(codes).count == codes.count, Set(texts).count == texts.count,
+              existingCodes.isDisjoint(with: codes), existingTexts.isDisjoint(with: texts) else {
+            throw LocalError(message: "草稿已改变，编码或内容出现冲突，请重新导入预览。")
+        }
+        return rows.map { Phrase(code: $0.code, category: $0.category, text: $0.text) }
+    }
+}
+enum SelectedTextFile {
+    static func read(_ url: URL) throws -> String {
+        let descriptor = Darwin.open(url.path, O_RDONLY | O_NONBLOCK | O_NOFOLLOW)
+        guard descriptor >= 0 else { throw LocalError(message: "无法打开所选文件，请选择普通 JSON 或 TSV 文件。") }
+        let handle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
+        defer { try? handle.close() }
+        var metadata = stat()
+        guard fstat(descriptor, &metadata) == 0, metadata.st_mode & S_IFMT == S_IFREG,
+              metadata.st_size <= 2_000_000 else { throw LocalError(message: "导入文件须为 2 MB 以内的普通文件。") }
+        let bytes = try handle.read(upToCount: 2_000_001) ?? Data()
+        guard bytes.count <= 2_000_000, let text = String(data: bytes, encoding: .utf8) else {
+            throw LocalError(message: "导入文件须为 2 MB 以内的 UTF-8 文本。")
+        }
+        return text
+    }
+}
+struct GlossaryEntry: Codable, Equatable, Identifiable {
+    var word: String
+    var en: String
+    var ja: String
+    var reading: String = ""
+    var id: String { word }
 }
 struct PhraseDiscoveryCandidate: Decodable, Identifiable {
     var id: String
@@ -130,13 +186,18 @@ struct Preferences: Codable, Equatable {
     var font_face = ""
     var preedit_mode = "existing"
     var gloss_language = "off"
+    var gloss_overrides: [GlossaryEntry] = []
+    var english_completion = "existing"
+    var mixed_completion = "existing"
+    var emoji_default = "existing"
     var layout = "horizontal"
     var density = "comfortable"
     var hotkey = "Control+Shift+k"
     var apps: [AppRule] = []
     var _original_schemes: [String: String]? = nil
     enum CodingKeys: String, CodingKey {
-        case theme, font_size, comment_size, font_mode, font_face, preedit_mode, gloss_language
+        case theme, font_size, comment_size, font_mode, font_face, preedit_mode, gloss_language, gloss_overrides
+        case english_completion, mixed_completion, emoji_default
         case layout, density, hotkey, apps, _original_schemes
     }
     init() {}
@@ -149,6 +210,10 @@ struct Preferences: Codable, Equatable {
         font_face = try values.decodeIfPresent(String.self, forKey: .font_face) ?? font_face
         preedit_mode = try values.decodeIfPresent(String.self, forKey: .preedit_mode) ?? preedit_mode
         gloss_language = try values.decodeIfPresent(String.self, forKey: .gloss_language) ?? gloss_language
+        gloss_overrides = try values.decodeIfPresent([GlossaryEntry].self, forKey: .gloss_overrides) ?? []
+        english_completion = try values.decodeIfPresent(String.self, forKey: .english_completion) ?? "existing"
+        mixed_completion = try values.decodeIfPresent(String.self, forKey: .mixed_completion) ?? "existing"
+        emoji_default = try values.decodeIfPresent(String.self, forKey: .emoji_default) ?? "existing"
         layout = try values.decodeIfPresent(String.self, forKey: .layout) ?? layout
         density = try values.decodeIfPresent(String.self, forKey: .density) ?? density
         hotkey = try values.decodeIfPresent(String.self, forKey: .hotkey) ?? hotkey
@@ -218,7 +283,13 @@ struct Glossary: Decodable {
     var count: Int
     var version: String
     var examples: [GlossaryExample]
+    var base_count: Int?
+    var term_count: Int?
+    var override_count: Int?
+    var entries: [GlossaryEntry]?
+    var bundled_entries: [GlossaryEntry]?
 }
+struct InputTool: Decodable { var available: Bool; var active: Bool }
 struct AppearanceTheme: Decodable, Identifiable {
     var id: String
     var name: String
@@ -264,6 +335,7 @@ struct ConsoleState: Decodable {
     var appearance_themes: [AppearanceTheme]?
     var appearance_baseline: AppearanceBaseline?
     var glossary: Glossary?
+    var input_tools: [String: InputTool]?
 }
 struct DayTotal: Decodable, Identifiable { var day: String; var chars: Int; var id: String { day } }
 struct AppTotal: Decodable, Identifiable { var name: String; var chars: Int; var id: String { name } }
@@ -288,10 +360,67 @@ struct Report: Decodable {
     var apps: [AppTotal]; var hours: [Int]; var trend: [DayTotal]; var calendar: [DayTotal]
     var key_frequency: [String: Int]; var fingers: [FingerTotal]; var keyboard: [[KeySpec]]
     var segments: [Segment]?; var segment_limit: Int
+    var keyStatisticsNotice: String? {
+        switch key_quality.status {
+        case "legacy", "mixed": return "当天的按键记录可能不完整，部分统计暂不可用。"
+        default: return nil
+        }
+    }
+    var hourlyEmptyMessage: String {
+        switch key_quality.status {
+        case "legacy", "mixed": return "当天的按键记录不完整，暂不显示小时分布。"
+        default: return "当天还没有按键记录。"
+        }
+    }
 }
 struct Backup: Decodable, Identifiable { var id: String; var created: String; var reason: String }
 struct BackupList: Decodable { var backups: [Backup] }
-struct Check: Decodable { var level: String; var message: String }
+struct Check: Decodable { var name: String? = nil; var level: String; var message: String }
+struct CheckSummary: Identifiable {
+    var id: String
+    var title: String
+    var level: String
+    var message: String
+}
+enum HealthPresentation {
+    private static func group(for name: String?) -> String {
+        switch name {
+        case "recorder", "key_capture": return "record"
+        case "kev_switch", "kev_http", "kev_agent": return "ai"
+        case "deployed_schema", "glossary_overrides": return "input"
+        default: return name?.hasSuffix(".lua") == true ? "input" : "other"
+        }
+    }
+    private static func severity(_ level: String) -> Int {
+        switch level {
+        case "ok": return 0
+        case "error": return 2
+        default: return 1
+        }
+    }
+    static func summaries(_ checks: [Check], kevEnabled: Bool) -> [CheckSummary] {
+        let grouped = Dictionary(grouping: checks) { group(for: $0.name) }
+        let groups = [("record", "输入记录"), ("input", "输入法配置"), ("ai", "AI 建议"), ("other", "其他检查")]
+        return groups.compactMap { id, title in
+            guard let items = grouped[id], !items.isEmpty else { return nil }
+            let rank = items.map { severity($0.level) }.max() ?? 0
+            let level = rank == 2 ? "error" : rank == 1 ? "warning" : "ok"
+            let message: String
+            if level == "error" {
+                message = "需要处理"
+            } else if level == "warning" {
+                message = "需要检查"
+            } else if id == "ai" && !kevEnabled {
+                message = "已关闭"
+            } else if id == "ai" && items.contains(where: { $0.name == "kev_http" && $0.level == "ok" }) {
+                message = "服务可用"
+            } else {
+                message = "检查通过"
+            }
+            return CheckSummary(id: id, title: title, level: level, message: message)
+        }
+    }
+}
 struct Health: Decodable { var checks: [Check] }
 struct Outcome: Decodable { var message: String }
 struct Envelope<T: Decodable>: Decodable { var ok: Bool; var data: T?; var error: String? }
@@ -305,8 +434,8 @@ enum Screen: String, CaseIterable, Identifiable {
         case .dashboard: return "输入看板"
         case .phrases: return "常用语"
         case .appearance: return "候选外观"
-        case .settings: return "输入与 AI"
-        case .backups: return "备份与诊断"
+        case .settings: return "输入设置"
+        case .backups: return "备份与状态"
         }
     }
     var icon: String {
@@ -357,7 +486,7 @@ final class NativeBridge: @unchecked Sendable {
                     try self.start()
                     var body = fields; body["action"] = action
                     var bytes = try JSONSerialization.data(withJSONObject: body)
-                    guard bytes.count < 2_000_000 else { throw LocalError(message: "内容超过保存上限。") }
+                    guard bytes.count < 4_500_000 else { throw LocalError(message: "内容超过保存上限。") }
                     bytes.append(10)
                     try self.input?.write(contentsOf: bytes)
                     while !self.buffer.contains(10) {
@@ -401,6 +530,9 @@ final class NativeBridge: @unchecked Sendable {
     @Published var phraseDiscovery: PhraseDiscoveryReport?
     @Published var discoverySelected: Set<String> = []
     @Published var discoveryCodes: [String: String] = [:]
+    @Published var phraseImport: PhraseImportReport?
+    @Published var importSelected: Set<String> = []
+    @Published var showPhraseImport = false
     let bridge = NativeBridge.shared
     var dirty: Bool { guard let state else { return false }; return preferences != state.settings || phrases != state.phrases }
     static let dayFormat: DateFormatter = {
@@ -450,7 +582,7 @@ final class NativeBridge: @unchecked Sendable {
     func discard() {
         guard let state else { return }
         preferences = state.settings; phrases = state.phrases
-        discoverySelected.removeAll(); notice = "已放弃未保存的修改"
+        discoverySelected.removeAll(); clearPhraseImport(); notice = "已放弃未保存的修改"
     }
     func analyzePhraseHistory() {
         let days = discoveryDays
@@ -500,6 +632,60 @@ final class NativeBridge: @unchecked Sendable {
         discoverySelected.subtract(rejected)
         discoveryCodes = discoveryCodes.filter { !rejected.contains($0.key) }
         notice = result.message
+    }
+    var importCanAdd: Bool {
+        guard let report = phraseImport else { return false }
+        return (try? PhraseImportSelection.additions(report, selected: importSelected, existing: phrases)) != nil
+    }
+    func clearPhraseImport() {
+        phraseImport = nil; importSelected.removeAll(); showPhraseImport = false
+    }
+    func importPhrases() {
+        guard !busy else { return }
+        let panel = NSOpenPanel()
+        panel.title = "导入常用语，先预览再加入"
+        panel.allowedContentTypes = [.json, UTType(filenameExtension: "tsv") ?? .plainText]
+        panel.allowsMultipleSelection = false; panel.canChooseDirectories = false
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        let format = url.pathExtension.lowercased() == "json" ? "json" : "tsv"
+        operation {
+            let content = try await Task.detached(priority: .userInitiated) { try SelectedTextFile.read(url) }.value
+            let items = try JSONSerialization.jsonObject(with: JSONEncoder().encode(self.phrases))
+            self.phraseImport = try await self.bridge.request("phrase_import_preview", ["content": content, "format": format, "existing": items])
+            self.importSelected.removeAll(); self.showPhraseImport = true
+        }
+    }
+    func addImportedPhrases() {
+        guard let report = phraseImport else { return }
+        do {
+            let additions = try PhraseImportSelection.additions(report, selected: importSelected, existing: phrases)
+            phrases.append(contentsOf: additions); clearPhraseImport()
+            notice = "已加入 \(additions.count) 条待保存常用语，点击“保存并应用”后生效。"
+        } catch { self.error = error.localizedDescription }
+    }
+    func exportPhrases(format: String) {
+        guard !busy else { return }
+        let panel = NSSavePanel(); panel.title = "导出当前常用语列表"
+        panel.nameFieldStringValue = "Keytrack-常用语.\(format)"
+        panel.allowedContentTypes = [format == "json" ? .json : UTType(filenameExtension: "tsv") ?? .plainText]
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        operation {
+            let items = try JSONSerialization.jsonObject(with: JSONEncoder().encode(self.phrases))
+            let result: PhraseExport = try await self.bridge.request("phrase_export", ["phrases": items, "format": format])
+            try result.content.write(to: url, atomically: true, encoding: .utf8)
+            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
+            self.notice = "已导出当前列表\(self.dirty ? "（包含未保存草稿）" : "")：\(url.lastPathComponent)"
+        }
+    }
+    func chooseApplication() {
+        let panel = NSOpenPanel(); panel.title = "选择应用"
+        panel.allowedContentTypes = [.applicationBundle]; panel.canChooseDirectories = false
+        panel.directoryURL = URL(fileURLWithPath: "/Applications")
+        guard panel.runModal() == .OK, let url = panel.url, let bundle = Bundle(url: url), let id = bundle.bundleIdentifier else { return }
+        guard preferences.apps.count < 30 else { error = "应用规则最多 30 项。"; return }
+        guard !preferences.apps.contains(where: { $0.bundle == id }) else { error = "这个应用已有默认语言规则。"; return }
+        preferences.apps.append(AppRule(bundle: id, english: true))
+        notice = "已加入应用规则草稿，请选择默认语言并保存。"
     }
     func save() {
         guard let state else { return }

@@ -308,7 +308,9 @@ def setup(verbose=True, rime_dir=None, deploy=True, db_file=None) -> bool:
                 if not owned:
                     raise ValueError(f"{name} 有独立修改或由其他插件占用，原文件已保留")
             plans[target] = data
-        plans.update({path: text.encode() for path, text in annotations.source_changes(root).items()})
+        overrides = annotations.default_overrides(root)
+        plans.update({path: text.encode() for path, text in annotations.source_changes(
+            root, overrides=overrides, previous_overrides=overrides).items()})
         db = root / DB_NAME
         custom_db = db_file is not None or manifest.get("custom_db", False)
         db_source = Path(db_file) if db_file else (db if custom_db and db.exists() else PROJECT / "data/prediction/keytrack-predict.db")

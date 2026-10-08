@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "id": "keytrack-work-terms-v1",
+  "version": 1,
+  "source_file": "work-terms-v1.json",
+  "source_sha256": "ea86ddd0b8b26ee005df628567dce8b82902bf40adf474f4b9c1bcfd605fad0e",
+  "entry_count": 72,
+  "category_count": 6,
+  "category_counts": {
+    "样品与试产": 12,
+    "交付与结算": 12,
+    "模具与制造": 12,
+    "外贸与物流": 12,
+    "质量与检验": 12,
+    "包装与售后": 12
+  },
+  "license": "MIT",
+  "license_basis": "本词表独立编写，沿用项目 MIT 许可证。",
+  "origin": {
+    "type": "original",
+    "method": "为工作术语包独立编写简短译法；没有读取用户实际输入或第三方词库。",
+    "external_sources": [],
+    "used_input_history": false,
+    "used_evaluation_data": false,
+    "used_qingjian_wordlist": false,
+    "used_external_copyright_dictionaries": false
+  },
+  "scope": "样品、交付、模具制造、外贸物流、质量检验、包装售后。译法只供候选提示，不构成合同或检验依据。",
+  "review_status": "未作专业辞典或语言专家审校。",
+  "reading_policy": "reading 均为空字符串；允许用户显式填写日语读音。",
+  "max_lengths": {
+    "word_han_characters": 4,
+    "en_characters": 22,
+    "ja_and_reading_characters": 8
+  }
+}

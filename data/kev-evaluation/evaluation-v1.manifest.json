@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "dataset_id": "keytrack-kev-public-v1",
+  "freeze_date": "2026-10-03",
+  "samples": 60,
+  "sha256": "23f78ae9fd1344abf070d6889a74670045ae358b0994a3f958831b51cee95019",
+  "license": "MIT",
+  "license_sha256": "a1d705b3d28ed4403154eca4be5dcf291811e4ef39c51da180c7e7cdfc0e7e83",
+  "source": "Original public synthetic daily/work scenarios authored for this evaluation; no personal input, logs, customer names or external corpus.",
+  "candidate_source": "original_handcrafted_public_pool",
+  "kind_counts": {
+    "complete_word": 24,
+    "complete_sentence": 18,
+    "ambiguous": 12,
+    "reject": 6
+  },
+  "domain_counts": {
+    "daily": 30,
+    "work": 30
+  },
+  "status": "frozen_before_model_evaluation"
+}

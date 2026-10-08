@@ -26,6 +26,11 @@ def checks() -> list[dict]:
     add("key_capture", "ok" if ready else "warning", "按键采集器版本与最前位置已确认" if ready else "按键采集可能漏记；请完成本机安装或运行 kbd setup-ime")
     enabled = kev_switch.is_enabled()
     gloss_off = annotations.language(kev_rime_setup.RIME_DIR) == "off"
+    try:
+        gloss_overrides = annotations.default_overrides(kev_rime_setup.RIME_DIR)
+    except (OSError, ValueError, UnicodeError):
+        gloss_overrides = None
+        add("glossary_overrides", "error", "自定义释义无法校验，原文件已保留；请检查后重新保存")
     add("kev_switch", "ok", f"Kev 建议{'开启' if enabled else '关闭'}，由快捷键主动触发")
     for name in kev_rime_setup.LUA_FILES:
         target = kev_rime_setup.RIME_DIR / "lua" / name
@@ -35,13 +40,19 @@ def checks() -> list[dict]:
             continue
         try:
             target_hash = hashlib.sha256(target.read_bytes()).hexdigest()
-            identical = target_hash == hashlib.sha256(source.read_bytes()).hexdigest()
-            if gloss_off and target_hash == annotations.PREVIOUS.get(name):
+            if name == "keytrack_glossary.lua":
+                expected = annotations.render_lua(gloss_overrides).encode() if gloss_overrides is not None else b""
+            else:
+                expected = source.read_bytes()
+            identical = target_hash == hashlib.sha256(expected).hexdigest()
+            if (gloss_off and target_hash == annotations.PREVIOUS.get(name)
+                    and (name != "keytrack_glossary.lua" or gloss_overrides == [])):
                 add(name, "ok", f"{name} 已安装兼容版本，释义关闭；显式启用释义时更新")
                 continue
             add(name, "ok" if identical else "error",
-                f"{name} 已安装且与源码一致" if identical else f"{name} 版本不同；运行 kbd setup-kev-rime")
-        except OSError:
+                (f"{name} 已安装且与本地释义一致" if name == "keytrack_glossary.lua"
+                 else f"{name} 已安装且与源码一致") if identical else f"{name} 版本不同；运行 kbd setup-kev-rime")
+        except (OSError, ValueError):
             add(name, "error" if enabled else "warning", f"{name} 未安装或无法读取；运行 kbd setup-kev-rime")
 
     schema = kev_rime_setup.RIME_DIR / "build" / f"{kev_rime_setup.SCHEMA}.schema.yaml"

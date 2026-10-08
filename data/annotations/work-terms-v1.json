@@ -1,0 +1,510 @@
+{
+  "schema_version": 1,
+  "id": "keytrack-work-terms-v1",
+  "entries": [
+    {
+      "word": "打样",
+      "en": "prototyping",
+      "ja": "試作",
+      "reading": "",
+      "category": "样品与试产"
+    },
+    {
+      "word": "样板",
+      "en": "sample unit",
+      "ja": "見本",
+      "reading": "",
+      "category": "样品与试产"
+    },
+    {
+      "word": "样机",
+      "en": "prototype",
+      "ja": "試作機",
+      "reading": "",
+      "category": "样品与试产"
+    },
+    {
+      "word": "寄样",
+      "en": "send samples",
+      "ja": "サンプル送付",
+      "reading": "",
+      "category": "样品与试产"
+    },
+    {
+      "word": "样品费",
+      "en": "sample fee",
+      "ja": "サンプル代",
+      "reading": "",
+      "category": "样品与试产"
+    },
+    {
+      "word": "确认样",
+      "en": "approved sample",
+      "ja": "承認サンプル",
+      "reading": "",
+      "category": "样品与试产"
+    },
+    {
+      "word": "产前样",
+      "en": "pre-production sample",
+      "ja": "量産前サンプル",
+      "reading": "",
+      "category": "样品与试产"
+    },
+    {
+      "word": "量产样",
+      "en": "production sample",
+      "ja": "量産サンプル",
+      "reading": "",
+      "category": "样品与试产"
+    },
+    {
+      "word": "试产",
+      "en": "pilot production",
+      "ja": "試験生産",
+      "reading": "",
+      "category": "样品与试产"
+    },
+    {
+      "word": "量产",
+      "en": "mass production",
+      "ja": "量産",
+      "reading": "",
+      "category": "样品与试产"
+    },
+    {
+      "word": "试用",
+      "en": "trial use",
+      "ja": "試用",
+      "reading": "",
+      "category": "样品与试产"
+    },
+    {
+      "word": "返样",
+      "en": "return sample",
+      "ja": "サンプル返送",
+      "reading": "",
+      "category": "样品与试产"
+    },
+    {
+      "word": "排期",
+      "en": "schedule",
+      "ja": "日程調整",
+      "reading": "",
+      "category": "交付与结算"
+    },
+    {
+      "word": "生产周期",
+      "en": "production lead time",
+      "ja": "生産期間",
+      "reading": "",
+      "category": "交付与结算"
+    },
+    {
+      "word": "备料",
+      "en": "material preparation",
+      "ja": "材料準備",
+      "reading": "",
+      "category": "交付与结算"
+    },
+    {
+      "word": "备货",
+      "en": "stock preparation",
+      "ja": "出荷準備",
+      "reading": "",
+      "category": "交付与结算"
+    },
+    {
+      "word": "延迟",
+      "en": "delay",
+      "ja": "遅延",
+      "reading": "",
+      "category": "交付与结算"
+    },
+    {
+      "word": "延期",
+      "en": "postponement",
+      "ja": "延期",
+      "reading": "",
+      "category": "交付与结算"
+    },
+    {
+      "word": "加急",
+      "en": "rush request",
+      "ja": "至急対応",
+      "reading": "",
+      "category": "交付与结算"
+    },
+    {
+      "word": "交货",
+      "en": "delivery",
+      "ja": "納品",
+      "reading": "",
+      "category": "交付与结算"
+    },
+    {
+      "word": "出货",
+      "en": "shipment",
+      "ja": "出荷",
+      "reading": "",
+      "category": "交付与结算"
+    },
+    {
+      "word": "尾款",
+      "en": "balance payment",
+      "ja": "残金",
+      "reading": "",
+      "category": "交付与结算"
+    },
+    {
+      "word": "定金",
+      "en": "deposit",
+      "ja": "手付金",
+      "reading": "",
+      "category": "交付与结算"
+    },
+    {
+      "word": "预付款",
+      "en": "advance payment",
+      "ja": "前払い",
+      "reading": "",
+      "category": "交付与结算"
+    },
+    {
+      "word": "模具",
+      "en": "mold",
+      "ja": "金型",
+      "reading": "",
+      "category": "模具与制造"
+    },
+    {
+      "word": "开模",
+      "en": "mold making",
+      "ja": "金型製作",
+      "reading": "",
+      "category": "模具与制造"
+    },
+    {
+      "word": "修模",
+      "en": "mold repair",
+      "ja": "金型修理",
+      "reading": "",
+      "category": "模具与制造"
+    },
+    {
+      "word": "试模",
+      "en": "mold trial",
+      "ja": "成形試験",
+      "reading": "",
+      "category": "模具与制造"
+    },
+    {
+      "word": "注塑",
+      "en": "injection molding",
+      "ja": "射出成形",
+      "reading": "",
+      "category": "模具与制造"
+    },
+    {
+      "word": "脱模",
+      "en": "demolding",
+      "ja": "離型",
+      "reading": "",
+      "category": "模具与制造"
+    },
+    {
+      "word": "装配",
+      "en": "assembly",
+      "ja": "組立",
+      "reading": "",
+      "category": "模具与制造"
+    },
+    {
+      "word": "外壳",
+      "en": "housing",
+      "ja": "筐体",
+      "reading": "",
+      "category": "模具与制造"
+    },
+    {
+      "word": "结构",
+      "en": "structure",
+      "ja": "構造",
+      "reading": "",
+      "category": "模具与制造"
+    },
+    {
+      "word": "尺寸",
+      "en": "dimensions",
+      "ja": "寸法",
+      "reading": "",
+      "category": "模具与制造"
+    },
+    {
+      "word": "公差",
+      "en": "tolerance",
+      "ja": "公差",
+      "reading": "",
+      "category": "模具与制造"
+    },
+    {
+      "word": "材料",
+      "en": "material",
+      "ja": "材料",
+      "reading": "",
+      "category": "模具与制造"
+    },
+    {
+      "word": "外贸",
+      "en": "foreign trade",
+      "ja": "貿易",
+      "reading": "",
+      "category": "外贸与物流"
+    },
+    {
+      "word": "询盘",
+      "en": "inquiry",
+      "ja": "引き合い",
+      "reading": "",
+      "category": "外贸与物流"
+    },
+    {
+      "word": "报关",
+      "en": "customs declaration",
+      "ja": "通関申告",
+      "reading": "",
+      "category": "外贸与物流"
+    },
+    {
+      "word": "清关",
+      "en": "customs clearance",
+      "ja": "通関",
+      "reading": "",
+      "category": "外贸与物流"
+    },
+    {
+      "word": "运费",
+      "en": "freight cost",
+      "ja": "送料",
+      "reading": "",
+      "category": "外贸与物流"
+    },
+    {
+      "word": "提单",
+      "en": "bill of lading",
+      "ja": "船荷証券",
+      "reading": "",
+      "category": "外贸与物流"
+    },
+    {
+      "word": "装箱单",
+      "en": "packing list",
+      "ja": "梱包明細書",
+      "reading": "",
+      "category": "外贸与物流"
+    },
+    {
+      "word": "商业发票",
+      "en": "commercial invoice",
+      "ja": "商業送り状",
+      "reading": "",
+      "category": "外贸与物流"
+    },
+    {
+      "word": "原产地",
+      "en": "country of origin",
+      "ja": "原産地",
+      "reading": "",
+      "category": "外贸与物流"
+    },
+    {
+      "word": "关税",
+      "en": "customs duty",
+      "ja": "関税",
+      "reading": "",
+      "category": "外贸与物流"
+    },
+    {
+      "word": "贸易条款",
+      "en": "trade terms",
+      "ja": "取引条件",
+      "reading": "",
+      "category": "外贸与物流"
+    },
+    {
+      "word": "起订量",
+      "en": "minimum order quantity",
+      "ja": "最小発注数量",
+      "reading": "",
+      "category": "外贸与物流"
+    },
+    {
+      "word": "质检",
+      "en": "quality inspection",
+      "ja": "品質検査",
+      "reading": "",
+      "category": "质量与检验"
+    },
+    {
+      "word": "验货",
+      "en": "goods inspection",
+      "ja": "商品検査",
+      "reading": "",
+      "category": "质量与检验"
+    },
+    {
+      "word": "抽检",
+      "en": "sampling inspection",
+      "ja": "抜取検査",
+      "reading": "",
+      "category": "质量与检验"
+    },
+    {
+      "word": "全检",
+      "en": "full inspection",
+      "ja": "全数検査",
+      "reading": "",
+      "category": "质量与检验"
+    },
+    {
+      "word": "不良品",
+      "en": "defective goods",
+      "ja": "不良品",
+      "reading": "",
+      "category": "质量与检验"
+    },
+    {
+      "word": "返工",
+      "en": "rework",
+      "ja": "手直し",
+      "reading": "",
+      "category": "质量与检验"
+    },
+    {
+      "word": "返修",
+      "en": "repair",
+      "ja": "修理",
+      "reading": "",
+      "category": "质量与检验"
+    },
+    {
+      "word": "缺陷",
+      "en": "defect",
+      "ja": "不具合",
+      "reading": "",
+      "category": "质量与检验"
+    },
+    {
+      "word": "合格品",
+      "en": "accepted goods",
+      "ja": "合格品",
+      "reading": "",
+      "category": "质量与检验"
+    },
+    {
+      "word": "合格率",
+      "en": "acceptance rate",
+      "ja": "合格率",
+      "reading": "",
+      "category": "质量与检验"
+    },
+    {
+      "word": "检验报告",
+      "en": "inspection report",
+      "ja": "検査報告書",
+      "reading": "",
+      "category": "质量与检验"
+    },
+    {
+      "word": "测试",
+      "en": "test",
+      "ja": "試験",
+      "reading": "",
+      "category": "质量与检验"
+    },
+    {
+      "word": "包装",
+      "en": "packaging",
+      "ja": "包装",
+      "reading": "",
+      "category": "包装与售后"
+    },
+    {
+      "word": "彩盒",
+      "en": "printed box",
+      "ja": "印刷箱",
+      "reading": "",
+      "category": "包装与售后"
+    },
+    {
+      "word": "说明书",
+      "en": "user manual",
+      "ja": "取扱説明書",
+      "reading": "",
+      "category": "包装与售后"
+    },
+    {
+      "word": "标签",
+      "en": "label",
+      "ja": "ラベル",
+      "reading": "",
+      "category": "包装与售后"
+    },
+    {
+      "word": "条码",
+      "en": "barcode",
+      "ja": "バーコード",
+      "reading": "",
+      "category": "包装与售后"
+    },
+    {
+      "word": "配件",
+      "en": "accessories",
+      "ja": "付属品",
+      "reading": "",
+      "category": "包装与售后"
+    },
+    {
+      "word": "电池",
+      "en": "battery",
+      "ja": "電池",
+      "reading": "",
+      "category": "包装与售后"
+    },
+    {
+      "word": "充电",
+      "en": "charging",
+      "ja": "充電",
+      "reading": "",
+      "category": "包装与售后"
+    },
+    {
+      "word": "保修",
+      "en": "warranty",
+      "ja": "保証",
+      "reading": "",
+      "category": "包装与售后"
+    },
+    {
+      "word": "售后",
+      "en": "after-sales service",
+      "ja": "アフターサービス",
+      "reading": "",
+      "category": "包装与售后"
+    },
+    {
+      "word": "退货",
+      "en": "goods return",
+      "ja": "返品",
+      "reading": "",
+      "category": "包装与售后"
+    },
+    {
+      "word": "维修",
+      "en": "repair",
+      "ja": "修理",
+      "reading": "",
+      "category": "包装与售后"
+    }
+  ]
+}

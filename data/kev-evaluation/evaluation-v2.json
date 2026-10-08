@@ -1,0 +1,1111 @@
+{
+  "schema_version": 1,
+  "dataset_id": "keytrack-kev-public-native-v2",
+  "source_id": "keytrack-original-public-v1",
+  "candidate_source": "isolated_public_rime_pool",
+  "examples": [
+    {
+      "id": "kev-001",
+      "kind": "complete_word",
+      "domain": "daily",
+      "situation": "health",
+      "input": "yisheng",
+      "previous_text": "我去医院看",
+      "candidates": [
+        "医生",
+        "一生",
+        "一声",
+        "一升",
+        "已生"
+      ],
+      "acceptable": [
+        "医生"
+      ]
+    },
+    {
+      "id": "kev-002",
+      "kind": "complete_word",
+      "domain": "daily",
+      "situation": "schedule",
+      "input": "shijian",
+      "previous_text": "请告诉我会议开始的",
+      "candidates": [
+        "时间",
+        "事件",
+        "实践",
+        "世间",
+        "是件"
+      ],
+      "acceptable": [
+        "时间"
+      ]
+    },
+    {
+      "id": "kev-003",
+      "kind": "complete_word",
+      "domain": "daily",
+      "situation": "outdoors",
+      "input": "gongyuan",
+      "previous_text": "周末一起去散步的地方是",
+      "candidates": [
+        "公园",
+        "公元",
+        "贡院",
+        "宫苑",
+        "宫院"
+      ],
+      "acceptable": [
+        "公园"
+      ]
+    },
+    {
+      "id": "kev-004",
+      "kind": "complete_word",
+      "domain": "daily",
+      "situation": "clothing",
+      "input": "yifu",
+      "previous_text": "下雨了，先把晾在外面的",
+      "candidates": [
+        "衣服",
+        "一副",
+        "一幅",
+        "依附",
+        "一付"
+      ],
+      "acceptable": [
+        "衣服"
+      ]
+    },
+    {
+      "id": "kev-005",
+      "kind": "complete_word",
+      "domain": "daily",
+      "situation": "greeting",
+      "input": "zaijian",
+      "previous_text": "临走前，我向朋友说",
+      "candidates": [
+        "再见",
+        "在建",
+        "再建",
+        "再减",
+        "在肩"
+      ],
+      "acceptable": [
+        "再见"
+      ]
+    },
+    {
+      "id": "kev-006",
+      "kind": "complete_word",
+      "domain": "daily",
+      "situation": "food",
+      "input": "dianxin",
+      "previous_text": "下午茶我想吃一点",
+      "candidates": [
+        "电信",
+        "点心",
+        "电芯",
+        "点",
+        "电"
+      ],
+      "acceptable": [
+        "点心"
+      ]
+    },
+    {
+      "id": "kev-007",
+      "kind": "complete_word",
+      "domain": "daily",
+      "situation": "communication",
+      "input": "youjian",
+      "previous_text": "请把照片通过电子",
+      "candidates": [
+        "邮件",
+        "右键",
+        "又见",
+        "右肩",
+        "诱奸"
+      ],
+      "acceptable": [
+        "邮件"
+      ]
+    },
+    {
+      "id": "kev-008",
+      "kind": "complete_word",
+      "domain": "daily",
+      "situation": "health",
+      "input": "yiyuan",
+      "previous_text": "发烧了，准备去",
+      "candidates": [
+        "医院",
+        "意愿",
+        "亿元",
+        "一员",
+        "一元"
+      ],
+      "acceptable": [
+        "医院"
+      ]
+    },
+    {
+      "id": "kev-009",
+      "kind": "complete_word",
+      "domain": "daily",
+      "situation": "sound",
+      "input": "shengyin",
+      "previous_text": "隔壁传来了钢琴的",
+      "candidates": [
+        "声音",
+        "升音",
+        "省音",
+        "生",
+        "声"
+      ],
+      "acceptable": [
+        "声音"
+      ]
+    },
+    {
+      "id": "kev-010",
+      "kind": "complete_word",
+      "domain": "daily",
+      "situation": "learning",
+      "input": "zhidao",
+      "previous_text": "第一次操作，请老师现场",
+      "candidates": [
+        "知道",
+        "指导",
+        "直到",
+        "之道",
+        "执导"
+      ],
+      "acceptable": [
+        "指导"
+      ]
+    },
+    {
+      "id": "kev-011",
+      "kind": "complete_word",
+      "domain": "daily",
+      "situation": "sports",
+      "input": "jilu",
+      "previous_text": "这项成绩刷新了世界",
+      "candidates": [
+        "记录",
+        "纪录",
+        "辑录",
+        "几路",
+        "集录"
+      ],
+      "acceptable": [
+        "纪录"
+      ]
+    },
+    {
+      "id": "kev-012",
+      "kind": "complete_word",
+      "domain": "daily",
+      "situation": "location",
+      "input": "fujin",
+      "previous_text": "我在车站",
+      "candidates": [
+        "附近",
+        "缚紧",
+        "福晋",
+        "服",
+        "夫"
+      ],
+      "acceptable": [
+        "附近"
+      ]
+    },
+    {
+      "id": "kev-013",
+      "kind": "complete_word",
+      "domain": "work",
+      "situation": "quotation",
+      "input": "baojia",
+      "previous_text": "客户需要产品的正式",
+      "candidates": [
+        "报价",
+        "保价",
+        "包夹",
+        "保家",
+        "保驾"
+      ],
+      "acceptable": [
+        "报价"
+      ]
+    },
+    {
+      "id": "kev-014",
+      "kind": "complete_word",
+      "domain": "work",
+      "situation": "delivery",
+      "input": "jiaoqi",
+      "previous_text": "请确认这批货的",
+      "candidates": [
+        "脚气",
+        "娇气",
+        "娇妻",
+        "骄气",
+        "交齐"
+      ],
+      "acceptable": [
+        "交期"
+      ]
+    },
+    {
+      "id": "kev-015",
+      "kind": "complete_word",
+      "domain": "work",
+      "situation": "tooling",
+      "input": "muju",
+      "previous_text": "这个塑料外壳需要开新",
+      "candidates": [
+        "模具",
+        "目",
+        "母",
+        "木",
+        "模"
+      ],
+      "acceptable": [
+        "模具"
+      ]
+    },
+    {
+      "id": "kev-016",
+      "kind": "complete_word",
+      "domain": "work",
+      "situation": "quality",
+      "input": "zhijian",
+      "previous_text": "产品出货前必须经过",
+      "candidates": [
+        "之间",
+        "只见",
+        "质检",
+        "指尖",
+        "质监"
+      ],
+      "acceptable": [
+        "质检"
+      ]
+    },
+    {
+      "id": "kev-017",
+      "kind": "complete_word",
+      "domain": "work",
+      "situation": "samples",
+      "input": "yangpin",
+      "previous_text": "请先寄两套供测试的",
+      "candidates": [
+        "样品",
+        "养",
+        "样",
+        "阳",
+        "杨"
+      ],
+      "acceptable": [
+        "样品"
+      ]
+    },
+    {
+      "id": "kev-018",
+      "kind": "complete_word",
+      "domain": "work",
+      "situation": "contract",
+      "input": "hetong",
+      "previous_text": "双方已经签署采购",
+      "candidates": [
+        "合同",
+        "和",
+        "何",
+        "合",
+        "喝"
+      ],
+      "acceptable": [
+        "合同"
+      ]
+    },
+    {
+      "id": "kev-019",
+      "kind": "complete_word",
+      "domain": "work",
+      "situation": "finance",
+      "input": "fapiao",
+      "previous_text": "财务需要开具增值税",
+      "candidates": [
+        "发票",
+        "发飘",
+        "发",
+        "法",
+        "罚"
+      ],
+      "acceptable": [
+        "发票"
+      ]
+    },
+    {
+      "id": "kev-020",
+      "kind": "complete_word",
+      "domain": "work",
+      "situation": "finance",
+      "input": "shoukuan",
+      "previous_text": "订单发货之前先核对是否",
+      "candidates": [
+        "收款",
+        "首款",
+        "受苦",
+        "手",
+        "受"
+      ],
+      "acceptable": [
+        "收款"
+      ]
+    },
+    {
+      "id": "kev-021",
+      "kind": "complete_word",
+      "domain": "work",
+      "situation": "quality",
+      "input": "gongcha",
+      "previous_text": "图纸上需要标注尺寸",
+      "candidates": [
+        "公差",
+        "贡茶",
+        "公",
+        "工",
+        "功"
+      ],
+      "acceptable": [
+        "公差"
+      ]
+    },
+    {
+      "id": "kev-022",
+      "kind": "complete_word",
+      "domain": "work",
+      "situation": "warehouse",
+      "input": "cangku",
+      "previous_text": "请把到货材料放入",
+      "candidates": [
+        "仓库",
+        "藏",
+        "苍",
+        "仓",
+        "舱"
+      ],
+      "acceptable": [
+        "仓库"
+      ]
+    },
+    {
+      "id": "kev-023",
+      "kind": "complete_word",
+      "domain": "work",
+      "situation": "transport",
+      "input": "yunshu",
+      "previous_text": "本次订单采用海上",
+      "candidates": [
+        "运输",
+        "韵书",
+        "运数",
+        "云属",
+        "云"
+      ],
+      "acceptable": [
+        "运输"
+      ]
+    },
+    {
+      "id": "kev-024",
+      "kind": "complete_word",
+      "domain": "work",
+      "situation": "packaging",
+      "input": "baozhuang",
+      "previous_text": "跌落测试要使用完整的",
+      "candidates": [
+        "包装",
+        "报装",
+        "保状",
+        "抱住",
+        "保住"
+      ],
+      "acceptable": [
+        "包装"
+      ]
+    },
+    {
+      "id": "kev-025",
+      "kind": "complete_sentence",
+      "domain": "daily",
+      "situation": "schedule",
+      "input": "womingtianguolai",
+      "previous_text": "我们约好了时间，",
+      "candidates": [
+        "我明天过来",
+        "我明天",
+        "我命",
+        "我",
+        "握"
+      ],
+      "acceptable": [
+        "我明天过来"
+      ]
+    },
+    {
+      "id": "kev-026",
+      "kind": "complete_sentence",
+      "domain": "daily",
+      "situation": "food",
+      "input": "jintianwanshangchishenme",
+      "previous_text": "准备做饭，先想想",
+      "candidates": [
+        "今天晚上吃什么",
+        "今天晚上",
+        "今天玩",
+        "今天",
+        "金田"
+      ],
+      "acceptable": [
+        "今天晚上吃什么",
+        "今天晚上吃甚么"
+      ]
+    },
+    {
+      "id": "kev-027",
+      "kind": "complete_sentence",
+      "domain": "daily",
+      "situation": "location",
+      "input": "womenzaimenkoujian",
+      "previous_text": "到达以后，",
+      "candidates": [
+        "我们在门口见",
+        "我们在",
+        "我们再",
+        "我们",
+        "我"
+      ],
+      "acceptable": [
+        "我们在门口见"
+      ]
+    },
+    {
+      "id": "kev-028",
+      "kind": "complete_sentence",
+      "domain": "daily",
+      "situation": "weather",
+      "input": "jintiantianqihenhao",
+      "previous_text": "打开窗户，发现",
+      "candidates": [
+        "今天天气很好",
+        "今天天气",
+        "今天",
+        "金田",
+        "浸提"
+      ],
+      "acceptable": [
+        "今天天气很好"
+      ]
+    },
+    {
+      "id": "kev-029",
+      "kind": "complete_sentence",
+      "domain": "daily",
+      "situation": "communication",
+      "input": "qingbadizhifageiwo",
+      "previous_text": "我不知道怎么过去，",
+      "candidates": [
+        "请把地址发给我",
+        "请把",
+        "请吧",
+        "请",
+        "轻"
+      ],
+      "acceptable": [
+        "请把地址发给我"
+      ]
+    },
+    {
+      "id": "kev-030",
+      "kind": "complete_sentence",
+      "domain": "daily",
+      "situation": "transport",
+      "input": "wozaichezhandengni",
+      "previous_text": "你快到了吗？",
+      "candidates": [
+        "我在车站等你",
+        "我在",
+        "我再",
+        "握在",
+        "卧在"
+      ],
+      "acceptable": [
+        "我在车站等你"
+      ]
+    },
+    {
+      "id": "kev-031",
+      "kind": "complete_sentence",
+      "domain": "daily",
+      "situation": "health",
+      "input": "xianxiuxiyixia",
+      "previous_text": "走了很久，",
+      "candidates": [
+        "先休息一下",
+        "先休息",
+        "先修",
+        "纤秀",
+        "先"
+      ],
+      "acceptable": [
+        "先休息一下"
+      ]
+    },
+    {
+      "id": "kev-032",
+      "kind": "complete_sentence",
+      "domain": "daily",
+      "situation": "greeting",
+      "input": "xiexienidebangzhu",
+      "previous_text": "事情顺利解决了，",
+      "candidates": [
+        "谢谢你的帮助",
+        "谢谢你",
+        "谢谢",
+        "写写",
+        "写些"
+      ],
+      "acceptable": [
+        "谢谢你的帮助"
+      ]
+    },
+    {
+      "id": "kev-033",
+      "kind": "complete_sentence",
+      "domain": "daily",
+      "situation": "learning",
+      "input": "zhegebenzihenyouqu",
+      "previous_text": "翻看笔记以后，",
+      "candidates": [
+        "这个本子很有趣",
+        "这个本",
+        "这个",
+        "这歌",
+        "这"
+      ],
+      "acceptable": [
+        "这个本子很有趣"
+      ]
+    },
+    {
+      "id": "kev-034",
+      "kind": "complete_sentence",
+      "domain": "work",
+      "situation": "quotation",
+      "input": "qingquerenzuixinbaojia",
+      "previous_text": "邮件正文第一句写：",
+      "candidates": [
+        "请确认最新报价",
+        "请确认",
+        "青雀",
+        "情趣",
+        "请去"
+      ],
+      "acceptable": [
+        "请确认最新报价"
+      ]
+    },
+    {
+      "id": "kev-035",
+      "kind": "complete_sentence",
+      "domain": "work",
+      "situation": "samples",
+      "input": "yangpinyijingjichu",
+      "previous_text": "今天给客户的进度是：",
+      "candidates": [
+        "样品已经寄出",
+        "样品",
+        "养",
+        "样",
+        "阳"
+      ],
+      "acceptable": [
+        "样品已经寄出"
+      ]
+    },
+    {
+      "id": "kev-036",
+      "kind": "complete_sentence",
+      "domain": "work",
+      "situation": "quality",
+      "input": "zhipinxuyaochongxinceshi",
+      "previous_text": "复核发现性能不稳定，",
+      "candidates": [
+        "制品需要重新测试",
+        "制品",
+        "致贫",
+        "直聘",
+        "纸品"
+      ],
+      "acceptable": [
+        "制品需要重新测试",
+        "制品须要重新测试"
+      ]
+    },
+    {
+      "id": "kev-037",
+      "kind": "complete_sentence",
+      "domain": "work",
+      "situation": "contract",
+      "input": "hetongyijingqianshu",
+      "previous_text": "客户回复：",
+      "candidates": [
+        "合同已经签署",
+        "合同一",
+        "合同",
+        "和",
+        "何"
+      ],
+      "acceptable": [
+        "合同已经签署"
+      ]
+    },
+    {
+      "id": "kev-038",
+      "kind": "complete_sentence",
+      "domain": "work",
+      "situation": "delivery",
+      "input": "qingquerenjiaohuoshijian",
+      "previous_text": "排产前请回复：",
+      "candidates": [
+        "请确认交货时间",
+        "请确认",
+        "青雀",
+        "情趣",
+        "请去"
+      ],
+      "acceptable": [
+        "请确认交货时间"
+      ]
+    },
+    {
+      "id": "kev-039",
+      "kind": "complete_sentence",
+      "domain": "work",
+      "situation": "warehouse",
+      "input": "qingheduikucunshuliang",
+      "previous_text": "仓库今天的任务是：",
+      "candidates": [
+        "请核对库存数量",
+        "请核对",
+        "请和",
+        "庆贺",
+        "氢核"
+      ],
+      "acceptable": [
+        "请核对库存数量"
+      ]
+    },
+    {
+      "id": "kev-040",
+      "kind": "complete_sentence",
+      "domain": "work",
+      "situation": "finance",
+      "input": "fapiaoyijingkaiju",
+      "previous_text": "给财务回复：",
+      "candidates": [
+        "发票已经开局",
+        "发票",
+        "发飘",
+        "发",
+        "法"
+      ],
+      "acceptable": [
+        "发票已经开具"
+      ]
+    },
+    {
+      "id": "kev-041",
+      "kind": "complete_sentence",
+      "domain": "work",
+      "situation": "tooling",
+      "input": "mujuxuyaoxiugai",
+      "previous_text": "结构尺寸有调整，",
+      "candidates": [
+        "模具需要修改",
+        "模具",
+        "目",
+        "母",
+        "木"
+      ],
+      "acceptable": [
+        "模具需要修改",
+        "模具须要修改"
+      ]
+    },
+    {
+      "id": "kev-042",
+      "kind": "complete_sentence",
+      "domain": "work",
+      "situation": "meeting",
+      "input": "qingcanjiamingtianhuiyi",
+      "previous_text": "工作群通知：",
+      "candidates": [
+        "请参加明天会议",
+        "请参加",
+        "请",
+        "轻",
+        "清"
+      ],
+      "acceptable": [
+        "请参加明天会议"
+      ]
+    },
+    {
+      "id": "kev-043",
+      "kind": "ambiguous",
+      "domain": "daily",
+      "situation": "learning",
+      "input": "jianyi",
+      "previous_text": "",
+      "candidates": [
+        "建议",
+        "简易",
+        "坚毅",
+        "检疫",
+        "减一"
+      ],
+      "acceptable": [
+        "建议",
+        "简易",
+        "检疫"
+      ]
+    },
+    {
+      "id": "kev-044",
+      "kind": "ambiguous",
+      "domain": "daily",
+      "situation": "greeting",
+      "input": "xiexie",
+      "previous_text": "",
+      "candidates": [
+        "谢谢",
+        "写写",
+        "写些",
+        "斜斜",
+        "歇歇"
+      ],
+      "acceptable": [
+        "谢谢",
+        "歇歇"
+      ]
+    },
+    {
+      "id": "kev-045",
+      "kind": "ambiguous",
+      "domain": "daily",
+      "situation": "food",
+      "input": "mian",
+      "previous_text": "",
+      "candidates": [
+        "面",
+        "免",
+        "勉",
+        "绵",
+        "眠"
+      ],
+      "acceptable": [
+        "面",
+        "麵",
+        "免",
+        "棉",
+        "眠"
+      ]
+    },
+    {
+      "id": "kev-046",
+      "kind": "ambiguous",
+      "domain": "daily",
+      "situation": "location",
+      "input": "nali",
+      "previous_text": "你刚才说的是",
+      "candidates": [
+        "那里",
+        "哪里",
+        "那",
+        "哪",
+        "拿"
+      ],
+      "acceptable": [
+        "哪里",
+        "那里"
+      ]
+    },
+    {
+      "id": "kev-047",
+      "kind": "ambiguous",
+      "domain": "daily",
+      "situation": "communication",
+      "input": "huifu",
+      "previous_text": "处理完后，我会尽快",
+      "candidates": [
+        "回复",
+        "恢复",
+        "回府",
+        "汇付",
+        "会"
+      ],
+      "acceptable": [
+        "回复",
+        "恢复"
+      ]
+    },
+    {
+      "id": "kev-048",
+      "kind": "ambiguous",
+      "domain": "daily",
+      "situation": "schedule",
+      "input": "zaijian",
+      "previous_text": "",
+      "candidates": [
+        "再见",
+        "在建",
+        "再建",
+        "再减",
+        "在肩"
+      ],
+      "acceptable": [
+        "再见",
+        "在建",
+        "再建"
+      ]
+    },
+    {
+      "id": "kev-049",
+      "kind": "ambiguous",
+      "domain": "work",
+      "situation": "quality",
+      "input": "qianzi",
+      "previous_text": "",
+      "candidates": [
+        "签字",
+        "千字",
+        "钳子",
+        "签子",
+        "铅字"
+      ],
+      "acceptable": [
+        "签字",
+        "钳子",
+        "千字"
+      ]
+    },
+    {
+      "id": "kev-050",
+      "kind": "ambiguous",
+      "domain": "work",
+      "situation": "quotation",
+      "input": "dingjia",
+      "previous_text": "新产品需要",
+      "candidates": [
+        "定价",
+        "订价",
+        "顶架",
+        "顶级",
+        "定级"
+      ],
+      "acceptable": [
+        "定价",
+        "订价"
+      ]
+    },
+    {
+      "id": "kev-051",
+      "kind": "ambiguous",
+      "domain": "work",
+      "situation": "transport",
+      "input": "fahuo",
+      "previous_text": "今天又要",
+      "candidates": [
+        "发货",
+        "发火",
+        "发乎",
+        "发",
+        "法"
+      ],
+      "acceptable": [
+        "发货",
+        "发火"
+      ]
+    },
+    {
+      "id": "kev-052",
+      "kind": "ambiguous",
+      "domain": "work",
+      "situation": "meeting",
+      "input": "huiyi",
+      "previous_text": "",
+      "candidates": [
+        "会议",
+        "回忆",
+        "会意",
+        "会以",
+        "灰衣"
+      ],
+      "acceptable": [
+        "会议",
+        "回忆",
+        "会意"
+      ]
+    },
+    {
+      "id": "kev-053",
+      "kind": "ambiguous",
+      "domain": "work",
+      "situation": "contract",
+      "input": "xieyi",
+      "previous_text": "",
+      "candidates": [
+        "协议",
+        "谢意",
+        "写意",
+        "斜倚",
+        "血衣"
+      ],
+      "acceptable": [
+        "协议",
+        "写意",
+        "谢意"
+      ]
+    },
+    {
+      "id": "kev-054",
+      "kind": "ambiguous",
+      "domain": "work",
+      "situation": "tooling",
+      "input": "cailiao",
+      "previous_text": "先准备好",
+      "candidates": [
+        "材料",
+        "猜料",
+        "财力",
+        "彩礼",
+        "菜里"
+      ],
+      "acceptable": [
+        "材料",
+        "菜料"
+      ]
+    },
+    {
+      "id": "kev-055",
+      "kind": "reject",
+      "domain": "daily",
+      "situation": "health",
+      "input": "qinglianxiyishen",
+      "previous_text": "如果症状加重，",
+      "candidates": [
+        "请联系一身",
+        "请联系",
+        "清廉",
+        "青莲",
+        "清涟"
+      ],
+      "acceptable": [],
+      "reject_reason": "typo_pool_without_intended_complete_answer",
+      "missing_target": "请联系医生"
+    },
+    {
+      "id": "kev-056",
+      "kind": "reject",
+      "domain": "daily",
+      "situation": "food",
+      "input": "woxiangchidianxing",
+      "previous_text": "下午茶的时候，",
+      "candidates": [
+        "我想吃典型",
+        "我想吃",
+        "我想",
+        "我向",
+        "我像"
+      ],
+      "acceptable": [],
+      "reject_reason": "typo_pool_without_intended_complete_answer",
+      "missing_target": "我想吃点心"
+    },
+    {
+      "id": "kev-057",
+      "kind": "reject",
+      "domain": "daily",
+      "situation": "location",
+      "input": "qinggaosuwoditiezhang",
+      "previous_text": "我找不到车站，",
+      "candidates": [
+        "请告诉我地铁长",
+        "请告诉我",
+        "清高",
+        "清稿",
+        "请"
+      ],
+      "acceptable": [],
+      "reject_reason": "typo_pool_without_intended_complete_answer",
+      "missing_target": "请告诉我地铁站"
+    },
+    {
+      "id": "kev-058",
+      "kind": "reject",
+      "domain": "work",
+      "situation": "quality",
+      "input": "chuhuoqianzuozhijiang",
+      "previous_text": "要检查产品质量，",
+      "candidates": [
+        "出货前作只将",
+        "出货",
+        "出活",
+        "出乎",
+        "储户"
+      ],
+      "acceptable": [],
+      "reject_reason": "typo_pool_without_intended_complete_answer",
+      "missing_target": "出货前做质检"
+    },
+    {
+      "id": "kev-059",
+      "kind": "reject",
+      "domain": "work",
+      "situation": "quotation",
+      "input": "qingfazuixinbaoji",
+      "previous_text": "客户需要最新价格，",
+      "candidates": [
+        "请发最新暴击",
+        "请发",
+        "轻罚",
+        "青发",
+        "请"
+      ],
+      "acceptable": [],
+      "reject_reason": "typo_pool_without_intended_complete_answer",
+      "missing_target": "请发最新报价"
+    },
+    {
+      "id": "kev-060",
+      "kind": "reject",
+      "domain": "work",
+      "situation": "delivery",
+      "input": "qingquerenjiaoqian",
+      "previous_text": "排产前要明确交付日期，",
+      "candidates": [
+        "请确认交钱",
+        "请确认",
+        "青雀",
+        "情趣",
+        "请去"
+      ],
+      "acceptable": [],
+      "reject_reason": "typo_pool_without_intended_complete_answer",
+      "missing_target": "请确认交期"
+    }
+  ]
+}

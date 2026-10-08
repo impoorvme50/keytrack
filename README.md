@@ -67,9 +67,9 @@ cd ~/keyboard
 
 终端外的全局 `kbd` 命令由 `/opt/homebrew/bin/kbd` 包装脚本提供。
 
-独立安装版可从 [v0.4.1 下载页](https://github.com/impoorvme50/keytrack/releases/tag/v0.4.1) 获取（Apple 芯片，macOS 26 及以上）：将应用拖入「应用程序」，打开后点「完成本机安装」。界面和采集自带运行组件，不再依赖源码目录、Python 安装或 Homebrew；输入法需要已有鼠须管，可选 AI 沿用现有本机 Kev 模型。当前为本机自用/实验版，未做 Apple Developer ID 签名和公证。开发构建用 `./scripts/build-console.sh`，打包用 `./scripts/package-console.sh`。用法见 [输入控制台](docs/console.md)，版本变化见 [更新记录](CHANGELOG.md)。
+独立安装版可从 [v0.4.6 下载页](https://github.com/impoorvme50/keytrack/releases/tag/v0.4.6) 获取（Apple 芯片，macOS 26 及以上）：将应用拖入「应用程序」，打开后点「完成本机安装」。界面和采集自带运行组件，不再依赖源码目录、Python 安装或 Homebrew；输入法需要已有鼠须管，可选 AI 沿用现有本机 Kev 模型。当前为本机自用/实验版，未做 Apple Developer ID 签名和公证。开发构建用 `./scripts/build-console.sh`，打包用 `./scripts/package-console.sh`。用法见 [输入控制台](docs/console.md)，版本变化见 [更新记录](CHANGELOG.md)。
 
-本地 v0.4.4 新增默认关闭的英文／日文候选释义，附 120 词本地入门词表；在“输入与 AI”选择语言并保存，未收录词保留原注释。[候选释义](docs/candidate-glosses.md)。v0.4.3 已新增“发现重复表达”：主动分析本机历史、审核编码后加入待保存常用语，沿用备份和恢复。字体搜索与拼音位置保留。公共候选库完成保守精修和三份冻结评测；旧集短语收益提高，两份追加集整体质量持平，真实候选窗验收未完成，现有默认库保留。尚未发布远程下载版本。[常用语发现](docs/phrase-discovery.md) · [来源、评测和复现](docs/public-prediction-data.md)。
+v0.4.6 整理了五个页面的文案和布局，小时图补齐时间与次数刻度，统计说明和诊断详情按需展开，输入设置标明生效方式。保留常用语 JSON／TSV 预览导入导出、192 条本地释义及个人修订、补全、Emoji 和应用默认语言入口，新偏好均保留原值。原生控制台已检查常规与窄窗口、空日期和旧日期；真实鼠须管候选窗仍待独立验收，默认词库未更换。中文 Kev 公开基线未发现现行策略收益，采用阈值保持。[本轮交付](docs/msime-round1.md) · [Kev 评测](docs/kev-evaluation.md)。常用语发现、字体搜索和拼音位置继续保留。[常用语发现](docs/phrase-discovery.md) · [候选库来源、评测和复现](docs/public-prediction-data.md)。
 
 ## 查询接口（做看板 / Swift 状态栏用）
 

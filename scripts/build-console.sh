@@ -33,14 +33,14 @@ print '正在构建 SwiftUI 原生界面…'
 xcrun swiftc -swift-version 5 -target arm64-apple-macosx26.0 \
     -module-cache-path /private/tmp/keytrack-swift-cache -O \
     macos/Keytrack.swift macos/ConsoleModel.swift -o "$app_path/Contents/MacOS/Keytrack" \
-    -framework AppKit -framework SwiftUI
+    -framework AppKit -framework SwiftUI -framework Charts
 xcrun swiftc -module-cache-path /private/tmp/keytrack-swift-cache scripts/make-icon.swift -o "$build_dir/make-icon"
 "$build_dir/make-icon" "$build_dir/Keytrack.iconset"
 iconutil -c icns "$build_dir/Keytrack.iconset" -o "$app_path/Contents/Resources/Keytrack.icns"
-.venv/bin/python scripts/bundle-notices.py "$app_path/Contents/Resources/ThirdPartyLicenses"
+.venv/bin/python scripts/bundle-notices.py "$app_path/Contents/Resources/ThirdPartyLicenses" 0.4.6
 cp LICENSE "$app_path/Contents/Resources/LICENSE.txt"
 cat > "$app_path/Contents/Info.plist" <<'PLIST'
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>CFBundleExecutable</key><string>Keytrack</string><key>CFBundleIdentifier</key><string>local.keytrack.console</string><key>CFBundleName</key><string>Keytrack</string><key>CFBundleDisplayName</key><string>Keytrack</string><key>CFBundleShortVersionString</key><string>0.4.4</string><key>CFBundleVersion</key><string>8</string><key>CFBundleIconFile</key><string>Keytrack</string><key>CFBundlePackageType</key><string>APPL</string><key>NSHighResolutionCapable</key><true/><key>LSMinimumSystemVersion</key><string>26.0</string><key>LSArchitecturePriority</key><array><string>arm64</string></array></dict></plist>
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>CFBundleExecutable</key><string>Keytrack</string><key>CFBundleIdentifier</key><string>local.keytrack.console</string><key>CFBundleName</key><string>Keytrack</string><key>CFBundleDisplayName</key><string>Keytrack</string><key>CFBundleShortVersionString</key><string>0.4.6</string><key>CFBundleVersion</key><string>10</string><key>CFBundleIconFile</key><string>Keytrack</string><key>CFBundlePackageType</key><string>APPL</string><key>NSHighResolutionCapable</key><true/><key>LSMinimumSystemVersion</key><string>26.0</string><key>LSArchitecturePriority</key><array><string>arm64</string></array></dict></plist>
 PLIST
 codesign --force --sign - "$app_path"
 codesign --verify --deep --strict "$app_path"

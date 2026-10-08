@@ -93,7 +93,9 @@ def setup(verbose: bool = True) -> bool:
     current = custom.read_text(encoding="utf-8") if custom.exists() else ""
     try:
         updated = render_custom_yaml(current, python, bridge)
-        annotations.source_changes(RIME_DIR, filters=True)
+        overrides = annotations.default_overrides(RIME_DIR)
+        annotation_sources = annotations.source_changes(RIME_DIR, filters=True, overrides=overrides,
+                                                        previous_overrides=overrides)
     except ValueError as exc:
         say(f"❌ Rime 配置未改动：{exc}")
         return False
@@ -114,12 +116,13 @@ def setup(verbose: bool = True) -> bool:
     for name in LUA_FILES:
         source = PROJECT_DIR / "rime" / name
         target = lua_dir / name
-        if not target.exists() or target.read_bytes() != source.read_bytes():
+        desired = annotation_sources[target].encode() if target in annotation_sources else source.read_bytes()
+        if not target.exists() or target.read_bytes() != desired:
             if target.exists():
                 backup = target.with_name(f"{target.name}.bak.kev-{stamp}")
                 shutil.copy2(target, backup)
                 say(f"· 原脚本已备份：{backup}")
-            shutil.copyfile(source, target)
+            target.write_bytes(desired)
             say(f"· 已安装 {target}")
 
     if updated != current:

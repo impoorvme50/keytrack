@@ -35,7 +35,9 @@ with tempfile.TemporaryDirectory(prefix="keytrack-package-check-") as temporary:
         assert all(item["name"] and item["description"] and item["light"] and item["dark"] for item in themes)
         assert state["prediction"]["enabled"] is False
         assert state["settings"]["gloss_language"] == "off"
-        assert state["glossary"]["count"] == 120
+        assert state["glossary"]["count"] == 192
+        assert state["glossary"]["base_count"] == 120
+        assert state["glossary"]["term_count"] == 72
         assert all("EN:" in item["en_comment"] and "日:" in item["ja_comment"] for item in state["glossary"]["examples"])
         assert state["prediction"]["max_candidates"] == 3
         request({"action": "prediction", "enabled": True, "max_candidates": 4})
@@ -91,6 +93,34 @@ with tempfile.TemporaryDirectory(prefix="keytrack-package-check-") as temporary:
         request({"action": "restore", "id": saved_gloss["backup"], "revision": current["revision"]})
         assert request({"action": "state"})["settings"]["gloss_language"] == "off"
         assert request({"action": "doctor"})["checks"]
+        # New controls and import/export must also work from the frozen runtime.
+        current = request({"action": "state"})
+        before_revision = current["revision"]
+        exported = request({"action": "phrase_export", "phrases": phrases, "format": "tsv"})
+        preview = request({"action": "phrase_import_preview", "content": exported["content"],
+                           "format": "tsv", "existing": []})
+        assert preview["counts"]["new"] == 1
+        assert preview["rows"][0]["text"] == phrases[0]["text"]
+        assert request({"action": "state"})["revision"] == before_revision
+        assert all(tool["available"] for tool in current["input_tools"].values())
+        overrides = [{"word": "模具", "en": "tooling mold", "ja": "金型", "reading": "かながた"}]
+        draft = dict(current["settings"], gloss_overrides=overrides,
+                     english_completion="off", mixed_completion="on", emoji_default="off")
+        saved_tools = request({"action": "settings", "settings": draft, "revision": before_revision})
+        updated = request({"action": "state"})
+        assert updated["settings"]["gloss_overrides"] == overrides
+        assert updated["settings"]["english_completion"] == "off"
+        assert updated["settings"]["emoji_default"] == "off"
+        effective = next(item for item in updated["glossary"]["entries"] if item["word"] == "模具")
+        bundled = next(item for item in updated["glossary"]["bundled_entries"] if item["word"] == "模具")
+        assert effective["en"] == "tooling mold" and bundled["en"] == "mold"
+        assert updated["prediction"] == original_prediction
+        assert updated["status"]["kev_enabled"] == original_kev
+        request({"action": "restore", "id": saved_tools["backup"], "revision": updated["revision"]})
+        restored_tools = request({"action": "state"})
+        assert restored_tools["settings"]["gloss_overrides"] == []
+        assert restored_tools["settings"]["english_completion"] == "existing"
+        assert restored_tools["settings"]["emoji_default"] == "existing"
     finally:
         process.stdin.close()
         process.wait(timeout=10)

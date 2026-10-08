@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "dataset_id": "keytrack-kev-public-native-v2",
+  "freeze_date": "2026-10-03",
+  "samples": 60,
+  "sha256": "00442da1bf3b86c9537324a5bfea3f0ac08f7a477b277e81e7cdb6bd01cbe4ee",
+  "license": "MIT",
+  "license_sha256": "a1d705b3d28ed4403154eca4be5dcf291811e4ef39c51da180c7e7cdfc0e7e83",
+  "source": "Original public synthetic daily/work scenarios authored for this evaluation; no personal input, logs, customer names or external corpus.",
+  "candidate_source": "isolated_public_rime_pool",
+  "kind_counts": {
+    "complete_word": 24,
+    "complete_sentence": 18,
+    "ambiguous": 12,
+    "reject": 6
+  },
+  "domain_counts": {
+    "daily": 30,
+    "work": 30
+  },
+  "status": "frozen_before_model_evaluation",
+  "parent_dataset_sha256": "23f78ae9fd1344abf070d6889a74670045ae358b0994a3f958831b51cee95019",
+  "candidate_provenance": {
+    "engine": "Squirrel bundled librime",
+    "library_sha256": "abb06aa5b3f53de375bc401512b49a7a31b7ed5ee62b2ef7a438512abee5958f",
+    "public_binary_sources": [
+      {
+        "file": "rime_ice.table.bin",
+        "sha256": "40ba881940b48c7154c40baf539d449bee9fe482aba3cca599c5e467f214f575"
+      },
+      {
+        "file": "rime_ice.prism.bin",
+        "sha256": "deaae51d5031bfda712e897a59ece6a14f92323c13bd2345074ea13185c9fe48"
+      }
+    ],
+    "schema": "schema:\n  schema_id: keytrack_public_eval\n  name: Public evaluation only\n  version: \"1\"\nengine:\n  processors: [speller, selector, express_editor]\n  segmentors: [abc_segmentor, fallback_segmentor]\n  translators: [script_translator]\n  filters: [uniquifier]\nspeller:\n  alphabet: abcdefghijklmnopqrstuvwxyz\n  delimiter: \"'\"\ntranslator:\n  dictionary: rime_ice\n  prism: rime_ice\n  enable_user_dict: false\n  enable_completion: true\n  enable_sentence: true\nmenu:\n  page_size: 5\n",
+    "schema_sha256": "cef6420e70ab4c7dec878c8a4c45d451f7819b48ba010698998021f95edfef9f",
+    "user_dictionary_enabled": false,
+    "text_commits": 0,
+    "lua_or_logger_loaded": false,
+    "note": "Simplified public Rime schema, not the daily schema or personal frequency order. No binary dictionary or user database is redistributed. Candidate strings are lexical data."
+  }
+}
