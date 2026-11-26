@@ -2,17 +2,27 @@ import AppKit
 import SwiftUI
 import Charts
 
-final class AppDelegate: NSObject, NSApplicationDelegate {
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
-    func applicationWillTerminate(_ notification: Notification) { NativeBridge.shared.stop() }
+@MainActor final class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationDidFinishLaunching(_ notification: Notification) { DesktopPet.shared.restore() }
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        !DesktopPet.shared.isEnabled
+    }
+    func applicationDidChangeScreenParameters(_ notification: Notification) {
+        DesktopPet.shared.screenConfigurationChanged()
+    }
+    func applicationWillTerminate(_ notification: Notification) {
+        DesktopPet.shared.stop()
+        NativeBridge.shared.stop()
+    }
 }
 
 @main struct KeytrackApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var model = ConsoleModel()
+    @StateObject private var pet = DesktopPet.shared
     var body: some Scene {
-        WindowGroup(CommandLine.arguments.contains("--demo") ? "Keytrack · 演示" : "Keytrack · 输入控制台") {
-            ConsoleView().environmentObject(model).frame(minWidth: 860, minHeight: 620)
+        WindowGroup(CommandLine.arguments.contains("--demo") ? "Keytrack · 演示" : "Keytrack · 输入控制台", id: "console") {
+            ConsoleView().environmentObject(model).environmentObject(pet).frame(minWidth: 860, minHeight: 620)
         }
         .defaultSize(width: 1190, height: 820)
         .commands {
@@ -29,6 +39,8 @@ private let pageBackground = Color(nsColor: .windowBackgroundColor)
 
 struct ConsoleView: View {
     @EnvironmentObject var model: ConsoleModel
+    @EnvironmentObject var pet: DesktopPet
+    @Environment(\.openWindow) private var openWindow
     @State private var confirmInstallation = false
     var body: some View {
         NavigationSplitView {
@@ -46,6 +58,16 @@ struct ConsoleView: View {
                     }
                 }.listStyle(.sidebar)
                 VStack(alignment: .leading, spacing: 7) {
+                    Button {
+                        pet.setEnabled(!pet.isEnabled)
+                    } label: {
+                        Label(pet.isEnabled ? "隐藏 KuroCat 桌宠" : "显示 KuroCat 桌宠", systemImage: "cat")
+                    }
+                    .buttonStyle(.borderless)
+                    Button(action: pet.showAppearance) {
+                        Label("桌宠设置", systemImage: "slider.horizontal.3")
+                    }
+                    .buttonStyle(.borderless)
                     Label("仅在本机", systemImage: "lock.shield").foregroundStyle(accent)
                     if let state = model.state {
                         Text(state.status.demo ? "演示数据" : "输入记录\(state.status.recorder.running ? "开启" : "未运行") · AI \(state.status.kev_enabled ? "开启" : "关闭")")
@@ -110,7 +132,10 @@ struct ConsoleView: View {
         }
         .tint(accent)
         .disabled(model.busy)
-        .task { if model.state == nil { model.load() } }
+        .task {
+            pet.openWindow = openWindow
+            if model.state == nil { model.load() }
+        }
         .alert("操作未完成", isPresented: Binding(get: { model.error != nil }, set: { if !$0 { model.error = nil } })) {
             Button("好") { model.error = nil }
         } message: { Text(model.error ?? "") }

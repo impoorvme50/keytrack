@@ -10,6 +10,10 @@ out = Path(sys.argv[1])
 out.mkdir(parents=True, exist_ok=True)
 version = sys.argv[2] if len(sys.argv) > 2 else "development"
 notes = [f"Keytrack {version} — bundled runtime components", "", "The native interface and local helper run on this Mac.", "No AIME or Qingjian source code is included in this bundle.", ""]
+kurocat_license = Path(__file__).resolve().parent.parent / "macos/KuroCat/LICENSE"
+(out / "KuroCat").mkdir(exist_ok=True)
+shutil.copy2(kurocat_license, out / "KuroCat/LICENSE.txt")
+notes.append("KuroCat desktop pet renderer and animation: chanke17 (MIT); notice in KuroCat.")
 annotations_dir = Path(__file__).resolve().parent.parent / "data/annotations"
 base_count = len(json.loads((annotations_dir / "glossary-v1.json").read_text())["entries"])
 term_count = len(json.loads((annotations_dir / "work-terms-v1.json").read_text())["entries"])
